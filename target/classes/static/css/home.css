@@ -1,0 +1,106 @@
+/*--全局样式--*/
+*{
+   margin: 0;
+   padding: 0;
+    font-family: "PingFang SC","Lantinghei SC","Microsoft YaHei","HanHei SC","Helvetica Neue","Open Sans",Arial,"Hiragino Sans GB","微软雅黑",STHeiti,"WenQuanYi Micro Hei",SimSun,sans-serif;
+}
+li{
+    list-style: none;
+}
+a{
+    text-decoration: none;
+    color: #fff;
+}
+.clear{
+    clear: both;
+}
+/*局部样式*/
+/*头部*/
+.top{
+    height:70px;
+    font-size: 1.5rem;
+    background-color:#b1baca;
+    line-height: 70px;
+    border-bottom: 1px solid #ccc;
+    padding-left: 20px;
+    box-sizing: border-box;
+    color: #fff;
+}
+.top_list{
+    height: 100%;
+    width: 340px;
+    float: right;
+    padding-right: 10px;
+    box-sizing: border-box;
+    text-align: center;
+}
+.top_list li{
+    float: left;
+    margin-right: 20px;
+}
+/*综合管理*/
+.top_list .comprehensive{
+    position: relative;
+}
+.top_list .comprehensive .erji{
+    display: none;
+    position: absolute;
+    font-size: 18px;
+    top: 69px;
+    left: -28px;
+    width: 149px;
+    z-index: 99;
+    background-color: #cccccc;
+}
+.top_list .comprehensive .erji li{
+    width: 100%;
+    margin-right: 0px;
+    line-height: 35px;
+
+}
+.top_list .comprehensive:hover .erji{
+    display: block;
+}
+.top_list li a:hover {
+    color: red;
+}
+.top_list li img{
+    width: 45px;
+    height: 45px;
+    margin-top: 13px;
+}
+.top_list li:last-of-type{
+    margin-right: 0px;
+}
+.top_list .headPortrait:hover{
+    transform: scale(1.3) rotate(360deg);
+    transition: all 0.3s;
+}
+/*中间*/
+.center{
+    width: 100%;
+    height: calc(100% - 70px);
+}
+.center_left{
+    width: 180px;
+    height:100%;
+    float: left;
+    border-right: 1px solid #ccc;
+}
+.iframeLeft{
+    width: 100%;
+    height: 100%;
+    overflow-y: hidden;
+    overflow-x: hidden;
+}
+.center_right {
+    width: calc(100% - 201px);
+    height:100%;
+    float: left;
+}
+.iframeRight{
+    width: 100%;
+    height: 100%;
+    overflow-y: hidden;
+    overflow-x: hidden;
+}

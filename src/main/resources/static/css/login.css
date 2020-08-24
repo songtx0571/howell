@@ -1,0 +1,111 @@
+/*全局样式*/
+*{
+   margin: 0;
+   padding: 0;
+    font-family: "PingFang SC","Lantinghei SC","Microsoft YaHei","HanHei SC","Helvetica Neue","Open Sans",Arial,"Hiragino Sans GB","微软雅黑",STHeiti,"WenQuanYi Micro Hei",SimSun,sans-serif;
+}
+li{
+    list-style: none;
+}
+a{
+    color: #000;
+    text-decoration: none;
+}
+.whole {
+    width: 100%;
+    height: 100%;
+    background: url("../img/bg1.jpg") no-repeat;
+    background-size: cover;
+    position: relative;
+}
+.white_content {
+    width: 525px;
+    height: 355px;
+    background-color: rgba(255,255,255,0.8);
+    z-index: 1001;
+    border-radius: 4px;
+    padding: 20px;
+    box-sizing: border-box;
+    position: absolute;
+    transform: translate(-50%, -50%);
+    top: 50%;
+    left: 50%;
+}
+.white_top{
+    width: 100%;
+    height: 60px;
+    color: #000;
+    font-size: 30px;
+    line-height: 60px;
+    text-align: center;
+}
+#tab {
+    width: 320px;
+    padding: 5px;
+    height: 225px;
+    margin: 0px auto;
+    text-align: center;
+}
+#tab div {
+    height: 270px;
+    width: 100%;
+    line-height: 24px;
+    border-top: none;
+    padding: 10px;
+    box-sizing: border-box;
+}
+#loginlist {
+    line-height: 70px;
+    font-family: "华文黑体";
+    font-size: 24px;
+}
+.set {
+    background: white;
+    border-radius: 4px;
+    width: 200px;
+    height: 40px;
+    font-family: "华文黑体";
+    font-size: 18px;
+    color: #9B9B9B;
+    text-align: left;
+    outline: none;
+    padding: 0 10px 0 10px;
+    border: 1px #44ACFF solid;
+    margin-left: 10px;
+}
+.button {
+    display: inline-block;
+    background: #44ACFF;
+    border: 1px solid #44ACFF;
+    border-radius: 4px;
+    color: white;
+    width: 290px;
+    height: 40px;
+    font-size: 18px;
+    outline: none;
+    cursor: pointer;
+    margin: 20px 0px;
+}
+.footer{
+    width: 100%;
+    height: 60px;
+    font-size: 13px;
+    position: absolute;
+    bottom: 20px;
+    color: #000;
+    text-align: center;
+    line-height: 30px;
+    font-weight: bold;
+}
+.footer ul {
+    width: 700px;
+    height: 30px;
+    margin: 0 auto;
+}
+.footer ul li {
+    float: left;
+    margin-right: 10px;
+}
+.footer ul li:last-of-type{
+    margin-right: 0px;
+}
