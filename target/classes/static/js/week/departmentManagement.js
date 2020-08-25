@@ -2,6 +2,7 @@ $(function () {
     showCompanyInfo();
 })
 var path = "http://192.168.1.26:8080/";
+// var path = "";
 // -------------------------公司---------------------------------
 var updataCompanyIsActive = $(".updataCompanyIsActive")[0];
 var updataCompanyId = $(".updataCompanyId")[0]
@@ -39,9 +40,6 @@ function showCompanyInfo() {
                 }
             }
 
-        },
-        error : function (err) {
-            console.log(err)
         }
     })
 }
@@ -92,7 +90,6 @@ function showUpdataCompany(id) {
         type: "GET",
         data: {"id": id},
         success: function (data) {
-            // console.log(data)
             updataInput.value = JSON.parse(data).name;
         }
     });
@@ -153,13 +150,12 @@ function showRightDepartment(id) {
         data: {"parent": id},
         success: function(data){
             //公司的id
-            $("#addDepartmentId").val(id)
-            // console.log(data)
+            $("#addDepartmentId").val(id);
             //添加部门按钮
-            $("#showAddDepartmentBtn").css("display", "block")
+            $("#showAddDepartmentBtn").css("display", "block");
             if (data != "0") {
                 // 显示表格
-                $(".departmentTable").css("display", "block")
+                $(".departmentTable").css("display", "block");
                 var tbody = document.getElementById("departmentTbody");
                 tbody.innerHTML = ""
                 for(var i=0;i<data.length;i++){
@@ -233,14 +229,12 @@ function closeDepartmentActive(id) {
 //点击显示添加部门
 function showAddDepartment() {
     $(".addDepartment").css("display", "block");
-    // console.log($("#addDepartmentId").val())
 }
 //添加部门
 function addDepartment() {
     var name = $("#addDepartmentInput").val()
     var id = $("#addDepartmentId").val();
     var codeName = $("#addDepartmentCodeName").val()
-    // console.log(name)
     if (name == "" || codeName == "") {
         alert("请将消息填写完整")
         return;
@@ -265,15 +259,13 @@ function addDepartment() {
 //点击显示修改页面
 function showUpdataDepartment(id) {
     $(".updataDepartment").css("display", "block");
-    $("#updataDepartmentId").val(id)
-    // console.log(id)
+    $("#updataDepartmentId").val(id);
     $.ajax({
         url: path + "getCompany",
         datatype: "json",
         type: "GET",
         data: {"id": id},
         success: function (data) {
-            // console.log(data)
             $("#updataDepartmentInput").val(JSON.parse(data).name);
             $("#updataDepartmentCodeName").val(JSON.parse(data).codeName);
         }
@@ -284,7 +276,6 @@ function updataDepartment(id, name, codeName) {
     name = $("#updataDepartmentInput").val();
     id = $("#updataDepartmentId").val();
     codeName = $("#updataDepartmentCodeName").val();
-    // console.log(id)
     $.ajax({
         url: path + "updateCompany",//请求地址
         datatype: "json",//数据格式

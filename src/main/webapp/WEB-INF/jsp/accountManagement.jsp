@@ -81,7 +81,7 @@
                 <div class="addUser">
                     <div style="margin: 10px auto 0;width: 638px">
                         <h1 style="text-align: center;margin-bottom: 30px">添加账户</h1>
-                        <div class="userInputDiv" style="height: 100px;">
+                        <div class="userInputDiv">
                             <%--<span><samp>*</samp>编号:</span>--%>
                             <%--<select name="" id="userNumberSelect"></select>--%>
                             <div class="layui-form-item">
@@ -90,7 +90,7 @@
                                     <div class="layui-input-inline">
                                         <select name="" lay-verify="required" lay-filter="userNumberSelect" lay-search="" id="userNumberSelect">
                                         </select>
-                                        <input type="number" id="userNumberInput" style="width: 250px;margin-top: 10px;" placeholder="请输入数字">
+                                        <input type="number" id="userNumberInput" style="width: 108px;position: absolute;" placeholder="请输入数字">
                                     </div>
                                 </div>
                             </div>
@@ -99,7 +99,7 @@
                         </div>
                         <div class="userInputDiv">
                             <span><samp>*</samp>姓名:</span>
-                            <input type="text" id="userName" name="userName">
+                            <input type="text" id="userName" name="userName" style="width: 296px">
                         </div>
                         <div class="userInputDiv">
                             <span><samp>*</samp>性别:</span>
@@ -109,11 +109,11 @@
                         </div>
                         <div class="userInputDiv">
                             <span>联系电话:</span>
-                            <input type="text" id="phone" name="phone">
+                            <input type="text" id="phone" name="phone" style="width: 296px">
                         </div>
                         <div class="userInputDiv">
                             <span>邮箱:</span>
-                            <input type="text" id="email" name="email" placeholder="123_aa@aa.com">
+                            <input type="text" id="email" name="email" placeholder="123_aa@aa.com" style="width: 296px">
                         </div>
                         <div style="clear: both"></div>
                         <div class="btnBox">
@@ -187,7 +187,8 @@
     </script>
     <script>
         var index=0;//layer弹窗
-        //var path = "http://192.168.1.26:8080/";
+        var path = "http://192.168.1.26:8080/";
+        // var path = "";
         $(function () {
             // 获取公司
             showCompany();
@@ -198,7 +199,7 @@
                 var table = layui.table;
                 table.render({
                     elem: '#demo'
-                    ,height: 470
+                    ,height: 500
                     ,url: path + 'user/getUserList?companyId='+$("#companyIdHidden").val()  //数据接口
                     ,page: true //开启分页
                     ,limit: 10
@@ -216,20 +217,18 @@
                         ,{field: 'postName', title: '岗位'}
                         ,{fixed: '', title:'操作', toolbar: '#barDemo11', width:70,align:'center '}
                     ]]
-                    ,done: function(res, curr, count){
-                    }
+                    ,done: function(res, curr, count){}
                 });
                 //监听行工具事件
                 table.on('tool(test)', function(obj) {
                     var data = obj.data;
-                    $("#userIdHidden").val(data.id)
-                    $("#userName1").val(data.userName)
-                    $("#departmentId").val(data.departmentId)
-                    $("#postId").val(data.postId)
-                    $("#phone1").val(data.phone)
-                    $("#email1").val(data.email)
+                    $("#userIdHidden").val(data.id);
+                    $("#userName1").val(data.userName);
+                    $("#departmentId").val(data.departmentId);
+                    $("#postId").val(data.postId);
+                    $("#phone1").val(data.phone);
+                    $("#email1").val(data.email);
                     $("input[name=state]").eq(0).attr("checked", true);
-                    // console.log(data)
                     if (obj.event === 'edit') {
                         index=layer.open({
                             type: 1
@@ -238,8 +237,7 @@
                             ,btnAlign: 'c' //按钮居中
                             ,shade: 0 //不显示遮罩
                             ,area: ['440px', '400px']
-                            ,yes: function(){
-                            }
+                            ,yes: function(){}
                         });
                     }
                 });
@@ -256,24 +254,20 @@
                     dataType: "json",
                     success: function(data){
                         data = data.data;
-                        console.log(data)
-                        $("#companyList").empty()
-                        var option="<option value='0' >请选择公司名称</option>"
+                        $("#companyList").empty();
+                        var option="<option value='0' >请选择公司名称</option>";
                         for (var i = 0; i < data.length; i ++) {
                             option += "<option value='"+data[i].id+"'>"+data[i].name+"</option>";
                         }
                         $('#companyList').append(option);
                         form.render();//菜单渲染 把内容加载进去
-                    },
-                    error : function (err) {
-                        console.log(err)
                     }
                 });
                 form.on('select(companyList)', function(data){
-                    $(".departmentDiv").css("display", "block")
-                    $(".postDiv").css("display", "block")
-                    $(".addBtn").css("display", "block")
-                    $(".layui-form ").css("display", "block")
+                    $(".departmentDiv").css("display", "block");
+                    $(".postDiv").css("display", "block");
+                    $(".addBtn").css("display", "block");
+                    $(".layui-form ").css("display", "block");
                     showUserNumber();
                     $("#companyIdHidden").val(data.value);//得到被选中的值
                     //根据公司id得到部门
@@ -287,7 +281,7 @@
                             success: function (data) {
                                 data = data.data;
                                 $("#departmentList").empty();
-                                var option = ""
+                                var option = "";
                                 var option = "<option value='0' >请选择部门名称</option>"
                                 for (var i = 0; i < data.length; i++) {
                                     option += "<option value='" + data[i].id + "'>" + data[i].name + "</option>"
@@ -307,10 +301,10 @@
                             success: function (data) {
                                 data = data.data;
                                 $("#departmentId").empty()
-                                var option = ""
-                                var option = "<option value='0' >请选择部门名称</option>"
+                                var option = "";
+                                var option = "<option value='0' >请选择部门名称</option>";
                                 for (var i = 0; i < data.length; i++) {
-                                    option += "<option value='" + data[i].id + "'>" + data[i].name + "</option>"
+                                    option += "<option value='" + data[i].id + "'>" + data[i].name + "</option>";
                                 }
                                 $('#departmentId').html(option);
                                 form.render();//菜单渲染 把内容加载进去
@@ -322,10 +316,10 @@
                             dataType: "json",
                             data: {"companyId": $("#companyIdHidden").val()},
                             success: function (data) {
-                                $("#postList").empty()
-                                var option = "<option value='0' >请选择岗位名称</option>"
+                                $("#postList").empty();
+                                var option = "<option value='0' >请选择岗位名称</option>";
                                 for (var i = 0; i < data.length; i++) {
-                                    option += "<option value='" + data[i].id + "'>" + data[i].name + "</option>"
+                                    option += "<option value='" + data[i].id + "'>" + data[i].name + "</option>";
                                 }
                                 $('#postList').html(option);
                                 form.render();//菜单渲染 把内容加载进去
@@ -340,23 +334,40 @@
                             dataType: "json",
                             data: {"companyId": $("#companyIdHidden").val()},
                             success: function (data) {
-                                $("#postId").empty()
-                                var option = ""
+                                $("#postId").empty();
+                                var option = "";
                                 for (var i = 0; i < data.length; i++) {
-                                    option += "<option value='" + data[i].id + "'>" + data[i].name + "</option>"
+                                    option += "<option value='" + data[i].id + "'>" + data[i].name + "</option>";
                                 }
                                 $('#postId').html(option);
                                 form.render();//菜单渲染 把内容加载进去
                             }
                         });
-                        showUserTable()
+                        showUserTable();
                     });
                 });
             });
         }
         // 点击显示添加账户
         function addBtn() {
-            $(".addUser").css("display", "block");
+            var departmentIdHidden = $("#departmentIdHidden").val();
+            var postIdHidden = $("#postIdHidden").val();
+            if (departmentIdHidden == "" || postIdHidden == ""){
+                alert("请选择部门和岗位，才可添加账号");
+                return;
+            } else{
+                layui.use('form', function(){
+                    var form = layui.form;
+                    $("#companyList").attr("disabled","disabled");
+                    $("#companyList").css("cursor","not-allowed");
+                    $("#departmentList").attr("disabled","disabled");
+                    $("#departmentList").css("cursor","not-allowed");
+                    $("#postList").attr("disabled","disabled");
+                    $("#postList").css("cursor","not-allowed");
+                    form.render('select');
+                });
+                $(".addUser").css("display", "block");
+            }
         }
         // 根据公司id得到将要添加的公司编号
         function showUserNumber() {
@@ -368,10 +379,10 @@
                     dataType: "json",
                     data: {"companyId": $("#companyIdHidden").val()},
                     success: function (data) {
-                        $("#userNumberSelect").empty()
-                        var option = "<option value='0' >请选择部门名称</option>"
+                        $("#userNumberSelect").empty();
+                        var option = "<option value='0' >请选择部门名称</option>";
                         for (var i = 0; i < data.length; i++) {
-                            option += "<option value='" + data[i].text + "'>" + data[i].text + "</option>"
+                            option += "<option value='" + data[i].value + "'>" + data[i].value + "("+data[i].text+")</option>";
                         }
                         $('#userNumberSelect').html(option);
                     }
@@ -389,17 +400,13 @@
             var departmentIdHidden = $("#departmentIdHidden").val();
             var postIdHidden = $("#postIdHidden").val();
             var companyIdHidden = $("#companyIdHidden").val();
-            if (departmentIdHidden == "" || postIdHidden == ""){
-                alert("请选择部门和岗位，才可添加账号");
-                return;
-            }
             //正则
             if(!(/^1[3456789]\d{9}$/.test($("#phone").val()))) {
-                alert("手机号码格式输入错误")
+                alert("手机号码格式输入错误");
                 return;
             }
             /*if(!(/^([a-zA-Z]|[0-9])(\w|\-)+@[a-zA-Z0-9]+\.([a-zA-Z]{2,4})$/.test($("#email").val()))) {
-                alert("邮箱格式输入错误")
+                alert("邮箱格式输入错误");
             }*/
             $.ajax({
                 type: "GET",
@@ -408,32 +415,37 @@
                 dataType: "json",
                 success: function(data){
                     if (data == "success") {
-                        alert("添加成功")
-                        showUserTable()
+                        alert("添加成功");
+                        showUserTable();
                         $("#email").val("");
                         $("#phone").val("");
                         $("#userNumberInput").val("");
-                        $("#userName").val("")
+                        $("#userName").val("");
                         // $("#userNumberSelect").val("0")
                         // $("input[name=sex]").eq(0).attr("checked", true);
+                        layui.use('form', function(){
+                            var form = layui.form;
+                            $("#companyList").attr("disabled",false);
+                            $("#companyList").css("cursor","pointer");
+                            $("#departmentList").attr("disabled",false);
+                            $("#departmentList").css("cursor","pointer");
+                            $("#postList").attr("disabled",false);
+                            $("#postList").css("cursor","pointer");
+                            form.render('select');
+                        });
                     }else{
-                        alert("添加失败")
+                        alert("添加失败");
                     }
                     $(".addUser").css("display", "none");
-                },
-
-                error : function (err) {
-                    console.log(err)
                 }
             });
         }
         // 修改账户
         function updUser() {
             layer.close(index);
-            console.log($("#testUpd").serialize())
             //正则
             if(!(/^1[3456789]\d{9}$/.test($("#phone1").val()))) {
-                alert("手机号码格式输入错误")
+                alert("手机号码格式输入错误");
                 return;
             }
             // if(!(/^([a-zA-Z]|[0-9])(\w|\-)+@[a-zA-Z0-9]+\.([a-zA-Z]{2,4})$/.test($("#email1").val()))) {
@@ -448,21 +460,18 @@
                 dataType: "json",
                 success: function(data){
                     if (data == "success") {
-                        alert("修改成功")
+                        alert("修改成功");
                         showUserTable()
                     }else{
-                        alert("修改失败")
+                        alert("修改失败");
                     }
                     layer.close(index);
-                },
-                error : function (err) {
-                    console.log(err)
                 }
             });
         }
         // 取消
         function cancel() {
-            $(".addUser").css("display", "none")
+            $(".addUser").css("display", "none");
             layer.close(index);
         }
     </script>

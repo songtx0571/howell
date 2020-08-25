@@ -6,6 +6,7 @@
 .warp{
     position: relative;
     padding-top: 20px;
+    padding-left: 15px;
     box-sizing: border-box;
 }
 .roleTable{

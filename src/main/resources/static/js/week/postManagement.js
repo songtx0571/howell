@@ -1,4 +1,5 @@
-//var path = "http://192.168.1.26:8080/";
+var path = "http://192.168.1.26:8080/";
+// var path = "";
 $(function () {
     showCompany()
 })
@@ -19,9 +20,6 @@ function showCompany() {
                 }
                 $('#companyList').html(option);
                 form.render();//菜单渲染 把内容加载进去
-            },
-            error: function (err) {
-                console.log(err)
             }
         });
         form.on('select(companyList)', function(data){// 根据公司id显示岗位

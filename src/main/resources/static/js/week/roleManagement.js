@@ -1,4 +1,5 @@
-// var path = "http://192.168.1.26:8080/";
+var path = "http://192.168.1.26:8080/";
+// var path = "";
 $(function () {
     fillRole();
 })
@@ -26,9 +27,6 @@ function fillRole () {
                 tr.innerHTML = td;
                 tbody.appendChild(tr);
             }
-        },
-        error : function (err) {
-            console.log(err)
         }
     })
 }
@@ -50,7 +48,6 @@ var white_content1 =  $(".white_content1")[0];
 // 将将要修改的角色名称显示在文本框中
 function showUpdateRoleDiv(id) {
     updateRoleDiv.style.display = "block";
-    // console.log(id)
     var updataInput = $("#updataInput")[0];
     $.ajax({
         url: path + "getRoleById",
@@ -58,11 +55,8 @@ function showUpdateRoleDiv(id) {
         type: "GET",
         data: {"id": id},
         success: function (data) {
-            // console.log(JSON.parse(data))
-            // console.log(updataInput)
             updataInput.value = JSON.parse(data).roleName;
             updataRoleId = id;
-            // console.log(updataRoleId)
         }
     });
 }
@@ -70,14 +64,12 @@ function showUpdateRoleDiv(id) {
 function updateRole(id, roleName) {
     roleName = $("#updataInput").val();
     id = updataRoleId;
-    // console.log(roleId)
     $.ajax({
         url: path + "updateRole",//请求地址
         datatype: "json",//数据格式
         type: "GET",//请求方式
         data: {"roleName": roleName,"id":id},
         success: function (data) {
-            // console.log(data);
             updateRoleDiv.style.display = "none";
             location.reload();
         }
@@ -95,7 +87,6 @@ function addRole() {
         type: "GET",//请求方式
         data: {"roleName": roleName},
         success: function (data) {
-            // console.log(data);
             addRoleDiv.style.display = "none";
             location.reload();
         }
@@ -109,7 +100,6 @@ function delRole(id) {
         type: "GET",//请求方式
         data: {"id": id},
         success: function (data) {
-            // console.log(data);
             location.reload();
         }
     });
@@ -143,7 +133,6 @@ function fillPermission(){
                 permissionFrom.appendChild(div);
                 fillPermissionChild(data[i].id);
             }
-            // console.log(data)
         }
     });
 }
@@ -222,7 +211,6 @@ function change1(id){
     $("input[id^=check-"+id+"]").each(function(){
         this.checked = obj.checked;
     })
-    // console.log(obj)
 }
 
 function change2(parentId,id){
@@ -232,13 +220,11 @@ function change2(parentId,id){
     }
     $("input[id^=check-"+parentId+"-"+id+"]").each(function(){
         this.checked = obj.checked;
-        // console.log(obj)
     })
 }
 
 function change3(parentId,id,childId){
     var obj = document.getElementById('check-'+parentId+'-'+id+'-'+childId);
-    // console.log(obj);
     if(!obj.checked){
         document.getElementById('check-'+parentId).checked = false;
         document.getElementById('check-'+parentId+'-'+id).checked = false;
@@ -253,14 +239,12 @@ function addUpdPermission(){
         checkVal.push($(this).val());
     });
     var permissionIds = checkVal.join(',');
-    // console.log(permissionIds);
     $.ajax({
         url: path + "updateRolePermission",//请求地址
         datatype: "json",//数据格式
         type: "get",//请求方式
         data: {"roleId": roleId,"permissionIds":permissionIds},
         success: function (data) {
-            // console.log(data);
             $(".white_content1")[0].style.display='none';
             location.reload();
         }

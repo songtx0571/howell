@@ -39,47 +39,47 @@
                 <iframe src="index" frameborder="0" class="iframeRight" scrolling="yes" target="middle"></iframe>
             </div>
         </div>
+        <script type="text/javascript" src="js/week/home.js"></script>
         <script>
-            $(document).ready(function(){
-            });
-            //点击logo显示和隐藏左侧菜单
-            var count = 0;
-            function showMenu() {
-                var center_left = $(".center_left")[0];
-                var center_right = $(".center_right")[0];
-                if (count % 2 == 1){
-                    center_left.style.display = "none"
-                    center_right.style.width =  "100%"
-                    count ++;
-                }else{
-                    center_left.style.display = "inline-block"
-                    center_right.style.width =  "calc(100% - 201px)"
-                    count --;
-                }
-                // console.log(count)
-            }
-
-            var $iframeRight =  $(".iframeRight");
-            // 角色管理
-            function  roleManagement() {
-                $iframeRight.attr("src", "roleManagement")
-            }
-            // 部门管理
-            function departmentManagement() {
-                $iframeRight.attr("src", "departmentManagement")
-            }
-            // 账户管理
-            function accountManagement() {
-                $iframeRight.attr("src", "accountManagement")
-            }
-            // 岗位管理
-            function postManagement() {
-                $iframeRight.attr("src", "postManagement")
-            }
-            //通知管理
-            function noticeManagement() {
-                $iframeRight.attr("src", "noticeManagement")
-            }
+            // $(document).ready(function(){
+            // });
+            // //点击logo显示和隐藏左侧菜单
+            // var count = 0;
+            // function showMenu() {
+            //     var center_left = $(".center_left")[0];
+            //     var center_right = $(".center_right")[0];
+            //     if (count % 2 == 1){
+            //         center_left.style.display = "none";
+            //         center_right.style.width =  "100%";
+            //         count ++;
+            //     }else{
+            //         center_left.style.display = "inline-block";
+            //         center_right.style.width =  "calc(100% - 201px)";
+            //         count --;
+            //     }
+            // }
+            //
+            // var $iframeRight =  $(".iframeRight");
+            // // 角色管理
+            // function  roleManagement() {
+            //     $iframeRight.attr("src", "roleManagement");
+            // }
+            // // 部门管理
+            // function departmentManagement() {
+            //     $iframeRight.attr("src", "departmentManagement");
+            // }
+            // // 账户管理
+            // function accountManagement() {
+            //     $iframeRight.attr("src", "accountManagement");
+            // }
+            // // 岗位管理
+            // function postManagement() {
+            //     $iframeRight.attr("src", "postManagement");
+            // }
+            // //通知管理
+            // function noticeManagement() {
+            //     $iframeRight.attr("src", "noticeManagement");
+            // }
         </script>
     </body>
 </html>

@@ -84,7 +84,8 @@
         </div>
     </div>
     <script>
-        //var path = "http://192.168.1.26:8080/";
+        var path = "http://192.168.1.26:8080/";
+        // var path = "";
         // 添加 / 修改岗位后的刷新页面
         function showCompanyPost() {
             // 公司的 id
@@ -138,9 +139,6 @@
                     if (companyId != ""){
                         showCompanyPost()
                     }
-                },
-                error : function (err) {
-                    console.log(err)
                 }
             });
         }
@@ -157,9 +155,6 @@
                     $(".updataPost").css("display", "block");
                     $("#updataInput").val(data.name);
                     $("#updataRemork").val(data.remark);
-                },
-                error : function (err) {
-                    console.log(err)
                 }
             });
         }
@@ -174,7 +169,6 @@
             var companyId = $("#companyId").val();
             var updataInput = $("#updataInput").val();
             var updataRemork = $("#updataRemork").val();
-            // console.log(identification)
             $.ajax({
                 type: "GET",
                 url: path + "post/updatePost",
@@ -186,9 +180,6 @@
                     if (companyId != ""){
                         showCompanyPost()
                     }
-                },
-                error : function (err) {
-                    console.log(err)
                 }
             });
             identification="false";

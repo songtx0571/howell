@@ -1,4 +1,5 @@
-//var path = "http://192.168.1.26:8080/"
+var path = "http://192.168.1.26:8080/"
+// var path = "";
 $(document).ready(function(){
     //获取菜单数据
     $.ajax({
@@ -18,11 +19,7 @@ $(document).ready(function(){
                 leftList += "<i class='fa fa-angle-double-right fa-lg left_listIcon'></i>"
                 leftList += "</li>"
             }
-            // console.log(leftList);
-            $leftList.append(leftList)
-        },
-        error: function (XMLHttpRequest, textStatus, errorThrown) {
-            console.log(textStatus);
+            $leftList.append(leftList);
         }
     });
 });
@@ -46,7 +43,6 @@ function showcontent(typeHtml) {
         center_right.style.width =  "100%"
         count1 --;
     }
-    // console.log(count1)
 
     //父页面的iframe
     var $iframeRight = parent.$('.iframeRight');
