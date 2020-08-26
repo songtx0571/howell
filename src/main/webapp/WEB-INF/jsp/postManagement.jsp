@@ -85,6 +85,7 @@
     </div>
     <script>
         //var path = "http://192.168.1.26:8080/";
+        var path = "";
         // 添加 / 修改岗位后的刷新页面
         function showCompanyPost() {
             // 公司的 id

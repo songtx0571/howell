@@ -1,4 +1,5 @@
 //var path = "http://192.168.1.26:8080/"
+var path = "";
 $(document).ready(function(){
     //获取菜单数据
     $.ajax({

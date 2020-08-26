@@ -9,7 +9,7 @@ import org.springframework.context.annotation.Bean;
 import java.util.Properties;
 
 @SpringBootApplication
-//@MapperScan("com.howei.mapper")
+@MapperScan("com.howei.mapper")
 public class HoweiApplication {
 
     public static void main(String[] args) {

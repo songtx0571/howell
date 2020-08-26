@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.howei.mapper.UsersMapper" >
+    <resultMap id="userMap" type="com.howei.pojo.Users">
+        <result column="id" property="id"></result>
+        <result column="userName" property="userName"></result>
+        <result column="password" property="password"></result>
+        <result column="state" property="state"></result>
+        <result column="sex" property="sex"></result>
+        <result column="phone" property="phone"></result>
+        <result column="email" property="email"></result>
+        <result column="companyId" property="companyId"></result>
+        <result column="departmentId" property="departmentId"></result>
+        <result column="postId" property="postId"></result>
+        <result column="userNumber" property="userNumber"></result>
+    </resultMap>
+
+    <select id="findUser" resultType="com.howei.pojo.Users" parameterType="java.lang.String" resultMap="userMap">
+        select * from users where userNumber=#{param1} and password=#{param2}
+    </select>
+
+
+    <select id="findById" resultMap="userMap" resultType="com.howei.pojo.Users" parameterType="java.lang.String">
+        select * from users where id=#{id}
+    </select>
+
+    <select id="getUserList" parameterType="java.util.HashMap" resultType="com.howei.pojo.Users">
+        select * from users where 1=1
+        <if test="companyId!=null and companyId!=''">
+            and companyId=#{companyId}
+        </if>
+        <if test="page!=null">
+            limit ${page},${rows}
+        </if>
+    </select>
+
+    <select id="getUserById" parameterType="java.lang.String" resultType="com.howei.pojo.Users">
+        select * from users where id=#{id}
+    </select>
+
+    <select id="getUserByParam" parameterType="com.howei.pojo.Users" resultType="com.howei.pojo.Users">
+        select * from users where 1=1
+        <if test="id!=null and id!=''">
+            and id=#{id}
+        </if>
+        <if test="userName!=null and userName!=''">
+            and userName=#{userName}
+        </if>
+        <if test="state!=null and state!=''">
+            and state=#{state}
+        </if>
+        <if test="phone!=null and phone!=''">
+            and phone=#{phone}
+        </if>
+        <if test="companyId!=null and companyId!=''">
+            and companyId=#{companyId}
+        </if>
+        <if test="departmentId!=null and departmentId!=''">
+            and departmentId=#{departmentId}
+        </if>
+        <if test="postId!=null and postId!=''">
+            and postId=#{postId}
+        </if>
+        <if test="userNumber!=null and userNumber!=''">
+            and userNumber=#{userNumber}
+        </if>
+    </select>
+
+    <insert id="addUser" parameterType="com.howei.pojo.Users" useGeneratedKeys="true" keyProperty="id">
+        insert into users(userName,password,state,sex,phone,email,companyId,departmentId,postId,userNumber) value (#{userName},#{password},#{state},#{sex},#{phone},#{email},#{companyId},#{departmentId},#{postId},#{userNumber})
+    </insert>
+
+    <update id="updateUser" parameterType="com.howei.pojo.Users" useGeneratedKeys="true" keyProperty="id">
+        update users
+        <trim prefix="set" suffixOverrides=",">
+            <if test="userName!=null and userName!=''">
+                userName=#{userName},
+            </if>
+            <if test="state!=null">
+                state=#{state},
+            </if>
+            <if test="phone!=null and phone!=''">
+                phone=#{phone},
+            </if>
+            <if test="companyId!=null and companyId!=''">
+                companyId=#{companyId},
+            </if>
+            <if test="departmentId!=null">
+                departmentId=#{departmentId},
+            </if>
+            <if test="postId!=null and postId!=''">
+                postId=#{postId},
+            </if>
+            <if test="userNumber!=null and userNumber!=''">
+                userNumber=#{userNumber},
+            </if>
+            <if test="password!=null and password!=''">
+                password=#{password},
+            </if>
+            <if test="email!=null and email!=''">
+                email=#{email},
+            </if>
+        </trim>
+        where id=#{id}
+    </update>
+
+    <select id="getUsersMap" resultType="com.howei.pojo.Users">
+        select id,userName from users
+    </select>
+
+    <select id="getUsersList" parameterType="java.util.HashMap" resultType="com.howei.pojo.Users">
+        select id,userName from users where state=1
+        <if test="companyId!=null">
+            and companyId=#{companyId}
+        </if>
+        <if test="departmentId!=null">
+            and departmentId=#{departmentId}
+        </if>
+    </select>
+
+    <select id="selSeen" parameterType="java.lang.String" resultType="java.util.HashMap" >
+        select distinct userId from user_inform where informId=#{informId}
+    </select>
+
+    <select id="selSeenUser" parameterType="java.lang.String" resultType="java.lang.String" >
+        select userName from users where id=#{userId}
+    </select>
+</mapper>

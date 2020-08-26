@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.howei.mapper.InformMapper" >
+
+    <resultMap id="informMap" type="com.howei.pojo.InformType">
+        <result column="id" property="id"></result>
+        <result column="name" property="name"></result>
+        <result column="created" property="created"></result>
+        <result column="parent" property="parent"></result>
+        <result column="companyId" property="companyId"></result>
+    </resultMap>
+
+    <select id="getInformType" parameterType="java.util.HashMap" resultType="com.howei.pojo.InformType">
+        select * from informType where 1=1
+        <if test="parent!=null">
+            and parent=#{parent}
+        </if>
+        <if test="companyId!=null">
+            and companyId=#{companyId}
+        </if>
+        <if test="page!=null">
+            limit ${page},${pageSize}
+        </if>
+    </select>
+
+    <insert id="addInformType" parameterType="com.howei.pojo.InformType" useGeneratedKeys="true" keyProperty="id">
+        insert into informType(name,created,companyId,parent) value (#{name},#{created},#{companyId},#{parent})
+    </insert>
+
+    <select id="getInformTypeByParam" parameterType="com.howei.pojo.InformType" resultType="com.howei.pojo.InformType">
+        select * from informType where 1=1
+        <if test="companyId!=null">
+            and companyId=#{companyId}
+        </if>
+        <if test="name!=null and name!=''">
+            and name=#{name}
+        </if>
+    </select>
+
+    <update id="updateInformType" parameterType="com.howei.pojo.InformType" useGeneratedKeys="true" keyProperty="id">
+        update informType set
+        <if test="name!=null and name!=''">
+            name=#{name}
+        </if>
+        where id=#{id}
+    </update>
+
+    <select id="getInformTypeById" parameterType="java.lang.String" resultType="com.howei.pojo.InformType">
+        select * from informType where id=#{id}
+    </select>
+
+    <select id="getInformTypeMap" resultType="com.howei.pojo.InformType">
+        select id,name from informType
+    </select>
+
+    <select id="getInformList" parameterType="java.util.HashMap" resultType="com.howei.pojo.Inform">
+        select id,`title`,content,createdBy,informTypeId,companyId,filedir,date_format(created,'%Y-%m-%d') as created from inform where 1=1
+        <if test="companyId!=null">
+          and companyId=#{companyId}
+        </if>
+        <if test="page!=null">
+            limit ${page},${pageSize}
+        </if>
+    </select>
+
+    <insert id="addInform" parameterType="com.howei.pojo.Inform" useGeneratedKeys="true" keyProperty="id">
+        insert into inform(title,content,informTypeId,filedir,created,createdBy,companyId) value (#{title},#{content},#{informTypeId},#{filedir},#{created},#{createdBy},#{companyId})
+    </insert>
+
+    <select id="getInformByParam" parameterType="com.howei.pojo.Inform" resultType="com.howei.pojo.Inform">
+        select * from inform where 1=1
+        <if test="companyId!=null">
+            and companyId=#{companyId}
+        </if>
+        <if test="title!=null and title!=''">
+            and title=#{title}
+        </if>
+    </select>
+
+    <update id="updateInform" parameterType="com.howei.pojo.Inform" useGeneratedKeys="true" keyProperty="id">
+        update inform
+        <trim prefix="set" suffixOverrides=",">
+            <if test="content!=null and content!=''">
+                content=#{content},
+            </if>
+            <if test="title!=null and title!=''">
+                title=#{title},
+            </if>
+        </trim>
+        where id=#{id}
+    </update>
+
+    <select id="getInformById" parameterType="java.lang.String" resultType="com.howei.pojo.Inform">
+        select * from inform where id=#{id}
+    </select>
+
+    <insert id="updateStatus" parameterType="com.howei.pojo.ReadStatus">
+        insert into user_inform(userId,informId,created,rdStatus) values (#{userId},#{informId},#{created},#{rdStatus})
+    </insert>
+
+</mapper>

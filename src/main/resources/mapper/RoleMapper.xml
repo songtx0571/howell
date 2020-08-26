@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.howei.mapper.RoleMapper" >
+
+    <resultMap id="roleMap" type="com.howei.pojo.Role">
+        <result column="id" property="id"></result>
+        <result column="roleName" property="roleName"></result>
+        <result column="description" property="description"></result>
+    </resultMap>
+
+    <select id="selectRole"  resultType="com.howei.pojo.Role">
+		select * from role
+	</select>
+
+    <select id="getRoleById"  parameterType="java.lang.String" resultType="com.howei.pojo.Role">
+		select * from role where id = #{id}
+	</select>
+
+    <update id="updateRole" parameterType="com.howei.pojo.Role">
+		update role set roleName = #{roleName} where id=#{id}
+	</update>
+
+    <insert id="addRole"  parameterType="com.howei.pojo.Role">
+		insert ignore into role(roleName,description) value (#{roleName},#{id})
+	</insert>
+
+    <delete id="deleteRole"  parameterType="java.lang.String">
+		delete from role where id = #{roleId}
+	</delete>
+</mapper>

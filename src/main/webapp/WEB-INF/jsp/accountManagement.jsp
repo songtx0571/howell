@@ -188,6 +188,7 @@
     <script>
         var index=0;//layer弹窗
         //var path = "http://192.168.1.26:8080/";
+        var path = "";
         $(function () {
             // 获取公司
             showCompany();

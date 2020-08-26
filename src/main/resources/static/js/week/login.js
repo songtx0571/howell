@@ -1,5 +1,6 @@
 function loginPage(){
-    var path = "http://192.168.1.26:8080/";
+    //var path = "http://192.168.1.26:8080/";
+    var path = "";
     $.ajax({
         type: "GET",
         url: path+"loginPage",

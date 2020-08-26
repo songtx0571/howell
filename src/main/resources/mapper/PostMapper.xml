@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.howei.mapper.PostMapper" >
+    <resultMap id="postMap" type="com.howei.pojo.Post">
+        <result column="id" property="id"></result>
+        <result column="name" property="name"></result>
+        <result column="companyId" property="companyId"></result>
+        <result column="created" property="created"></result>
+        <result column="createdBy" property="createdBy"></result>
+        <result column="isactive" property="isactive"></result>
+        <result column="remark" property="remark"></result>
+    </resultMap>
+
+    <select id="getPostList" resultType="com.howei.pojo.Post" parameterType="java.lang.String">
+      select * from post where companyId=#{companyId}
+    </select>
+
+    <select id="getPost" resultType="com.howei.pojo.Post" parameterType="com.howei.pojo.Post">
+        select * from post where 1=1
+        <if test="id!=null and id!=''">
+          and id=#{id}
+        </if>
+        <if test="name!=null and name!=''">
+            and name=#{name}
+        </if>
+        <if test="companyId!=null and companyId!=''">
+            and companyId=#{companyId}
+        </if>
+        <if test="createdBy!=null and createdBy!=''">
+            and createdBy=#{createdBy}
+        </if>
+    </select>
+
+    <update id="updatePost" parameterType="com.howei.pojo.Post">
+        update post
+        <trim prefix="set" suffixOverrides=",">
+            <if test="name!=null and name!=''">
+                name=#{name},
+            </if>
+            <if test="remark!=null and remark!=''">
+                remark=#{remark},
+            </if>
+        </trim>
+        where id=#{id}
+    </update>
+
+    <insert id="addPost" parameterType="com.howei.pojo.Post">
+        insert into post(name,companyId,created,createdBy,isactive,remark) value(#{name},#{companyId},#{created},#{createdBy},#{isactive},#{remark})
+    </insert>
+
+    <select id="getPostMap" resultType="java.util.HashMap">
+        select id,name from post
+    </select>
+
+</mapper>

@@ -2,6 +2,7 @@ $(function () {
     showCompanyInfo();
 })
 //var path = "http://192.168.1.26:8080/";
+var path = "";
 // -------------------------公司---------------------------------
 var updataCompanyIsActive = $(".updataCompanyIsActive")[0];
 var updataCompanyId = $(".updataCompanyId")[0]
