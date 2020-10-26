@@ -23,4 +23,8 @@ public interface CompanyMaper {
     List<Map<String,Object>> getCompanyMap(@Param("parent") String s);
 
     List<Company> getDepartmentList(@Param("parent") String companyId);
+
+    Company getCompany(Company company);
+
+    List<Company> getDepartmentMap(@Param("parent")int parent);
 }

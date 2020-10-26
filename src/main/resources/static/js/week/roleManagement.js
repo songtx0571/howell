@@ -1,9 +1,38 @@
-// var path = "http://192.168.1.26:8080/";
 var path = "";
 $(function () {
     fillRole();
-})
-// debugger
+    showUpdDepartment();
+
+});
+//部门下拉框
+function showUpdDepartment() {
+    layui.use(['form'], function () {
+        var form = layui.form;
+        $.ajax({
+            type: "GET",
+            url: path + "getDepartmentMap",
+            dataType: "json",
+            success: function (data) {
+                //通用部门下拉框
+                $("#updDepartmentList").empty();
+                $("#addDepartmentList").empty();
+                var option = "<option value='0' >请选择部门名称</option>";
+                for (var i = 0; i < data.length; i++) {
+                    option += "<option value='" + data[i].id + "'>" + data[i].name + "</option>"
+                }
+                $('#updDepartmentList').html(option);
+                $('#addDepartmentList').html(option);
+                form.render();//菜单渲染 把内容加载进去
+            }
+        });
+        form.on('select(updDepartmentList)', function (data) {
+            $("#updDepartmentHidden").val(data.value)
+        });
+        form.on('select(addDepartmentList)', function (data) {
+            $("#addDepartmentHidden").val(data.value)
+        });
+    });
+}
 // 显示角色数据
 function fillRole () {
     $.ajax({
@@ -13,94 +42,114 @@ function fillRole () {
         success: function(data){
             $("#roleTbody tr").remove("tr[id=roleTr123]");
             var tbody = document.getElementById("roleTbody");
+            tbody.innerHTML = "";
             for(var i=0;i<data.length;i++){
                 var tr = document.createElement("tr");
+
                 tr.setAttribute("class","roleTr");
-                var td = "" +
-                    // "<td>"+(i+1)+"</td>" +
-                    "<td>"+data[i].roleName+"</td><td class='buttonBtn'>" +
-                    "<input type='button' value='添加角色' class='button' onclick='showAddRoleDiv("+data[i].id+")' />" +
-                    "<input type='button' value='修改角色' class='button' onclick='showUpdateRoleDiv("+data[i].id+")' />" +
-                    "<input type='button' value='删除角色' class='button' onclick='delRole("+data[i].id+")'/>" +
-                    "<input type='button' value='修改角色权限' class='button' onclick='showRolePermission("+data[i].id+")'/>" +
-                    "</td>";
+                var td = "<td>"+data[i].roleName+"</td><td>"+data[i].departmentName+"</td><td>"+data[i].description+"</td><td>" +
+                       + "<shiro:hasPermission name='修改角色'><input type='button' value='修改'  class='layui-btn' onclick='showUpdateRoleDiv("+data[i].id+")' /></shiro:hasPermission>" +
+                       + "<shiro:hasPermission name='删除角色'><input type='button' value='删除' class='layui-btn' onclick='delRole("+data[i].id+")'/></shiro:hasPermission></td>";
                 tr.innerHTML = td;
                 tbody.appendChild(tr);
             }
-        },
-        error : function (err) {
-            console.log(err)
         }
     })
 }
-//修改的div标签
-var updateRoleDiv = $(".updateRole")[0];
-// 角色文本框
-var updataInput = $("#updataInput")[0];
 // 角色id
 var updataRoleId = $("#updataPermissionRoleId")[0];
-//添加的div标签
-var addRoleDiv = $(".addRole")[0];
-// 角色文本框
-var addInput = $("#addInput")[0];
-// 角色id
-var addRoleId = $("#addPermissionRoleId")[0];
-// 角色权限
-var white_content1 =  $(".white_content1")[0];
-
 // 将将要修改的角色名称显示在文本框中
 function showUpdateRoleDiv(id) {
-    updateRoleDiv.style.display = "block";
-    // console.log(id)
+    layui.use('layer', function() { //独立版的layer无需执行这一句
+        var $ = layui.jquery, layer = layui.layer; //独立版的layer无需执行这一句
+        layer.open({
+            type: 1
+            , id: 'updateRole' //防止重复弹出
+            , content: $(".updateRole")
+            , btnAlign: 'c' //按钮居中
+            , shade: 0.4 //不显示遮罩
+            , area: ['100%', '100%']
+            , yes: function () {
+            }
+        });
+    });
     var updataInput = $("#updataInput")[0];
+    var updDescription = $("#updDescription")[0];
     $.ajax({
         url: path + "getRoleById",
         datatype: "json",
         type: "GET",
         data: {"id": id},
         success: function (data) {
-            // console.log(JSON.parse(data))
-            // console.log(updataInput)
             updataInput.value = JSON.parse(data).roleName;
+            updDescription.value = JSON.parse(data).description;
             updataRoleId = id;
-            // console.log(updataRoleId)
+            layui.use('form', function(){
+                var form = layui.form;
+                $("#updDepartmentList").val(JSON.parse(data).departmentId);
+                form.render('select');
+                form.render(); //更新全部
+            });
         }
     });
 }
 // 修改角色
-function updateRole(id, roleName) {
-    roleName = $("#updataInput").val();
-    id = updataRoleId;
-    // console.log(roleId)
+function updateRole() {
+    var role = {};
+    role.id = updataRoleId;
+    role.roleName = $("#updataInput").val();
+    role.description = $("#updDescription").val();
     $.ajax({
         url: path + "updateRole",//请求地址
-        datatype: "json",//数据格式
-        type: "GET",//请求方式
-        data: {"roleName": roleName,"id":id},
+        dataType: "json",//数据格式
+        type: "post",//请求方式
+        data: JSON.stringify(role),
+        contentType: "application/json; charset=utf-8",
         success: function (data) {
-            // console.log(data);
-            updateRoleDiv.style.display = "none";
-            location.reload();
+            layer.closeAll();
+            fillRole();
         }
     });
 }
 // 添加角色
 function showAddRoleDiv() {
-    addRoleDiv.style.display = "block"
+    layui.use('layer', function() { //独立版的layer无需执行这一句
+        var $ = layui.jquery, layer = layui.layer; //独立版的layer无需执行这一句
+        layer.open({
+            type: 1
+            , id: 'addRole1' //防止重复弹出
+            , content: $(".addRole1")
+            , btnAlign: 'c' //按钮居中
+            , shade: 0.4 //不显示遮罩
+            , area: ['100%', '100%']
+            , yes: function () {
+            }
+        });
+    });
 }
 function addRole() {
-    var roleName = $("#addInput").val()
-    $.ajax({
-        url: path + "addRole",//请求地址
-        datatype: "json",//数据格式
-        type: "GET",//请求方式
-        data: {"roleName": roleName},
-        success: function (data) {
-            // console.log(data);
-            addRoleDiv.style.display = "none";
-            location.reload();
-        }
-    });
+    var role = {};
+    role.roleName = $("#addChinaInput").val();
+    role.description = $("#addDescription").val();
+    role.departmentId = $("#addDepartmentHidden").val();
+    if (role.name == ""){
+        return;
+    }
+    if (role.departmentId == ""){
+        return;
+    }else{
+        $.ajax({
+            url: path + "addRole",
+            dataType: "json",//数据格式
+            type: "post",//请求方式
+            data: JSON.stringify(role),
+            contentType: "application/json; charset=utf-8",
+            success: function(data){
+                layer.closeAll();
+                fillRole();
+            }
+        });
+    }
 }
 // 删除角色
 function delRole(id) {
@@ -110,8 +159,7 @@ function delRole(id) {
         type: "GET",//请求方式
         data: {"id": id},
         success: function (data) {
-            // console.log(data);
-            location.reload();
+            fillRole();
         }
     });
 }
@@ -144,7 +192,6 @@ function fillPermission(){
                 permissionFrom.appendChild(div);
                 fillPermissionChild(data[i].id);
             }
-            // console.log(data)
         }
     });
 }
@@ -194,7 +241,6 @@ function fillPermissionChild(id){
         }
     });
 }
-
 function fillPermissionChild2(parentId,id){
     $.ajax({
         url: path + "getPermissionByparentId",//请求地址
@@ -217,15 +263,12 @@ function fillPermissionChild2(parentId,id){
         }
     });
 }
-
 function change1(id){
     var obj = document.getElementById('check-'+id);
     $("input[id^=check-"+id+"]").each(function(){
         this.checked = obj.checked;
     })
-    // console.log(obj)
 }
-
 function change2(parentId,id){
     var obj = document.getElementById('check-'+parentId+'-'+id);
     if(!obj.checked){
@@ -233,19 +276,15 @@ function change2(parentId,id){
     }
     $("input[id^=check-"+parentId+"-"+id+"]").each(function(){
         this.checked = obj.checked;
-        // console.log(obj)
     })
 }
-
 function change3(parentId,id,childId){
     var obj = document.getElementById('check-'+parentId+'-'+id+'-'+childId);
-    // console.log(obj);
     if(!obj.checked){
         document.getElementById('check-'+parentId).checked = false;
         document.getElementById('check-'+parentId+'-'+id).checked = false;
     }
 }
-
 //修改权限
 function addUpdPermission(){
     var roleId = $('#permissionRoleId').val();
@@ -254,17 +293,21 @@ function addUpdPermission(){
         checkVal.push($(this).val());
     });
     var permissionIds = checkVal.join(',');
-    // console.log(permissionIds);
     $.ajax({
         url: path + "updateRolePermission",//请求地址
         datatype: "json",//数据格式
         type: "get",//请求方式
         data: {"roleId": roleId,"permissionIds":permissionIds},
         success: function (data) {
-            // console.log(data);
             $(".white_content1")[0].style.display='none';
             location.reload();
         }
     });
 }
-
+// 取消按钮
+function cancel() {
+    layer.closeAll();
+    // 角色权限
+    var white_content1 =  $(".white_content1")[0];
+    white_content1.style.display = "none";
+}

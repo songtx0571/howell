@@ -1,8 +1,7 @@
 package com.howei.service.impl;
 
 import com.howei.mapper.UsersMapper;
-import com.howei.pojo.Inform;
-import com.howei.pojo.Users;
+import com.howei.pojo.*;
 import com.howei.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -81,5 +80,70 @@ public class UserServiceImpl implements UserService {
     @Override
     public String selSeenUser(String name) {
         return usersMapper.selSeenUser(name);
+    }
+
+    @Override
+    public Users findUserByName(String name) {
+        return usersMapper.findUserByName(name);
+    }
+
+    @Override
+    public int addEmployee(Employee employee) {
+        return usersMapper.addEmployee(employee);
+    }
+
+    @Override
+    public Users loginUserNumber(String userNumber) {
+        return usersMapper.loginUserNumber(userNumber);
+    }
+
+    @Override
+    public int addUserRole(UserRole userRole) {
+        return usersMapper.addUserRole(userRole);
+    }
+
+    @Override
+    public void deleteUserRole(int userId) {
+        usersMapper.deleteUserRole(userId);
+    }
+
+    @Override
+    public List<Role> getUserRoles(String userId) {
+        return usersMapper.getUserRoles(userId);
+    }
+
+    @Override
+    public List<Users> getUserRoleList(Map map) {
+        List<Users> list=usersMapper.getUserRoleList(map);
+        for(int i=0;i<list.size();i++){
+            Users users=list.get(i);
+            String rolesName="";
+            if(users.getRoles()!=null){
+                List<Role> roles=users.getRoles();
+                for(Role role:roles){
+                    rolesName+=role.getRoleName()+"，";
+                }
+            }
+            if(rolesName.length()>0){
+                rolesName=!rolesName.equals("null，")? rolesName.substring(0,rolesName.length()-1):"";
+            }
+            users.setRoleName(rolesName);
+        }
+        return list;
+    }
+
+    @Override
+    public Users getUserRolesByName(String userName) {
+        return usersMapper.getUserRolesByName(userName);
+    }
+
+    @Override
+    public int updPassword(Integer userId,String password) {
+        return usersMapper.updPassword(userId,password);
+    }
+
+    @Override
+    public List<Users> searchUsersList(Map map) {
+        return usersMapper.searchUsersList(map);
     }
 }

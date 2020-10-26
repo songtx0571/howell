@@ -1,5 +1,8 @@
 package com.howei.mapper;
 
+import com.howei.pojo.Employee;
+import com.howei.pojo.Role;
+import com.howei.pojo.UserRole;
 import com.howei.pojo.Users;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Component;
@@ -35,4 +38,24 @@ public interface UsersMapper {
     List<Map> selSeen(String informId);
 
     String selSeenUser(@Param("userId") String userId);
+
+    Users findUserByName(@Param("id") String id);
+
+    int addEmployee(Employee employee);
+
+    Users loginUserNumber(@Param("userNumber") String userNumber);
+
+    int addUserRole(UserRole userRole);
+
+    void deleteUserRole(@Param("userId") int userId);
+
+    List<Role> getUserRoles(@Param("userId") String userId);
+
+    List<Users> getUserRoleList(Map map);
+
+    Users getUserRolesByName(@Param("userNumber") String userNumber);
+
+    int updPassword(@Param("userId") Integer userId,@Param("password")String password);
+
+    List<Users> searchUsersList(Map map);
 }

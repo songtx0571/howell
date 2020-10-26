@@ -3,11 +3,16 @@ package com.howei.controller;
 import com.alibaba.fastjson.JSON;
 import com.howei.pojo.Company;
 import com.howei.pojo.Post;
+import com.howei.pojo.Users;
 import com.howei.service.CompanyService;
 import com.howei.service.PostService;
 import com.howei.util.DateFormat;
+import org.apache.shiro.SecurityUtils;
+import org.apache.shiro.authz.annotation.RequiresPermissions;
+import org.apache.shiro.subject.Subject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
@@ -16,8 +21,11 @@ import javax.servlet.http.HttpSession;
 import java.util.Date;
 import java.util.List;
 
+import static org.apache.shiro.authz.annotation.Logical.OR;
+
 @Controller
 @RequestMapping("/post")
+@CrossOrigin(origins={"http://192.168.1.27:8080","http:localhost:8080"},allowCredentials = "true")
 public class PostController {
 
     @Autowired
@@ -31,6 +39,7 @@ public class PostController {
      * @param request
      * @return
      */
+    @RequiresPermissions(value = {"岗位查看"},logical = OR)
     @RequestMapping("/getPostList")
     @ResponseBody
     public String getPostList(HttpServletRequest request){
@@ -69,6 +78,7 @@ public class PostController {
      * @param request
      * @return
      */
+    @RequiresPermissions(value = {"更新岗位信息"},logical = OR)
     @RequestMapping("/updatePost")
     @ResponseBody
     public String updatePost(HttpServletRequest request){
@@ -104,23 +114,28 @@ public class PostController {
 
     /**
      * 添加岗位
-     * @param session
      * @param request
      * @return
      */
+    @RequiresPermissions(value = {"添加岗位"},logical = OR)
     @RequestMapping("/addPost")
     @ResponseBody
-    public String addPost(HttpSession session,HttpServletRequest request){
+    public String addPost(HttpServletRequest request){
         String companyId=request.getParameter("companyId");
         String name=request.getParameter("name");
         String remark=request.getParameter("remark");
-        Integer userId=(Integer) session.getAttribute("userId");
+        Subject subject=SecurityUtils.getSubject();
+        Users users=(Users) subject.getPrincipal();
+        Integer employeeId=users.getEmployeeId();
         Post post=new Post();
         if(companyId!=null&&!companyId.equals("")){
             post.setCompanyId(Integer.parseInt(companyId));
         }
         if(name!=null&&!name.equals("")){
             post.setName(name);
+        }
+        if(employeeId!=null){
+            post.setCreatedBy(employeeId);
         }
         Post po=postService.getPost(post);
         if(po==null||po.getId()==0){

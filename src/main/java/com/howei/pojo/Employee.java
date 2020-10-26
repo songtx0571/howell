@@ -1,47 +1,83 @@
 package com.howei.pojo;
 
-/**
- * 员工表
- */
+//员工信息
 public class Employee {
-    private int id;
-    private int userId;
-    private String UserName;
-    private String Name;
-    private String Idnumber;//身份证
-    private String Card;//银行卡
-    private String Phone;
-    private String Closhe;//衣服尺寸
-    private String Hat;//安全帽编号
-    private String Laowupaiqian;//劳务派遣
-    private String Education;//学历
-    private String Credentials1;//专业
-    private String Credentials2;
-    private String Credentials3;
-    private String Post;//岗位
-    private String date;//入职日期
-    private int State;//在职
-    private String Sex;
-    private int Department;
-    private String DepartmentName;
-    private String Poision;
-    private String Emergency;//应急联系人
-    private String EmergencyTel;//应急手机
-    private String Remark;//备注
-    private String Wages;//待遇标准
-    private String Basicwages;//基本工资
-    private String Meritpay;//绩效工资
-    private String Manager;//绩效管理人
-    private String projectId;
-    private String address;//住址
+    private Integer id;
+    private String name;//姓名
+    private String userNumber;//编号
+    private String idNumber;//身份证
     private String bank;//开户行
+    private String card;//银行卡
+    private String phone;//手机
+    private String closhe;//衣服尺寸
+    private String hat;//安全帽编号
+    private String laowupaiqian;//劳务派遣
+    private String education;//学历
+    private String credentials1;//专业1
+    private String credentials2;//专业2
+    private String credentials3;//专业3
+    private String entryDate;//入职日期
+    private String poision;//
+    private String emergency;//应急联系人
+    private String emergencyTel;//应急手机
+    private String remark;//备注
+    private String wages;//待遇标准
+    private String basicwages;//基本工资
+    private String meritpay;//绩效工资
+    private String manager;//绩效管理人
+    private String address;//住址
+    private String created;
+    private int createdBy;
+    //private String projectId;
+    //private String postId;//岗位
+    //private int state;//在职
+    //private String sex;//性别
+    //private int department;//部门
 
-    public String getAddress() {
-        return address;
+    //虚字段
+    private String sexName;
+    private String departmentName;
+    private String postName;//岗位
+    private String companyName;
+
+    public Integer getId() {
+        return id;
     }
 
-    public void setAddress(String address) {
-        this.address = address;
+    public void setId(Integer id) {
+        this.id = id;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getUserNumber() {
+        return userNumber;
+    }
+
+    public void setUserNumber(String userNumber) {
+        this.userNumber = userNumber;
+    }
+
+    public String getSexName() {
+        return sexName;
+    }
+
+    public void setSexName(String sexName) {
+        this.sexName = sexName;
+    }
+
+    public String getIdNumber() {
+        return idNumber;
+    }
+
+    public void setIdNumber(String idNumber) {
+        this.idNumber = idNumber;
     }
 
     public String getBank() {
@@ -52,236 +88,195 @@ public class Employee {
         this.bank = bank;
     }
 
-    public String getProjectId() {
-        return projectId;
-    }
-
-    public void setProjectId(String projectId) {
-        this.projectId = projectId;
-    }
-
-    public String getManager() {
-        return Manager;
-    }
-
-    public void setManager(String manager) {
-        Manager = manager;
-    }
-
-    public int getUserId() {
-        return userId;
-    }
-
-    public void setUserId(int userId) {
-        this.userId = userId;
-    }
-
-    public String getSex() {
-        return Sex;
-    }
-
-    public void setSex(String sex) {
-        Sex = sex;
-    }
-
-    public String getPoision() {
-        return Poision;
-    }
-
-    public void setPoision(String poision) {
-        Poision = poision;
-    }
-
-    public String getEmergency() {
-        return Emergency;
-    }
-
-    public void setEmergency(String emergency) {
-        Emergency = emergency;
-    }
-
-    public String getEmergencyTel() {
-        return EmergencyTel;
-    }
-
-    public void setEmergencyTel(String emergencyTel) {
-        EmergencyTel = emergencyTel;
-    }
-
-    public String getRemark() {
-        return Remark;
-    }
-
-    public void setRemark(String remark) {
-        Remark = remark;
-    }
-
-    public String getWages() {
-        return Wages;
-    }
-
-    public void setWages(String wages) {
-        Wages = wages;
-    }
-
-    public String getBasicwages() {
-        return Basicwages;
-    }
-
-    public void setBasicwages(String basicwages) {
-        Basicwages = basicwages;
-    }
-
-    public String getMeritpay() {
-        return Meritpay;
-    }
-
-    public void setMeritpay(String meritpay) {
-        Meritpay = meritpay;
-    }
-
-    public int getDepartment() {
-        return Department;
-    }
-
-    public void setDepartment(int department) {
-        Department = department;
-    }
-
-    public int getId() {
-        return id;
-    }
-
-    public void setId(int id) {
-        this.id = id;
-    }
-
-    public String getUserName() {
-        return UserName;
-    }
-
-    public void setUserName(String userName) {
-        UserName = userName;
-    }
-
-    public String getName() {
-        return Name;
-    }
-
-    public void setName(String name) {
-        Name = name;
-    }
-
-    public String getIdnumber() {
-        return Idnumber;
-    }
-
-    public void setIdnumber(String idnumber) {
-        Idnumber = idnumber;
-    }
-
     public String getCard() {
-        return Card;
+        return card;
     }
 
     public void setCard(String card) {
-        Card = card;
+        this.card = card;
     }
 
     public String getPhone() {
-        return Phone;
+        return phone;
     }
 
     public void setPhone(String phone) {
-        Phone = phone;
+        this.phone = phone;
     }
 
     public String getCloshe() {
-        return Closhe;
+        return closhe;
     }
 
     public void setCloshe(String closhe) {
-        Closhe = closhe;
+        this.closhe = closhe;
     }
 
     public String getHat() {
-        return Hat;
+        return hat;
     }
 
     public void setHat(String hat) {
-        Hat = hat;
+        this.hat = hat;
     }
 
     public String getLaowupaiqian() {
-        return Laowupaiqian;
+        return laowupaiqian;
     }
 
     public void setLaowupaiqian(String laowupaiqian) {
-        Laowupaiqian = laowupaiqian;
+        this.laowupaiqian = laowupaiqian;
     }
 
     public String getEducation() {
-        return Education;
+        return education;
     }
 
     public void setEducation(String education) {
-        Education = education;
+        this.education = education;
     }
 
     public String getCredentials1() {
-        return Credentials1;
+        return credentials1;
     }
 
     public void setCredentials1(String credentials1) {
-        Credentials1 = credentials1;
+        this.credentials1 = credentials1;
     }
 
     public String getCredentials2() {
-        return Credentials2;
+        return credentials2;
     }
 
     public void setCredentials2(String credentials2) {
-        Credentials2 = credentials2;
+        this.credentials2 = credentials2;
     }
 
     public String getCredentials3() {
-        return Credentials3;
+        return credentials3;
     }
 
     public void setCredentials3(String credentials3) {
-        Credentials3 = credentials3;
+        this.credentials3 = credentials3;
     }
 
-    public String getPost() {
-        return Post;
+    public String getEntryDate() {
+        return entryDate;
     }
 
-    public void setPost(String post) {
-        Post = post;
+    public void setEntryDate(String entryDate) {
+        this.entryDate = entryDate;
     }
 
-    public String getDate() {
-        return date;
+    public String getPoision() {
+        return poision;
     }
 
-    public void setDate(String date) {
-        this.date = date;
+    public void setPoision(String poision) {
+        this.poision = poision;
     }
 
-    public int getState() {
-        return State;
+    public String getEmergency() {
+        return emergency;
     }
 
-    public void setState(int state) {
-        State = state;
+    public void setEmergency(String emergency) {
+        this.emergency = emergency;
+    }
+
+    public String getEmergencyTel() {
+        return emergencyTel;
+    }
+
+    public void setEmergencyTel(String emergencyTel) {
+        this.emergencyTel = emergencyTel;
+    }
+
+    public String getRemark() {
+        return remark;
+    }
+
+    public void setRemark(String remark) {
+        this.remark = remark;
+    }
+
+    public String getWages() {
+        return wages;
+    }
+
+    public void setWages(String wages) {
+        this.wages = wages;
+    }
+
+    public String getBasicwages() {
+        return basicwages;
+    }
+
+    public void setBasicwages(String basicwages) {
+        this.basicwages = basicwages;
+    }
+
+    public String getMeritpay() {
+        return meritpay;
+    }
+
+    public void setMeritpay(String meritpay) {
+        this.meritpay = meritpay;
+    }
+
+    public String getManager() {
+        return manager;
+    }
+
+    public void setManager(String manager) {
+        this.manager = manager;
+    }
+
+    public String getAddress() {
+        return address;
+    }
+
+    public void setAddress(String address) {
+        this.address = address;
     }
 
     public String getDepartmentName() {
-        return DepartmentName;
+        return departmentName;
     }
 
-    public void setDepartmentName(String DepartmentName) {
-        this.DepartmentName = DepartmentName;
+    public void setDepartmentName(String departmentName) {
+        this.departmentName = departmentName;
     }
 
+    public String getPostName() {
+        return postName;
+    }
+
+    public void setPostName(String postName) {
+        this.postName = postName;
+    }
+
+    public String getCompanyName() {
+        return companyName;
+    }
+
+    public void setCompanyName(String companyName) {
+        this.companyName = companyName;
+    }
+
+    public String getCreated() {
+        return created;
+    }
+
+    public void setCreated(String created) {
+        this.created = created;
+    }
+
+    public int getCreatedBy() {
+        return createdBy;
+    }
+
+    public void setCreatedBy(int createdBy) {
+        this.createdBy = createdBy;
+    }
 }

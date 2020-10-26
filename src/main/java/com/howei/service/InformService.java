@@ -3,6 +3,7 @@ package com.howei.service;
 import com.howei.pojo.Inform;
 import com.howei.pojo.InformType;
 import com.howei.pojo.ReadStatus;
+import com.howei.pojo.UserInform;
 
 import java.util.List;
 import java.util.Map;
@@ -31,5 +32,5 @@ public interface InformService {
 
     Inform getInformById(String id);
 
-    int updateStatus(ReadStatus readStatus);
+    int updateStatus(UserInform userInform);
 }

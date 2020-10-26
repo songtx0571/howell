@@ -1,4 +1,5 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%@taglib prefix="shiro" uri="http://shiro.apache.org/tags" %>
 <html>
 <head>
     <title>Title</title>
@@ -13,9 +14,6 @@
     <div class="warp">
         <h1 style="text-align: center;">岗位信息</h1>
         <div class="top">
-            <%--<label>公司：</label>--%>
-            <%--<select name="companyList" id="companyList" >--%>
-            <%--</select>--%>
             <form class="layui-form" action="">
                 <div class="layui-form-item">
                     <div class="layui-inline">
@@ -28,8 +26,11 @@
                 </div>
             </form>
         </div>
+        <shiro:hasPermission name='岗位查看'>
         <div class="content">
+            <shiro:hasPermission name='添加岗位'>
             <button class="addBtn" onclick="showAddPost()">添加岗位</button>
+            </shiro:hasPermission>
             <input type="hidden" id="companyId">
             <table class="postTable">
                 <thead>
@@ -83,122 +84,6 @@
             </div>
         </div>
     </div>
-    <script>
-        //var path = "http://192.168.1.26:8080/";
-        var path = "";
-        // 添加 / 修改岗位后的刷新页面
-        function showCompanyPost() {
-            // 公司的 id
-            var companyId = $("#companyId").val();
-            $.ajax({
-                type: "GET",
-                url: path + "post/getPostList",
-                data: {"companyId": companyId},
-                dataType: "json",
-                success: function (data) {
-                    var tbody = document.getElementById("postTbody");
-                    if (data != "") {
-                        tbody.innerHTML = ""
-                        for (var i = 0; i < data.length; i++) {
-                            if (data[i].remark == undefined){
-                                data[i].remark = ""
-                            }
-                            var tr = document.createElement("tr");
-                            tr.setAttribute("class", "postTr");
-                            var td = "<td>" + data[i].name + "</td><td>" + data[i].remark + "</td>" +
-                                "<td><input type='button' value='修改' class='button' onclick='showUpdataPost(" + data[i].id + ")' /></td>";
-                            tr.innerHTML = td;
-                            tbody.appendChild(tr);
-                        }
-                    } else {
-                        alert("该公司没有设置岗位");
-                        tbody.innerHTML = ""
-                    }
-                }
-            });
-        }
-        // 显示添加岗位
-        function showAddPost() {
-            $(".addPost").css("display", "block")
-        }
-        // 添加岗位
-        function addPost() {
-            var companyId = $("#companyId").val();
-            var addInput = $("#addInput").val()
-            var addRemork = $("#addRemork").val()
-            $.ajax({
-                type: "GET",
-                url: path + "post/addPost",
-                data: {"companyId": companyId, "name": addInput, "remark": addRemork},
-                dataType: "json",
-                success: function(data){
-                    $(".addPost").css("display", "none")
-                    addInput = "";
-                    addRemork = "";
-                    alert(data)
-                    if (companyId != ""){
-                        showCompanyPost()
-                    }
-                },
-                error : function (err) {
-                    console.log(err)
-                }
-            });
-        }
-        // 显示修改岗位
-        function  showUpdataPost(id) {
-            var updataPostId = id
-            $("#updataPostId").val(id)
-            $.ajax({
-                type: "GET",
-                url: path + "post/getPost",
-                data: {"id": updataPostId},
-                dataType: "json",
-                success: function(data){
-                    $(".updataPost").css("display", "block");
-                    $("#updataInput").val(data.name);
-                    $("#updataRemork").val(data.remark);
-                },
-                error : function (err) {
-                    console.log(err)
-                }
-            });
-        }
-        //修改岗位
-        // 如果改变了id值，返回true
-        var identification = "false";
-        $("#updataInput").keyup(function () {
-            identification = "true";
-        })
-        function updataPost() {
-            var id = $("#updataPostId").val();
-            var companyId = $("#companyId").val();
-            var updataInput = $("#updataInput").val();
-            var updataRemork = $("#updataRemork").val();
-            // console.log(identification)
-            $.ajax({
-                type: "GET",
-                url: path + "post/updatePost",
-                data: {"id": id, "companyId": companyId, "name": updataInput, "remark": updataRemork, "identification": identification},
-                dataType: "json",
-                success: function(data){
-                    alert(data)
-                    $(".updataPost").css("display", "none");
-                    if (companyId != ""){
-                        showCompanyPost()
-                    }
-                },
-                error : function (err) {
-                    console.log(err)
-                }
-            });
-            identification="false";
-        }
-        // 取消
-        function cancel() {
-            $(".addPost").css("display", "none")
-            $(".updataPost").css("display", "none")
-        }
-    </script>
+    </shiro:hasPermission>
 </body>
 </html>

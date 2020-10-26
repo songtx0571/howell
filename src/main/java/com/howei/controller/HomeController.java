@@ -1,34 +1,33 @@
 package com.howei.controller;
 
-
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.howei.util.MenuTree;
+import org.apache.shiro.SecurityUtils;
+import org.apache.shiro.authc.UsernamePasswordToken;
+import org.apache.shiro.authz.annotation.RequiresPermissions;
+import org.apache.shiro.session.Session;
+import org.apache.shiro.subject.Subject;
 import org.springframework.stereotype.Controller;
 
 import com.alibaba.fastjson.JSON;
 
-import com.alibaba.fastjson.JSONArray;
 import com.howei.pojo.Menu;
 import com.howei.pojo.Users;
 import com.howei.service.MenuService;
 import com.howei.service.UserService;
-import com.howei.util.MD5;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
-import java.io.PrintWriter;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
+
+import static org.apache.shiro.authz.annotation.Logical.OR;
 
 @Controller
-public class HomeController {
+//@CrossOrigin(origins={"http://192.168.1.27:8080","http:localhost:8080","http://192.168.1.27:8848"},allowCredentials = "true")
+public class HomeController{
 
     @Autowired
     MenuService menuService;
@@ -36,93 +35,218 @@ public class HomeController {
     @Autowired
     UserService userService;
 
-    @RequestMapping("/")
-    public String toLogin(){
-        return "login";
-    }
+    /*存入session里的用户名称*/
+    public static final String SESSION_USER = "sessionUser";
+    public ObjectMapper jsonTranster = new ObjectMapper();
 
-    @RequestMapping("/home")
-    public String toHome(){
-        return "home";
-    }
-    // 主页（动态区域）
-    @RequestMapping("/index")
-    public String toIndex(){
-        return "index";
-    }
+
+
     // 左菜单
     @RequestMapping("/leftMenu")
     public String toLeftMenu(){
         return "leftMenu";
     }
+
+    @RequestMapping("/index")
+    public String toIndex(){
+        return "index";
+    }
+
+    @RequestMapping("/log")
+    @ResponseBody
+    public String log(){
+        return "您没有权限访问";
+    }
+
+    // 信息
+    @RequestMapping("/homePopup")
+    public String toHomePopup(){
+        return "homePopup";
+    }
+
     // 角色管理
+    @RequiresPermissions(value = {"角色管理"},logical = OR)
     @RequestMapping("/roleManagement")
     public String toRoleManagement(){
         return "roleManagement";
     }
+
     // 部门管理
+    @RequiresPermissions(value = {"部门管理"},logical = OR)
     @RequestMapping("/departmentManagement")
     public String toDepartmentManagement(){
         return "departmentManagement";
     }
+
     // 账户管理
     @RequestMapping("/accountManagement")
     public String toAccountManagement(){
         return "accountManagement";
     }
+
     // 岗位管理
+    @RequiresPermissions(value = {"岗位管理"},logical = OR)
     @RequestMapping("/postManagement")
     public String toPostManagement(){
         return "postManagement";
     }
+
     // 通知管理
+    @RequiresPermissions(value = {"通知管理"},logical = OR)
     @RequestMapping("/noticeManagement")
     public String toNoticeManagement(){
         return "noticeManagement";
     }
 
-    @RequestMapping("/login")
-    public String index(HttpSession session, HttpServletRequest request){
+    // 权限管理
+    @RequestMapping("/authorityManagement")
+    public String toAuthorityManagement(){
+        return "authorityManagement";
+    }
+
+    @RequestMapping("/")
+    public String index(HttpSession session){
         if(session.getAttribute("userId")!=null){
             return "home";
         }
         return "login";
     }
 
-    @RequestMapping(value = "/loginPage")
-    @ResponseBody
-    public String loginadmin(HttpServletRequest request, HttpServletResponse response, HttpSession session) {
-        String userNumber = request.getParameter("userNumber").toUpperCase();
-        String password = request.getParameter("password");
-        MD5 md5=new MD5();
-        Users users = null;
-        try{
-            password=md5.EncoderByMd5(password);
-            users=userService.findUser(userNumber, password);
-        }catch (Exception e){
-            e.printStackTrace();
+    /**
+     * 系统登出
+     * @return
+     */
+    @RequestMapping("/logout")
+    public String logOut(){
+        Subject subject = SecurityUtils.getSubject();
+        if (subject.isAuthenticated()) {
+            subject.logout();
+            return "redirect:login";
         }
-        if (users!=null) {
-            session.setAttribute("userId", users.getId());//编号
-            session.setAttribute("companyId",users.getCompanyId());//所属公司
-            session.setAttribute("departmentId",users.getDepartmentId());//部门
-            session.setAttribute("postId",users.getPostId());//岗位
-            //return "home";
-            return JSON.toJSONString("home");
-        } else {
-            return JSON.toJSONString("");
-            //return "login";
-            //return "redirect:/login";
-        }
+        return "login";
     }
 
-    @RequestMapping(value = "/getMenu",method={RequestMethod.GET, RequestMethod.POST})
+    /**
+     * 登录
+     * @param request
+     * @return
+     */
+    @RequestMapping(value = "/loginPage")
+    @CrossOrigin
+    public String loginadmin(HttpServletRequest request) {
+        String username = request.getParameter("userNumber").toUpperCase();
+        String password = request.getParameter("password");
+
+        UsernamePasswordToken upt = new UsernamePasswordToken(username,password);
+        Subject subject = SecurityUtils.getSubject();
+        try {
+            subject.login(upt);
+        } catch (Exception e) {
+            e.printStackTrace();
+            if("no_user".equals(e.getMessage())){
+                return JSON.toJSONString("用户不存在");
+            }else if("no_permission".equals(e.getMessage())){
+                return JSON.toJSONString("用户无权限访问");
+            }else if("no_status".equals(e.getMessage())){
+                return JSON.toJSONString("用户已停用");
+            }
+            return JSON.toJSONString("密码错误");
+        }
+        Session session = subject.getSession();
+        Users user = userService.loginUserNumber(username);
+        user.setPassword("");
+        session.setAttribute(SESSION_USER, user);
+        return "home";
+    }
+
+    @RequestMapping(value="/getMenu")
     @ResponseBody
-    public String getMenuTree(HttpSession session, HttpServletRequest request, HttpServletResponse response){
+    public String getMenuTree(HttpServletRequest request, HttpServletResponse response){
         String parentId=request.getParameter("parent");
         Map map=new HashMap();
         map.put("parentId",parentId);
         List<Menu> result=menuService.getMenuTree(map);
         return JSON.toJSONString(result);
     }
+
+    @RequestMapping("/getMenuTree")
+    @ResponseBody
+    public String getMenuTree(HttpServletRequest request){
+        String rootMenuId= request.getParameter("rootMenuId");
+        Subject subject=SecurityUtils.getSubject();
+        Map map=new HashMap();
+        if(rootMenuId!=null&&rootMenuId.equals("25")){//WA项目
+            map.put("template","2");
+        }else if(rootMenuId!=null&&rootMenuId.equals("23")){//Guide项目
+            map.put("template","1");
+        }else if(rootMenuId!=null&&rootMenuId.equals("24")){//Guide项目
+            map.put("template","3");
+        }
+        map.put("parent",0);
+        List<Menu> rootMenuList=menuService.getMenuTree(map);
+        Iterator<Menu> iterator = rootMenuList.iterator();
+        while(iterator.hasNext()){
+            Menu menu = iterator.next();
+            if(!subject.isPermitted(menu.getName())){
+                iterator.remove();
+            }
+        }
+        List<MenuTree> resultList=new ArrayList<>();
+        for(Menu menu:rootMenuList){
+            Integer id=menu.getId();
+            map.put("parent",id);
+            List<Menu> menuList=menuService.getMenuTree(map);
+            if(menuList!=null&&menuList.size()>0){
+                iterator = menuList.iterator();
+                while(iterator.hasNext()){
+                    Menu menu1 = iterator.next();
+                    if(!subject.isPermitted(menu1.getName())){
+                        iterator.remove();
+                    }
+                }
+                MenuTree menuTree=new MenuTree();
+                menuTree.setId(String.valueOf(menu.getId()));
+                menuTree.setText(menu.getName());
+                menuTree.setState("close");
+                menuTree.setpId(String.valueOf(menu.getParent()));
+                menuTree.setIconCls("icon-bullet-blue");
+                menuTree.setUrl(menu.getUrl());
+                menuTree.setChildren(getMenuTree(id,menuList));
+                resultList.add(menuTree);
+            }
+        }
+        String json = JSON.toJSONString(resultList);
+        return json;
+    }
+
+    /**
+     * 获取菜单列表
+     * @return
+     */
+    public List<MenuTree> getMenuTree(Integer id,List<Menu> menuList){
+        List<MenuTree> list=new ArrayList<>();
+        for(Menu menu:menuList){
+            if(menu.getParent()==id){
+                MenuTree menuTree=new MenuTree();
+                menuTree.setId(String.valueOf(menu.getId()));
+                menuTree.setText(menu.getName());
+                menuTree.setState("close");
+                menuTree.setpId(String.valueOf(menu.getParent()));
+                menuTree.setIconCls("icon-bullet-blue");
+                menuTree.setUrl(menu.getUrl());
+                list.add(menuTree);
+            }
+        }
+        return list;
+    }
+
+    @RequestMapping(value="/getLoginInf")
+    @ResponseBody
+    public String getLoginInf(){
+        Subject subject=SecurityUtils.getSubject();
+        Users users=(Users) subject.getPrincipal();
+        Integer userId=users.getId();
+        return JSON.toJSONString(userId);
+    }
+
 }

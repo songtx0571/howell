@@ -14,22 +14,22 @@ a{
 .whole {
     width: 100%;
     height: 100%;
-    background: url("../img/bg1.jpg") no-repeat;
+    background: url("../img/timg.jpg") no-repeat;
     background-size: cover;
     position: relative;
 }
 .white_content {
     width: 525px;
-    height: 355px;
+    height: 315px;
     background-color: rgba(255,255,255,0.8);
     z-index: 1001;
     border-radius: 4px;
-    padding: 20px;
     box-sizing: border-box;
     position: absolute;
     transform: translate(-50%, -50%);
     top: 50%;
     left: 50%;
+    padding-top: 10px;
 }
 .white_top{
     width: 100%;
@@ -88,17 +88,17 @@ a{
 }
 .footer{
     width: 100%;
-    height: 60px;
+    height: 90px;
     font-size: 13px;
     position: absolute;
-    bottom: 20px;
-    color: #000;
+    bottom: 10px;
+    color: #333;
     text-align: center;
     line-height: 30px;
     font-weight: bold;
 }
 .footer ul {
-    width: 700px;
+    width: 360px;
     height: 30px;
     margin: 0 auto;
 }
@@ -108,4 +108,34 @@ a{
 }
 .footer ul li:last-of-type{
     margin-right: 0px;
+}
+.contact{
+    position: relative;
+}
+.contact p{
+    position: absolute;
+    top: 25px;
+    left: -43px;
+    color: aliceblue;
+    background: rgba(157, 157, 157, 0.5);
+     display: none;
+    border-radius: 8px;
+}
+.contact:hover p{
+    display: block;
+}
+.aboutDiv{
+    width: 85%;
+    display: none;
+    position: relative;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%,-50%);
+}
+.aboutDiv p{
+    padding: 20px 40px;
+    box-sizing: border-box;
+    font-size: 1.2rem;
+    line-height: 60px;
+    text-indent: 50px;
 }

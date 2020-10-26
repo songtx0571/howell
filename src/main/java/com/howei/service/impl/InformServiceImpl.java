@@ -4,6 +4,7 @@ import com.howei.mapper.InformMapper;
 import com.howei.pojo.Inform;
 import com.howei.pojo.InformType;
 import com.howei.pojo.ReadStatus;
+import com.howei.pojo.UserInform;
 import com.howei.service.InformService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -79,7 +80,7 @@ public class InformServiceImpl implements InformService {
     }
 
     @Override
-    public int updateStatus(ReadStatus readStatus) {
-        return informMapper.updateStatus(readStatus);
+    public int updateStatus(UserInform userInform) {
+        return informMapper.updateStatus(userInform);
     }
 }

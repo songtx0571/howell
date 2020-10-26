@@ -5,6 +5,7 @@
         <result column="id" property="id"></result>
         <result column="userName" property="userName"></result>
         <result column="password" property="password"></result>
+        <result column="employeeId" property="employeeId"></result>
         <result column="state" property="state"></result>
         <result column="sex" property="sex"></result>
         <result column="phone" property="phone"></result>
@@ -13,24 +14,44 @@
         <result column="departmentId" property="departmentId"></result>
         <result column="postId" property="postId"></result>
         <result column="userNumber" property="userNumber"></result>
+        <result column="manager" property="manager"></result>
+        <result column="entryDate" property="entryDate"></result>
+        <collection property="roles" resultMap="roleMap"></collection>
+    </resultMap>
+
+    <resultMap id="roleMap" type="com.howei.pojo.Role">
+        <result column="rid" property="id" />
+        <result column="roleName" property="roleName" />
+        <result column="description" property="description" />
+        <result column="englishName" property="englishName" />
     </resultMap>
 
     <select id="findUser" resultType="com.howei.pojo.Users" parameterType="java.lang.String" resultMap="userMap">
         select * from users where userNumber=#{param1} and password=#{param2}
     </select>
 
+    <select id="loginUserNumber" resultType="com.howei.pojo.Users" parameterType="java.lang.String">
+        select * from users where userNumber=#{userNumber}
+    </select>
 
     <select id="findById" resultMap="userMap" resultType="com.howei.pojo.Users" parameterType="java.lang.String">
         select * from users where id=#{id}
     </select>
 
     <select id="getUserList" parameterType="java.util.HashMap" resultType="com.howei.pojo.Users">
-        select * from users where 1=1
+        select u.id,u.userNumber,u.userName,IF(u.sex=1,'男','女') as sexName,c.`name` as companyName,c1.`name` as departName,p.`name` as postName,u1.userName as managerName,IF(u.state=0,'离职','在职') as stateName,
+        u.entryDate,u.phone,u.email,u.companyId,u.departmentId,u.postId,u.manager
+        from users u
+        LEFT JOIN users u1 on u1.id=u.manager
+        LEFT JOIN company c on c.id=u.companyId
+        LEFT JOIN company c1 on c1.id=u.departmentId
+        LEFT JOIN post p on p.id=u.postId
+        where 1=1
         <if test="companyId!=null and companyId!=''">
-            and companyId=#{companyId}
+            and c.id=#{companyId}
         </if>
         <if test="page!=null">
-            limit ${page},${rows}
+            limit ${page},${pageSize}
         </if>
     </select>
 
@@ -67,7 +88,7 @@
     </select>
 
     <insert id="addUser" parameterType="com.howei.pojo.Users" useGeneratedKeys="true" keyProperty="id">
-        insert into users(userName,password,state,sex,phone,email,companyId,departmentId,postId,userNumber) value (#{userName},#{password},#{state},#{sex},#{phone},#{email},#{companyId},#{departmentId},#{postId},#{userNumber})
+        insert into users(userName,password,state,sex,phone,email,companyId,departmentId,postId,userNumber,entryDate,employeeId) value (#{userName},#{password},#{state},#{sex},#{phone},#{email},#{companyId},#{departmentId},#{postId},#{userNumber},#{entryDate},#{employeeId})
     </insert>
 
     <update id="updateUser" parameterType="com.howei.pojo.Users" useGeneratedKeys="true" keyProperty="id">
@@ -124,5 +145,77 @@
 
     <select id="selSeenUser" parameterType="java.lang.String" resultType="java.lang.String" >
         select userName from users where id=#{userId}
+    </select>
+
+    <select id="findUserByName" parameterType="java.lang.String" resultType="com.howei.pojo.Users">
+        select * from users where id=#{id}
+    </select>
+
+    <insert id="addEmployee" parameterType="com.howei.pojo.Employee" useGeneratedKeys="true" keyProperty="id">
+        insert into employee(name,userNumber,created,createdBy) values(#{name},#{userNumber},#{created},#{createdBy})
+    </insert>
+    <!--用户角色分配开始-->
+    <insert id="addUserRole" parameterType="com.howei.pojo.UserRole" useGeneratedKeys="true" keyProperty="id">
+        insert into user_role(userId,roleId,created,createdBy) value(#{userId},#{roleId},#{created},#{createdBy})
+    </insert>
+
+    <delete id="deleteUserRole" parameterType="int" >
+        delete from user_role where userId=#{userId}
+    </delete>
+
+    <select id="getUserRoles" parameterType="java.lang.String" resultType="com.howei.pojo.Role">
+        select r.id,r.roleName from user_role ur
+        left join role r on r.id=ur.roleId
+        where ur.userId=#{userId}
+    </select>
+    
+    <select id="getUserRoleList" resultMap="userMap" parameterType="java.util.HashMap">
+        select u.*,r.id,r.roleName,r.description,r.englishName from users u
+        left join user_role ur on ur.userId=u.id
+        left join role r on r.id=ur.roleId
+        where 1=1
+        <if test="userName!=null and userName!=''">
+            and u.userName=#{userName}
+        </if>
+        <if test="userId!=null">
+            and ur.userId=#{userId}
+        </if>
+    </select>
+
+    <select id="getUserRolesByName" resultMap="userMap" parameterType="java.lang.String">
+        select u.*,r.id rid,r.roleName,r.description,r.englishName from users u
+        left join user_role ur on ur.userId=u.id
+        left join role r on r.id=ur.roleId
+        where 1=1
+        <if test="userNumber!=null and userNumber!=''">
+            and u.userNumber=#{userNumber}
+        </if>
+    </select>
+    
+    <update id="updPassword" useGeneratedKeys="true" keyProperty="id">
+        update users set password=#{password} where id=#{userId}
+    </update>
+    
+    <select id="searchUsersList" parameterType="java.util.HashMap" resultType="com.howei.pojo.Users">
+        select u.id,u.userNumber,u.userName,IF(u.sex=1,'男','女') as sexName,c.`name` as companyName,c1.`name` as departName,p.`name` as postName,u1.userName as managerName,IF(u.state=0,'离职','在职') as stateName,
+        u.entryDate,u.phone,u.email,u.companyId,u.departmentId,u.postId,u.manager
+        from users u
+        LEFT JOIN users u1 on u1.id=u.manager
+        LEFT JOIN company c on c.id=u.companyId
+        LEFT JOIN company c1 on c1.id=u.departmentId
+        LEFT JOIN post p on p.id=u.postId
+        where 1=1 and u.state=1
+        <if test="companyId!=null and companyId!=''">
+            and c.id=#{companyId}
+        </if>
+        <if test="search!=null and search!=''">
+            and (
+              u.userName like concat('%',#{search},'%') OR
+              u.userNumber like concat('%',#{search},'%')
+            )
+        </if>
+        <if test="page!=null">
+            limit ${page},${pageSize}
+        </if>
     </select>
 </mapper>

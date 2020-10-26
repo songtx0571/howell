@@ -1,61 +1,60 @@
-//var path = "http://192.168.1.26:8080/"
 var path = "";
-$(document).ready(function(){
-    //获取菜单数据
-    $.ajax({
-        type : "get",
-        async: false,
-        url : path + "getMenu",
-        dataType: "json",
-        data: {"parent": "0"},
-        jsonp:"callback", //请求php的参数名
-        jsonpCallback: "jsonhandle",//要执行的回调函数
-        success : function(data) {
-            var $leftList = $("#leftList");
-            var leftList = "";
-            for (var i = 0; i < data.length; i ++) {
-                leftList += "<li class='left"+data[i].id+"' onclick='showcontent("+data[i].id+")'>"
-                leftList += "<a href='javascript:void(0)\'>"+data[i].name+"</a>"
-                leftList += "<i class='fa fa-angle-double-right fa-lg left_listIcon'></i>"
-                leftList += "</li>"
-            }
-            // console.log(leftList);
-            $leftList.append(leftList)
-        },
-        error: function (XMLHttpRequest, textStatus, errorThrown) {
-            console.log(textStatus);
-        }
+var third = "";
+var type = "";
+$(document).ready(function () {
+    layui.use('element', function(){
+        var element = layui.element; //导航的hover效果、二级菜单等功能，需要依赖element模块
+        //监听导航点击
+        element.on('nav(demo)', function(elem){
+        });
     });
 });
 //左侧菜单点击事件
 function showcontent(typeHtml) {
-    var $leftIndex = $("#leftIndex");
-    var $leftGuide = $(".left23");
-    var $leftAi = $(".left24");
-    var $leftWa = $(".left25");
-    var $leftExam = $(".left26");
-
-    var count1 = 0;
-    var center_left = parent.$(".center_left")[0];
-    var center_right = parent.$(".center_right")[0];
-    if (count1 % 2 != 0){
-        center_left.style.display = "inline-block"
-        center_right.style.width =  "calc(100% - 201px)"
-        count1 ++;
-    }else{
-        center_left.style.display = "none"
-        center_right.style.width =  "100%"
-        count1 --;
-    }
-    // console.log(count1)
-
-    //父页面的iframe
+    type = typeHtml;
+    $.ajax({
+        type: "POST",
+        url: path + '/getMenuTree',
+        data: {rootMenuId: typeHtml},
+        dataType: "json",
+        success: function(data){
+            //二级菜单，三级菜单
+            $(".erji"+typeHtml).html("");
+            var two = "";
+            for (var i = 0; i < data.length; i ++){
+                third = data[i].children;
+                two += "<dd class='sanji"+data[i].id+"'>" +
+                    "<a href='#void();' style='position:relative;color: #000;'>"+data[i].text+"" +
+                    "<span class='open"+data[i].id+"' onclick='open1("+data[i].id+")' style='position: absolute;top: 12px;right: 0px;width: 100%;display: block;text-align: right;padding-right: 10px;'><i class=\"fa fa-caret-up\"></i></span>" +
+                    "<span class='close"+data[i].id+"' onclick='close1("+data[i].id+")' style='position: absolute;top: 12px;right: 0px;width: 100%;display: block;text-align: right;padding-right: 10px;display: none'><i class=\"fa fa-caret-down\"></i></span>" +
+                    "</a><dl class='close layui-nav-child-child sanjiBox"+data[i].id+"'>";
+                for (var k = 0; k < third.length; k ++){
+                    third[k].url = "'"+third[k].url+"'";
+                    two += '<dd class="ddClass" style="background: #f2f2f2;"><a href="#" onclick="jump('+third[k].url+')" style="padding-left: 40px;box-sizing: border-box;color: #000">'+third[k].text+'</a></dd>';
+                }
+                two+="</dl></dd>";
+            }
+            $(".erji"+typeHtml).append(two);
+        }
+    });
+}
+//跳转
+function jump(url) {
+    var src = "http://localhost:8081" + url;
     var $iframeRight = parent.$('.iframeRight');
-    //判断传入的值
-    if(typeHtml == "23") {// guide
-        $iframeRight.attr("src", "guide")
-    } else if(typeHtml == "24") { // ai
-    } else if(typeHtml == "25") { // wa
-    } else { // examination
-    }
+    $iframeRight.attr("src",src);
+}
+//打开
+function open1(id) {
+    var dd = $(".open"+id).parent().first().next();
+    dd.css("display","none");
+    $(".close"+id).css("display","block");
+    $(".open"+id).css("display","none");
+}
+//收起
+function close1(id) {
+    var dd = $(".close"+id).parent().first().next();
+    dd.css("display","block");
+    $(".close"+id).css("display","none");
+    $(".open"+id).css("display","block");
 }

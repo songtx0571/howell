@@ -54,12 +54,31 @@
     </select>
 
     <select id="getInformList" parameterType="java.util.HashMap" resultType="com.howei.pojo.Inform">
-        select id,`title`,content,createdBy,informTypeId,companyId,filedir,date_format(created,'%Y-%m-%d') as created from inform where 1=1
-        <if test="companyId!=null">
-          and companyId=#{companyId}
+        <if test="isactive!=null and isactive==1">
+            select i.id,i.title,i.content,i.createdBy,u.userName as createdByName,i.informTypeId,i.companyId,i.filedir,date_format(i.created,'%Y-%m-%d') as created from inform i
+            left join users u on u.id=i.createdBy
+            where 1=1
+            <if test="companyId!=null">
+                and i.companyId=#{companyId}
+            </if>
+            <if test="userId!=null">
+                and u.id=#{userId}
+            </if>
+            <if test="page!=null">
+                limit ${page},${pageSize}
+            </if>
         </if>
-        <if test="page!=null">
-            limit ${page},${pageSize}
+        <if test="isactive!=null and isactive==2">
+            select i.id,i.title,i.content,i.createdBy,u.userName as createdByName,i.informTypeId,i.companyId,i.filedir,date_format(i.created,'%Y-%m-%d') as created from user_inform ui
+            left join inform i on ui.informId=i.id
+            left join users u on u.id=i.createdBy
+            where 1=1
+            <if test="userId!=null">
+                and ui.userId=#{userId}
+            </if>
+            <if test="page!=null">
+                limit ${page},${pageSize}
+            </if>
         </if>
     </select>
 
@@ -94,8 +113,8 @@
         select * from inform where id=#{id}
     </select>
 
-    <insert id="updateStatus" parameterType="com.howei.pojo.ReadStatus">
-        insert into user_inform(userId,informId,created,rdStatus) values (#{userId},#{informId},#{created},#{rdStatus})
-    </insert>
+    <update id="updateStatus" parameterType="com.howei.pojo.UserInform" useGeneratedKeys="true" keyProperty="id">
+        update user_inform set rdDateTime=#{rdDateTime},rdStatus=#{rdStatus} where userId=#{userId} and informId=#{informId}
+    </update>
 
 </mapper>

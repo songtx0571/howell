@@ -15,7 +15,13 @@
     </resultMap>
 
     <select id="getMenuTree" resultType="java.util.HashMap" parameterType="java.util.HashMap" resultMap="menuMap">
-      select * from menu where parent=#{parentId} and active='true' and template='4'
+      select * from menu where active='true'
+        <if test="parent!=null">
+            and parent=#{parent}
+        </if>
+        <if test="template!=null">
+            and template=#{template}
+        </if>
     </select>
 
 

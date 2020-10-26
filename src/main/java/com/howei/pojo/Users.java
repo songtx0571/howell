@@ -1,12 +1,19 @@
 package com.howei.pojo;
 
+import java.io.Serializable;
+import java.util.List;
+
 /**
  * 账户表
  */
-public class Users {
-    private int id;
+public class Users implements Serializable {
+
+    private static final long serialVersionUID = -2071565876962058344L;
+
+    private Integer id;
     private String userName;//用户
     private String password;//密码
+    private int employeeId;//员工Id
     private int state;//在职状态
     private int sex;
     private String phone;
@@ -15,6 +22,8 @@ public class Users {
     private int departmentId;//部门id
     private int postId;//岗位id
     private String userNumber;//编号
+    private int manager;//绩效管理人
+    private String entryDate;//入职日期
 
     //虚字段
     private String stateName;
@@ -22,12 +31,15 @@ public class Users {
     private String sexName;
     private String postName;
     private String companyName;
+    private String managerName;
+    private List<Role> roles;//角色集合
+    private String roleName;
 
-    public int getId() {
+    public Integer getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(Integer id) {
         this.id = id;
     }
 
@@ -149,5 +161,53 @@ public class Users {
 
     public void setCompanyName(String companyName) {
         this.companyName = companyName;
+    }
+
+    public int getEmployeeId() {
+        return employeeId;
+    }
+
+    public void setEmployeeId(int employeeId) {
+        this.employeeId = employeeId;
+    }
+
+    public int getManager() {
+        return manager;
+    }
+
+    public void setManager(int manager) {
+        this.manager = manager;
+    }
+
+    public String getManagerName() {
+        return managerName;
+    }
+
+    public void setManagerName(String managerName) {
+        this.managerName = managerName;
+    }
+
+    public String getEntryDate() {
+        return entryDate;
+    }
+
+    public void setEntryDate(String entryDate) {
+        this.entryDate = entryDate;
+    }
+
+    public List<Role> getRoles() {
+        return roles;
+    }
+
+    public void setRoles(List<Role> roles) {
+        this.roles = roles;
+    }
+
+    public String getRoleName() {
+        return roleName;
+    }
+
+    public void setRoleName(String roleName) {
+        this.roleName = roleName;
     }
 }

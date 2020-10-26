@@ -3,62 +3,39 @@
     padding: 0;
     font-family: "PingFang SC","Lantinghei SC","Microsoft YaHei","HanHei SC","Helvetica Neue","Open Sans",Arial,"Hiragino Sans GB","微软雅黑",STHeiti,"WenQuanYi Micro Hei",SimSun,sans-serif;
 }
+body::-webkit-scrollbar{
+    display: none;
+}
+.warp{
+    width: 100%;
+    height: 100%;
+}
 .btnTop{
     width: 100%;
-    height: 80px;
-    line-height: 80px;
+    height: 50px;
+    line-height: 50px;
     font-size: 1.2rem;
     display: flex;
     justify-content: space-around;
 }
-.btnTop div{
-    /*width: 25%;*/
-    /*height: 100%;*/
-}
-.btnTop .topBtn{
-    display: inline-block;
-    height: 38px;
-    line-height: 38px;
-    padding: 0 30px;
-    background-color: #1E9FFF;
-    color: #fff;
-    white-space: nowrap;
-    text-align: center;
-    font-size: 14px;
-    border: none;
-    border-radius: 8px;
-    cursor: pointer;
-    outline: none;
-}
 /*修改/添加通知/添加/修改类型*/
-.addInfo,.addType{
-    width: 500px;
-    height: 434px;
-    border: 1px solid #000;
-    padding-left: 73px;
-    box-sizing: border-box;
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%,-50%);
+.addType{
+    width: 98%;
     background: #fff;
     display: none;
-}
-.addType{
-    padding-left: 0px;
-    height: 300px;
+    height: 265px;
     padding-top: 10px;
     font-size: 1.2rem;
 }
 .addInfo{
-    overflow: scroll;
-    overflow-x: hidden;
+    width: 435px;
+    display: none;
+    margin: 20px auto;
     font-size: 1.2rem;
 }
 .updateType,.addSonType,.detail,.viewedInfo,.updateInfo{
     width: 98%;
     height: 274px;
-    border: 1px solid #000;
     background: #fff;
     display: none;
     border: none;
@@ -101,6 +78,9 @@
     outline: none;
     font-size: 18px;
 }
+.addInfo input,.addInfo select{
+    width: 300px;
+}
 .updateInfo input{
     width: 305px;
 }
@@ -140,21 +120,9 @@
 }
 /*人员*/
 .addUser{
-    box-sizing: border-box;
     width: 504px;
-    height: 434px;
-    font-size: 18px;
-    border: 1px solid #000;
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%,-50%);
-    background: #fff;
     display: none;
-    padding: 16px;
-    overflow: scroll;
-    overflow-x: hidden;
-    overflow-y: hidden;
+    margin: 20px auto;
 }
 .userAgoSpan{
     width: 100px;
@@ -177,5 +145,27 @@
     margin: 13px 0 3px -17px;
 }
 .addInfoDiv i[class=layui-edge]{
-    margin: 15px -38px 10px 10px;
+    margin: 15px -110px 10px 10px;
+}
+.xm-select-parent .xm-form-selected .xm-select-dl {
+    height: 200px;
+}
+.icon-close{
+    display: none;
+}
+.addSonType .layui-anim-upbit,.addType .layui-anim-upbit{
+    height: 125px;
+    width: 230px;
+}
+.layui-layer-page::-webkit-scrollbar{
+    display: none;
+}
+#addType{
+    height: 90%;
+}
+.xm-select-tips .xm-cz-group .xm-cz{
+    height: 40px;
+    margin-top: -16px;
+    line-height: 48px;
+    overflow: hidden;
 }

@@ -13,6 +13,7 @@ public class Menu {
     private String created;
     private int createdBy;
     private String url;//模板路径
+
     public int getId() {
         return id;
     }
@@ -84,4 +85,6 @@ public class Menu {
     public void setUrl(String url) {
         this.url = url;
     }
+
+
 }

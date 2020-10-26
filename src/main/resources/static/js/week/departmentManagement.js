@@ -1,11 +1,30 @@
+var path = "";
 $(function () {
     showCompanyInfo();
-})
-//var path = "http://192.168.1.26:8080/";
-var path = "";
+    // 定义预处理事件
+    document.body.onmousedown = function (event) {
+        event = event || window.event;
+        var target = event.target || event.srcElement;
+        if (target.type === 'radio'&& target.id=="addHeadquarters") {//确定元素
+            target.previousValue = target.checked;
+            target.value = 0;//本部
+        }
+    };
+    // 定义点击事件
+    document.body.onclick = function (event) {
+        event = event || window.event;
+        var target = event.target || event.srcElement;
+        if (target.type === 'radio' && target.id=="addHeadquarters") {
+            if (target.previousValue) {//根据预处理结果 确定选中取消
+                target.checked = false;
+                target.value = 1;
+            }
+        }
+    };
+});
 // -------------------------公司---------------------------------
 var updataCompanyIsActive = $(".updataCompanyIsActive")[0];
-var updataCompanyId = $(".updataCompanyId")[0]
+var updataCompanyId = $(".updataCompanyId")[0];
 function showCompanyInfo() {
     $.ajax({
         type: "GET",
@@ -14,20 +33,22 @@ function showCompanyInfo() {
         data: {"parent": 0},
         success: function(data){
             var tbody = document.getElementById("companyTbody");
-            tbody.innerHTML = ""
+            tbody.innerHTML = "";
             for(var i=0;i<data.length;i++){
                 var tr = document.createElement("tr");
                 tr.setAttribute("class","companyTr");
                 var isActive = data[i].isactive;
                 updataCompanyIsActive = isActive;
+                var headQuarters = data[i].headQuarters;
                 // updataCompanyId = data[i].id
-                var td = "<td><input type='radio' name='companyName' onclick='showRightDepartment("+data[i].id+")' /></td><td>"+data[i].name+"</td>" +
+                var td = "<td class='companyNameB"+i+"'>"+data[i].name+"</td>" +
                     "<td><input type='button' value='启用' class='button openActiveBtn"+i+"' onclick='openActive("+data[i].id+")'  />&nbsp;" +
                     "<input type='button' value='关闭' class='button closeActiveBtn"+i+"' onclick='closeActive("+data[i].id+")'   /></td>" +
-                    "<td><input type='button' value='修改' class='button' onclick='showUpdataCompany("+data[i].id+")' /></td>";
+                    "<td><input type='button' value='修改' class='button' onclick='showUpdataCompany("+data[i].id+")' /></td>" +
+                    "<td><input type='button' value='查看部门' class='button' onclick='showRightDepartment("+data[i].id+")' /></td>";
                 tr.innerHTML = td;
                 tbody.appendChild(tr);
-                if(isActive == "0") {// 未启用
+                if(isActive == '0') {// 未启用
                     $(".openActiveBtn"+i).css("background", "#ccc")
                     $(".closeActiveBtn"+i).css("background", "#1E9FFF")
                     $(".closeActiveBtn"+i).attr({"disabled":"disabled"});
@@ -38,11 +59,13 @@ function showCompanyInfo() {
                     $(".openActiveBtn"+i).attr({"disabled":"disabled"});
                     $(".openActiveBtn"+i).css("cursor","no-drop")
                 }
+                if (headQuarters == '0'){// 本部0
+                    $(".companyNameB"+i).css("color", 'red');
+                } else{
+                    $(".companyNameB"+i).css("color", '#000');
+                }
             }
 
-        },
-        error : function (err) {
-            console.log(err)
         }
     })
 }
@@ -85,7 +108,7 @@ function closeActive(id) {
 // 显示修改公司
 function showUpdataCompany(id) {
     updataCompanyId = id;
-    $(".updateCompany").css("display", "block")
+    $(".updateCompany").css("display", "block");
     var updataInput = $("#updataInput")[0];
     $.ajax({
         url: path + "getCompany",
@@ -93,7 +116,6 @@ function showUpdataCompany(id) {
         type: "GET",
         data: {"id": id},
         success: function (data) {
-            // console.log(data)
             updataInput.value = JSON.parse(data).name;
         }
     });
@@ -126,20 +148,25 @@ function showAddCompany() {
 }
 // 添加公司
 function addCompany() {
-    var name = $("#addInput").val()
+    var name = $("#addInput").val();
+    var headQuarters = $("#addHeadquarters")[0];
+    var headQuartersValue = headQuarters.value;
+    if (headQuartersValue == "on"){
+        headQuartersValue = 1;
+    }
     $.ajax({
         url: path + "addCompany",//请求地址
-        datatype: "json",//数据格式
+        dataType: "json",//数据格式
         type: "GET",//请求方式
-        data: {"name": name,"type" : 0},
+        data: {"name": name,"type" : 0,"headQuarters":headQuartersValue},
         success: function (data) {
-            if(data == '"success"'){
+            if(data == "SUCCESS"){
                 $(".addCompany").css("display", "none");
                 showCompanyInfo()
-            } else if (data == "no") {
-                alert("无法添加")
+            } else if (data == "haveHeadQuarters") {
+                alert("已存在本部");
             } else {
-                alert("添加失败，请联系技术人员")
+                alert("添加失败，请联系技术人员");
             }
         }
     });
@@ -154,15 +181,14 @@ function showRightDepartment(id) {
         data: {"parent": id},
         success: function(data){
             //公司的id
-            $("#addDepartmentId").val(id)
-            // console.log(data)
+            $("#addDepartmentId").val(id);
             //添加部门按钮
-            $("#showAddDepartmentBtn").css("display", "block")
+            $("#showAddDepartmentBtn").css("display", "block");
             if (data != "0") {
                 // 显示表格
-                $(".departmentTable").css("display", "block")
+                $(".departmentTable").css("display", "block");
                 var tbody = document.getElementById("departmentTbody");
-                tbody.innerHTML = ""
+                tbody.innerHTML = "";
                 for(var i=0;i<data.length;i++){
                     var tr = document.createElement("tr");
                     tr.setAttribute("class","departmentTr");
@@ -178,17 +204,16 @@ function showRightDepartment(id) {
                         $(".openActiveBtnD"+i).css("background", "#ccc");
                         $(".closeActiveBtnD"+i).css("background", "#1E9FFF");
                         $(".closeActiveBtnD"+i).attr({"disabled":"disabled"});
-                        $(".closeActiveBtnD"+i).css("cursor","no-drop")
+                        $(".closeActiveBtnD"+i).css("cursor","no-drop");
                     } else {// 启用
                         $(".openActiveBtnD"+i).css("background", "#1E9FFF");
                         $(".closeActiveBtnD"+i).css("background", "#ccc");
                         $(".openActiveBtnD"+i).attr({"disabled":"disabled"});
-                        $(".openActiveBtnD"+i).css("cursor","no-drop")
+                        $(".openActiveBtnD"+i).css("cursor","no-drop");
                     }
                 }
             }else {
-                alert("该公司无部门")
-                $(".departmentTable").css("display", "none")
+                $(".departmentTable").css("display", "none");
             }
         }
     })
@@ -203,11 +228,11 @@ function openDepartmentActive(id) {
         data: {"id": id, "isactive": 1},
         success: function (data) {
             if(data == '"success"'){
-                showRightDepartment(idC)
+                showRightDepartment(idC);
             } else if (data == "no") {
-                alert("无法修改")
+                alert("无法修改");
             } else {
-                alert("修改失败，请联系技术人员")
+                alert("修改失败，请联系技术人员");
             }
         }
     });
@@ -224,9 +249,9 @@ function closeDepartmentActive(id) {
             if (data == '"success"') {
                 showRightDepartment(idC)
             } else if (data == "no") {
-                alert("无法修改")
+                alert("无法修改");
             } else {
-                alert("修改失败，请联系技术人员")
+                alert("修改失败，请联系技术人员");
             }
         }
     });
@@ -234,14 +259,12 @@ function closeDepartmentActive(id) {
 //点击显示添加部门
 function showAddDepartment() {
     $(".addDepartment").css("display", "block");
-    // console.log($("#addDepartmentId").val())
 }
 //添加部门
 function addDepartment() {
-    var name = $("#addDepartmentInput").val()
+    var name = $("#addDepartmentInput").val();
     var id = $("#addDepartmentId").val();
-    var codeName = $("#addDepartmentCodeName").val()
-    // console.log(name)
+    var codeName = $("#addDepartmentCodeName").val();
     if (name == "" || codeName == "") {
         alert("请将消息填写完整")
         return;
@@ -266,15 +289,13 @@ function addDepartment() {
 //点击显示修改页面
 function showUpdataDepartment(id) {
     $(".updataDepartment").css("display", "block");
-    $("#updataDepartmentId").val(id)
-    // console.log(id)
+    $("#updataDepartmentId").val(id);
     $.ajax({
         url: path + "getCompany",
-        datatype: "json",
+        dataType: "json",
         type: "GET",
         data: {"id": id},
         success: function (data) {
-            // console.log(data)
             $("#updataDepartmentInput").val(JSON.parse(data).name);
             $("#updataDepartmentCodeName").val(JSON.parse(data).codeName);
         }
@@ -285,7 +306,6 @@ function updataDepartment(id, name, codeName) {
     name = $("#updataDepartmentInput").val();
     id = $("#updataDepartmentId").val();
     codeName = $("#updataDepartmentCodeName").val();
-    // console.log(id)
     $.ajax({
         url: path + "updateCompany",//请求地址
         datatype: "json",//数据格式
@@ -294,7 +314,7 @@ function updataDepartment(id, name, codeName) {
         success: function (data) {
             if(data == '"success"'){
                 $(".updataDepartment").css("display", "none");
-                $("#updataDepartmentInput").val("")
+                $("#updataDepartmentInput").val("");
                 showRightDepartment($("#addDepartmentId").val())
             } else if (data == "no") {
                 alert("无法修改")
@@ -306,8 +326,8 @@ function updataDepartment(id, name, codeName) {
 }
 // 取消
 function cancel() {
-    $(".updateCompany").css("display", "none")
-    $(".addCompany").css("display", "none")
-    $(".addDepartment").css("display", "none")
+    $(".updateCompany").css("display", "none");
+    $(".addCompany").css("display", "none");
+    $(".addDepartment").css("display", "none");
     $(".updataDepartment").css("display", "none")
 }

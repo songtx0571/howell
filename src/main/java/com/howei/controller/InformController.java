@@ -1,39 +1,45 @@
 package com.howei.controller;
 
 import com.alibaba.fastjson.JSON;
-import com.howei.pojo.Company;
-import com.howei.pojo.Inform;
-import com.howei.pojo.InformType;
-import com.howei.pojo.ReadStatus;
+import com.howei.pojo.*;
 import com.howei.service.CompanyService;
 import com.howei.service.InformService;
+import com.howei.service.UserInformService;
 import com.howei.service.UserService;
 import com.howei.util.DateFormat;
 import com.howei.util.Page;
 import com.howei.util.Result;
+import com.howei.util.Type;
 import org.apache.commons.io.FileUtils;
+import org.apache.shiro.SecurityUtils;
+import org.apache.shiro.authz.annotation.RequiresPermissions;
+import org.apache.shiro.subject.Subject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
+import javax.websocket.server.PathParam;
 import java.io.*;
 import java.net.*;
 import java.util.*;
 
+import static org.apache.shiro.authz.annotation.Logical.OR;
+
 @Controller
 @RequestMapping("/inform")
+@CrossOrigin(origins={"http://192.168.1.27:8080","http:localhost:8080"},allowCredentials = "true")
 public class InformController {
 
     @Autowired
     InformService informService;
+
+    @Autowired
+    UserInformService userInformService;
 
     @Autowired
     private CompanyService companyService;
@@ -49,6 +55,12 @@ public class InformController {
         companyMap=companyService.getCompanyMap("0");
         usersMap=userService.getUsersMap();
         informTypeMap=informService.getInformTypeMap();
+    }
+
+    public Users getSecuityUtils(){
+        Subject subject=SecurityUtils.getSubject();
+        Users user=(Users) subject.getPrincipal();
+        return user;
     }
 
     /**
@@ -105,10 +117,10 @@ public class InformController {
     @RequestMapping("/getInformTypes")
     @ResponseBody
     public String getInformTypes(HttpServletRequest request){
-        String companyId=request.getParameter("companyId");
+        Users users=this.getSecuityUtils();
         String parent=request.getParameter("parent");
         Map map=new HashMap();
-        map.put("companyId",companyId);
+        map.put("companyId",users.getCompanyId());
         map.put("parent",parent);
         List<InformType> list=informService.getInformType(map);
         return JSON.toJSONString(list);
@@ -119,18 +131,21 @@ public class InformController {
      * @param request
      * @return
      */
+    @RequiresPermissions(value = {"通知类型"},logical = OR)
     @RequestMapping("/getInformTypeList")
     @ResponseBody
     public String getInformTypeList(HttpServletRequest request){
         init();
-        String companyId=request.getParameter("companyId");
         String parent=request.getParameter("parent");
         String page=request.getParameter("page");
         String limit=request.getParameter("limit");
         int rows=Page.getOffSet(page,limit);
+
+        Users users=this.getSecuityUtils();
+
         List<Object> result=new ArrayList<>();
         Map map=new HashMap();
-        map.put("companyId",companyId);
+        map.put("companyId",users.getCompanyId());
         map.put("parent",0);
         List<InformType> total=informService.getInformType(map);
         //查询为0的通知类型
@@ -152,7 +167,7 @@ public class InformController {
             }
         }
         map.clear();
-        map.put("companyId",companyId);
+        map.put("companyId",users.getCompanyId());
         List<InformType> list=informService.getInformType(map);
         Result res=new Result();
         res.setMsg("");
@@ -187,7 +202,7 @@ public class InformController {
     public String addInformType(HttpServletRequest request) {
         String name=request.getParameter("name");
         String parent=request.getParameter("parent");
-        String companyId=request.getParameter("companyId");
+        Users users=this.getSecuityUtils();
         InformType informType=new InformType();
         if(name!=null){
             informType.setName(name);
@@ -197,8 +212,8 @@ public class InformController {
         }else {
             informType.setParent(0);
         }
-        if(companyId!=null){
-            informType.setCompanyId(Integer.parseInt(companyId));
+        if(users!=null){
+            informType.setCompanyId(users.getCompanyId());
         }
         InformType result=informService.getInformTypeByParam(informType);
         if(result==null||result.getId()<=0){
@@ -206,7 +221,7 @@ public class InformController {
             informService.addInformType(informType);
             return JSON.toJSONString("添加成功");
         }
-        return JSON.toJSONString("添加失败");
+        return JSON.toJSONString(Type.CANCEL);
     }
 
     @RequestMapping("/updateInformType")
@@ -214,15 +229,15 @@ public class InformController {
     public String updateInformType(HttpServletRequest request) {
         String id=request.getParameter("id");
         String name=request.getParameter("name");
-        String companyId=request.getParameter("companyId");
         String type=request.getParameter("type");//0:未修改  1:修改
+        Users users=this.getSecuityUtils();
         InformType informType=new InformType();
         if(name!=null){
             informType.setName(name);
         }
         if(type!=null&&type.equals("1")){
-            if(companyId!=null){
-                informType.setCompanyId(Integer.parseInt(companyId));
+            if(users!=null){
+                informType.setCompanyId(users.getCompanyId());
             }
             InformType result=informService.getInformTypeByParam(informType);
             if(result!=null){
@@ -254,11 +269,26 @@ public class InformController {
     @ResponseBody
     public String getInformList(HttpServletRequest request){
         init();
-        String companyId=request.getParameter("companyId");
+        String isactive=request.getParameter("isactive");//1:创建人；2:收件人
         String page=request.getParameter("page");
         String limit=request.getParameter("limit");
+        Users users=this.getSecuityUtils();
+
+        Integer companyId=null;
+        Integer userId=null;
+
         int rows=Page.getOffSet(page,limit);
         Map map=new HashMap();
+        if(users!=null){
+            companyId=users.getCompanyId();
+            userId=users.getId();
+            map.put("userId",userId);
+        }
+        if(isactive!=null&&!isactive.equals("")){
+            map.put("isactive",isactive);
+        }else{
+            map.put("isactive",3);
+        }
         map.put("companyId",companyId);
         List<Inform> total=informService.getInformList(map);
         map.put("pageSize",limit);
@@ -266,12 +296,9 @@ public class InformController {
         List<Inform> list=informService.getInformList(map);
         for (Inform inform:list){
             int company=inform.getCompanyId();
-            int createdBy=inform.getCreatedBy();
             int informTypeId=inform.getInformTypeId();
             String companyName=(String)companyMap.get(company);
             inform.setCompanyName(companyName);
-            String createdByName=usersMap.get(createdBy);
-            inform.setCreatedByName(createdByName);
             String informTypeName=informTypeMap.get(informTypeId);
             inform.setInformTypeName(informTypeName);
         }
@@ -287,44 +314,39 @@ public class InformController {
 
     /**
      * 添加通知
-     * @param session
-     * @param file
+     * @param
+     * @param
      * @return
      */
-    @RequestMapping(value="/addInform",method = RequestMethod.POST)
+    @RequestMapping(value="/addInform")
     @ResponseBody
-    public String addInform(HttpSession session,HttpServletRequest request,@RequestParam("file") MultipartFile file) {
-        String companyId=request.getParameter("companyId");
+    public String addInform(HttpServletRequest request) {
         String content=request.getParameter("content");
         String title=request.getParameter("title");
         String informTypeId=request.getParameter("informTypeId");
-        Integer userId=(Integer) session.getAttribute("userId");
-        String message = "";
-        String filedir;
-        Result result=new Result();
-        result.setCode(0);
+        String filedir=request.getParameter("filedir");
+        String usersId=request.getParameter("usersId");//接受人列表
+
+        Integer userId=null;
+        Integer companyId=null;
+
+        Users users=getSecuityUtils();
+        if(users!=null){
+            userId=users.getId();
+            companyId=users.getCompanyId();
+        }
 
         Inform inform=new Inform();
         if(companyId!=null&&!companyId.equals("")){
-            inform.setCompanyId(Integer.parseInt(companyId));
+            inform.setCompanyId(companyId);
         }else{
-            return JSON.toJSONString("请确认公司");
+            return JSON.toJSONString(Type.CANCEL);
+        }
+        if(filedir!=null&&!filedir.equals("")){
+            inform.setFiledir(filedir);
         }
         if(title!=null&&!title.equals("")){
             inform.setTitle(title);
-        }
-        try {
-            if (file!=null) {
-                message = file.getOriginalFilename();//现在的文件名是时间戳加原文件名
-                String realPath = "D:/123/" + System.currentTimeMillis();//将文件保存在当前工程下的一个upload文件
-                File dir = new File(realPath);
-                FileUtils.copyInputStreamToFile(file.getInputStream(), new File(realPath, message));//将文件的输入流输出到一个新的文件
-                filedir = realPath + "/" + message;
-                inform.setFiledir(filedir);
-            }
-        } catch (Exception e) {
-            result.setMsg("附件上传失败");
-            return JSON.toJSONString(result);
         }
         if(content!=null&&!content.equals("")){
             inform.setContent(content);
@@ -332,10 +354,53 @@ public class InformController {
         if(informTypeId!=null){
             inform.setInformTypeId(Integer.parseInt(informTypeId));
         }
-        inform.setCreatedBy(158);
+        if(userId!=null){
+            inform.setCreatedBy(userId);
+        }
         inform.setCreated(DateFormat.getYMDHMS(new Date()));
-        informService.addInform(inform);
-        result.setMsg("添加成功");
+        int infromId=informService.addInform(inform);
+        Integer informId=inform.getId();
+        //保存接收人
+        if(usersId!=null){
+            String[] userIdStr=usersId.split(",");
+            for (String str:userIdStr){
+                UserInform userInform=new UserInform();
+                userInform.setInformId(informId);
+                userInform.setUserId(Integer.parseInt(str));
+                userInform.setRdStatus(0);
+                userInform.setCreated(DateFormat.getYMDHMS(new Date()));
+                userInformService.addUserInform(userInform);
+            }
+        }
+        return JSON.toJSONString(Type.SUCCESS);
+    }
+
+    @RequestMapping(value = "/uploadFeiles",method = RequestMethod.POST)
+    @ResponseBody
+    public String uploadFeiles(@RequestParam("file") MultipartFile file){
+        String message = "";
+        String filedir;
+        Result result=new Result();
+        try {
+            if (file!=null) {
+                message = file.getOriginalFilename();//现在的文件名是时间戳加原文件名
+                String realPath = "D:/123/" + System.currentTimeMillis();//将文件保存在当前工程下的一个upload文件
+                FileUtils.copyInputStreamToFile(file.getInputStream(), new File(realPath, message));//将文件的输入流输出到一个新的文件
+                filedir = realPath + "/" + message;
+                List list=new ArrayList();
+                list.add(filedir);
+                result.setCode(0);
+                result.setData(list);
+                result.setMsg("success");
+                return JSON.toJSONString(result);
+            }
+        } catch (Exception e) {
+            result.setCode(-1);
+            result.setMsg("error");
+            return JSON.toJSONString(result);
+        }
+        result.setCode(-1);
+        result.setMsg("error");
         return JSON.toJSONString(result);
     }
 
@@ -346,7 +411,7 @@ public class InformController {
      */
     @RequestMapping("/updateInform")
     @ResponseBody
-    public String updateInform(HttpSession session,HttpServletRequest request) {
+    public String updateInform(HttpServletRequest request) {
         String id=request.getParameter("id");
         String content=request.getParameter("content");
         String title=request.getParameter("title");
@@ -445,13 +510,17 @@ public class InformController {
     @ResponseBody
     public String updateStatus(HttpServletRequest request,HttpSession session){
         String informId=request.getParameter("informId");
-        Integer userId=(Integer)session.getAttribute("userId");
-        ReadStatus readStatus=new ReadStatus();
-        readStatus.setCreated(DateFormat.getYMDHMS(new Date()));
-        readStatus.setInformId(Integer.parseInt(informId));
-        readStatus.setRdStatus(1);
-        readStatus.setUserId(158);
-        informService.updateStatus(readStatus);
+        Users users=this.getSecuityUtils();
+        UserInform userInform=new UserInform();
+        if(users!=null){
+            userInform.setUserId(users.getId());
+        }
+        if(informId!=null&&!informId.trim().equals("")){
+            userInform.setInformId(Integer.parseInt(informId));
+        }
+        userInform.setRdDateTime(DateFormat.getYMDHMS(new Date()));
+        userInform.setRdStatus(1);
+        informService.updateStatus(userInform);
         Result result=new Result();
         result.setCode(0);
         result.setMsg("");

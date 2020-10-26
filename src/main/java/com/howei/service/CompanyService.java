@@ -19,4 +19,8 @@ public interface CompanyService {
     Map<Integer,Object> getCompanyMap(String s);
 
     List<Map<String,String>> getDepartmentList(String companyId);
+
+    Company getCompany(Company company);
+
+    List<Map<String,String>> getDepartmentMap(int companyId);
 }

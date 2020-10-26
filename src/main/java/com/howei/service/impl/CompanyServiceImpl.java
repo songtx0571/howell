@@ -65,4 +65,24 @@ public class CompanyServiceImpl  implements CompanyService {
         }
         return result;
     }
+
+    @Override
+    public Company getCompany(Company company) {
+        return companyMaper.getCompany(company);
+    }
+
+    @Override
+    public List<Map<String,String>> getDepartmentMap(int companyId) {
+        List<Company> list=companyMaper.getDepartmentMap(companyId);
+        List<Map<String,String>> result=new ArrayList<>();
+        if(list!=null){
+            for(Company company:list){
+                Map map=new HashMap();
+                map.put("id",company.getId());
+                map.put("name",company.getName());
+                result.add(map);
+            }
+        }
+        return result;
+    }
 }
