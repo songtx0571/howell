@@ -46,4 +46,26 @@
         where id=#{id}
     </update>
 
+    <select id="getEmployeeMap" parameterType="java.util.HashMap" resultType="com.howei.pojo.Employee">
+        select e.id,e.`name` from employee e
+        left join users u on u.employeeId=e.id
+        <where>
+            <if test="state!=null">
+                and u.state=#{state}
+            </if>
+        </where>
+    </select>
+
+    <select id="getEmpListByDepartment" parameterType="int" resultType="com.howei.pojo.Employee">
+        select e.* from employee e
+        left join users u on u.employeeId=e.id
+        left join company c on c.id=u.departmentId
+        <where>
+            u.state=1
+            <if test="id!=null">
+                and c.id=#{id}
+            </if>
+        </where>
+    </select>
+
 </mapper>

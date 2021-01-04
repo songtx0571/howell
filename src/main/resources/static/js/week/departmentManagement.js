@@ -1,30 +1,10 @@
 var path = "";
 $(function () {
     showCompanyInfo();
-    // 定义预处理事件
-    document.body.onmousedown = function (event) {
-        event = event || window.event;
-        var target = event.target || event.srcElement;
-        if (target.type === 'radio'&& target.id=="addHeadquarters") {//确定元素
-            target.previousValue = target.checked;
-            target.value = 0;//本部
-        }
-    };
-    // 定义点击事件
-    document.body.onclick = function (event) {
-        event = event || window.event;
-        var target = event.target || event.srcElement;
-        if (target.type === 'radio' && target.id=="addHeadquarters") {
-            if (target.previousValue) {//根据预处理结果 确定选中取消
-                target.checked = false;
-                target.value = 1;
-            }
-        }
-    };
 });
 // -------------------------公司---------------------------------
-var updataCompanyIsActive = $(".updataCompanyIsActive")[0];
-var updataCompanyId = $(".updataCompanyId")[0];
+var updateCompanyIsActive = $(".updateCompanyIsActive")[0];
+var updateCompanyId = $(".updateCompanyId")[0];
 function showCompanyInfo() {
     $.ajax({
         type: "GET",
@@ -38,9 +18,9 @@ function showCompanyInfo() {
                 var tr = document.createElement("tr");
                 tr.setAttribute("class","companyTr");
                 var isActive = data[i].isactive;
-                updataCompanyIsActive = isActive;
-                var headQuarters = data[i].headQuarters;
-                // updataCompanyId = data[i].id
+                updateCompanyIsActive = isActive;
+                var id = data[i].id;
+                updateCompanyId = data[i].id;
                 var td = "<td class='companyNameB"+i+"'>"+data[i].name+"</td>" +
                     "<td><input type='button' value='启用' class='button openActiveBtn"+i+"' onclick='openActive("+data[i].id+")'  />&nbsp;" +
                     "<input type='button' value='关闭' class='button closeActiveBtn"+i+"' onclick='closeActive("+data[i].id+")'   /></td>" +
@@ -59,7 +39,7 @@ function showCompanyInfo() {
                     $(".openActiveBtn"+i).attr({"disabled":"disabled"});
                     $(".openActiveBtn"+i).css("cursor","no-drop")
                 }
-                if (headQuarters == '0'){// 本部0
+                if (id == '1'){// 本部0
                     $(".companyNameB"+i).css("color", 'red');
                 } else{
                     $(".companyNameB"+i).css("color", '#000');
@@ -73,11 +53,12 @@ function showCompanyInfo() {
 function openActive(id) {
     $.ajax({
         url: path + "updateCompany",//请求地址
-        datatype: "json",//数据格式
+        dataType: "json",//数据格式
         type: "GET",//请求方式
         data: {"id": id, "isactive": 1},
         success: function (data) {
-            if(data == '"success"'){
+            data = data.toLowerCase();
+            if(data == "success"){
                 showCompanyInfo()
             } else if (data == "no") {
                 alert("无法修改")
@@ -91,11 +72,12 @@ function openActive(id) {
 function closeActive(id) {
     $.ajax({
         url: path + "updateCompany",//请求地址
-        datatype: "json",//数据格式
+        dataType: "json",//数据格式
         type: "GET",//请求方式
         data: {"id": id, "isactive": 0},
         success: function (data) {
-            if (data == '"success"') {
+            data = data.toLowerCase();
+            if (data == "success") {
                 showCompanyInfo()
             } else if (data == "no") {
                 alert("无法修改")
@@ -107,32 +89,32 @@ function closeActive(id) {
 }
 // 显示修改公司
 function showUpdataCompany(id) {
-    updataCompanyId = id;
+    updateCompanyId = id;
     $(".updateCompany").css("display", "block");
-    var updataInput = $("#updataInput")[0];
+    var updateInput = $("#updateInput")[0];
     $.ajax({
         url: path + "getCompany",
-        datatype: "json",
+        dataType: "json",
         type: "GET",
         data: {"id": id},
         success: function (data) {
-            updataInput.value = JSON.parse(data).name;
+            updateInput.value = data.name;
         }
     });
 }
 // 修改公司
 function updateCompany(id, name) {
-    id = updataCompanyId;
-    name = $("#updataInput")[0].value;
+    id = updateCompanyId;
+    name = $("#updateInput")[0].value;
     $.ajax({
         url: path + "updateCompany",//请求地址
-        datatype: "json",//数据格式
+        dataType: "json",//数据格式
         type: "GET",//请求方式
         data: {"id": id, "name": name},
         success: function (data) {
-            if(data == '"success"'){
+            data = data.toLowerCase();
+            if(data == "success"){
                 $(".updateCompany").css("display", "none");
-                // location.reload()
                 showCompanyInfo()
             } else if (data == "no") {
                 alert("无法修改")
@@ -149,23 +131,17 @@ function showAddCompany() {
 // 添加公司
 function addCompany() {
     var name = $("#addInput").val();
-    var headQuarters = $("#addHeadquarters")[0];
-    var headQuartersValue = headQuarters.value;
-    if (headQuartersValue == "on"){
-        headQuartersValue = 1;
-    }
     $.ajax({
         url: path + "addCompany",//请求地址
         dataType: "json",//数据格式
         type: "GET",//请求方式
-        data: {"name": name,"type" : 0,"headQuarters":headQuartersValue},
+        data: {"name": name,"type" : 0},
         success: function (data) {
-            if(data == "SUCCESS"){
+            data = data.toLowerCase();
+            if(data == "success"){
                 $(".addCompany").css("display", "none");
                 showCompanyInfo()
-            } else if (data == "haveHeadQuarters") {
-                alert("已存在本部");
-            } else {
+            }else {
                 alert("添加失败，请联系技术人员");
             }
         }
@@ -184,6 +160,8 @@ function showRightDepartment(id) {
             $("#addDepartmentId").val(id);
             //添加部门按钮
             $("#showAddDepartmentBtn").css("display", "block");
+            //部门标题
+            $("#showDepartmentH1").css("display", "block");
             if (data != "0") {
                 // 显示表格
                 $(".departmentTable").css("display", "block");
@@ -194,10 +172,10 @@ function showRightDepartment(id) {
                     tr.setAttribute("class","departmentTr");
                     //是否可用
                     var isActive = data[i].isactive;
-                    var td = "<td>"+data[i].name+"</td><td>"+data[i].codeName+"</td>" +
+                    var td = "<td>"+data[i].name+"</td>" +
                         "<td><input type='button' value='启用' class='button openActiveBtnD"+i+"' onclick='openDepartmentActive("+data[i].id+")' />&nbsp;" +
                         "<input type='button' value='关闭' class='button closeActiveBtnD"+i+"' onclick='closeDepartmentActive("+data[i].id+")' /></td>" +
-                        "<td><input type='button' value='修改' class='button' onclick='showUpdataDepartment("+data[i].id+")' /></td>";
+                        "<td><input type='button' value='修改' class='button' onclick='showUpdateDepartment("+data[i].id+")' /></td>";
                     tr.innerHTML = td;
                     tbody.appendChild(tr);
                     if(isActive == "0") {// 未启用
@@ -220,14 +198,15 @@ function showRightDepartment(id) {
 }
 //启用部门
 function openDepartmentActive(id) {
-    var idC = $("#addDepartmentId").val()
+    var idC = $("#addDepartmentId").val();
     $.ajax({
         url: path + "updateCompany",//请求地址
-        datatype: "json",//数据格式
+        dataType: "json",//数据格式
         type: "GET",//请求方式
         data: {"id": id, "isactive": 1},
         success: function (data) {
-            if(data == '"success"'){
+            data = data.toLowerCase();
+            if(data == "success"){
                 showRightDepartment(idC);
             } else if (data == "no") {
                 alert("无法修改");
@@ -239,14 +218,15 @@ function openDepartmentActive(id) {
 }
 //禁用部门
 function closeDepartmentActive(id) {
-    var idC = $("#addDepartmentId").val()
+    var idC = $("#addDepartmentId").val();
     $.ajax({
         url: path + "updateCompany",//请求地址
-        datatype: "json",//数据格式
+        dataType: "json",//数据格式
         type: "GET",//请求方式
         data: {"id": id, "isactive": 0},
         success: function (data) {
-            if (data == '"success"') {
+            data = data.toLowerCase();
+            if (data == "success") {
                 showRightDepartment(idC)
             } else if (data == "no") {
                 alert("无法修改");
@@ -264,21 +244,21 @@ function showAddDepartment() {
 function addDepartment() {
     var name = $("#addDepartmentInput").val();
     var id = $("#addDepartmentId").val();
-    var codeName = $("#addDepartmentCodeName").val();
-    if (name == "" || codeName == "") {
-        alert("请将消息填写完整")
+    if (name == "") {
+        alert("请将消息填写完整");
         return;
     }
     $.ajax({
         url: path + "addCompany",//请求地址
-        datatype: "json",//数据格式
+        dataType: "json",//数据格式
         type: "GET",//请求方式
-        data: {"name": name, "type" : 1, "parent": id, "codeName": codeName},
+        data: {"name": name, "type" : 1, "parent": id},
         success: function (data) {
-            if(data == '"success"'){
+            data = data.toLowerCase();
+            if(data == "success"){
                 $(".addDepartment").css("display", "none");
                 showRightDepartment(id)
-            } else if (data == "no") {
+            } else if (data == "No") {
                 alert("无法添加")
             } else {
                 alert("添加失败，请联系技术人员")
@@ -287,34 +267,33 @@ function addDepartment() {
     });
 }
 //点击显示修改页面
-function showUpdataDepartment(id) {
-    $(".updataDepartment").css("display", "block");
-    $("#updataDepartmentId").val(id);
+function showUpdateDepartment(id) {
+    $(".updateDepartment").css("display", "block");
+    $("#updateDepartmentId").val(id);
     $.ajax({
         url: path + "getCompany",
         dataType: "json",
         type: "GET",
         data: {"id": id},
         success: function (data) {
-            $("#updataDepartmentInput").val(JSON.parse(data).name);
-            $("#updataDepartmentCodeName").val(JSON.parse(data).codeName);
+            $("#updateDepartmentInput").val(data.name);
         }
     });
 }
 //修改部门
-function updataDepartment(id, name, codeName) {
-    name = $("#updataDepartmentInput").val();
-    id = $("#updataDepartmentId").val();
-    codeName = $("#updataDepartmentCodeName").val();
+function updateDepartment(id, name) {
+    name = $("#updateDepartmentInput").val();
+    id = $("#updateDepartmentId").val();
     $.ajax({
         url: path + "updateCompany",//请求地址
-        datatype: "json",//数据格式
+        dataType: "json",//数据格式
         type: "GET",//请求方式
-        data: {"id": id, "name": name, "codeName": codeName},
+        data: {"id": id, "name": name},
         success: function (data) {
-            if(data == '"success"'){
-                $(".updataDepartment").css("display", "none");
-                $("#updataDepartmentInput").val("");
+            data = data.toLowerCase();
+            if(data == "success"){
+                $(".updateDepartment").css("display", "none");
+                $("#updateDepartmentInput").val("");
                 showRightDepartment($("#addDepartmentId").val())
             } else if (data == "no") {
                 alert("无法修改")
@@ -329,5 +308,5 @@ function cancel() {
     $(".updateCompany").css("display", "none");
     $(".addCompany").css("display", "none");
     $(".addDepartment").css("display", "none");
-    $(".updataDepartment").css("display", "none")
+    $(".updateDepartment").css("display", "none")
 }

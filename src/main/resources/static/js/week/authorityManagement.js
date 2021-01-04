@@ -2,8 +2,8 @@ var path = "";
 //全局变量
 var developId = "";
 var updRoleId = "";
+var authoritys = "";
 $(function () {
-
 });
 //将字符串转化为json
 function strToJson(str){
@@ -50,7 +50,6 @@ function showDevelop() {
         });
         //工具列点击事件
         treeTable.on('tool(demoTreeTb)', function (obj) {
-            console.log(obj.data);
             var data = obj.data;
             var event = obj.event;
              if (event === 'edit') {
@@ -195,7 +194,7 @@ function showAuthorityList() {
         var table = layui.table;
         table.render({
             elem: '#test4'
-            ,height: 'full'
+            ,height: '700'
             ,url: path + '/getRoleAuthorityList' //数据接口
             ,page: true //开启分页
             ,limit: 10
@@ -219,8 +218,8 @@ function showAuthorityList() {
             //修改值
             $("#updAuthorityRole").val(data.roleName);
             updRoleId = data.id;
-            showUpdAuthority();
             if (obj.event === 'edit1') {// 修改权限
+                showUpdAuthority();
                 layui.use('layer', function() { //独立版的layer无需执行这一句
                     var $ = layui.jquery, layer = layui.layer; //独立版的layer无需执行这一句
                     layer.open({
@@ -264,11 +263,10 @@ function showAuthorityList() {
 //修改权限页面
 function showUpdAuthority() {
     var roleId = updRoleId;
-    layui.use(['tree', 'util'], function(){
-        var $ = layui.jquery
-            ,tree = layui.tree
-            ,layer = layui.layer
-            ,util = layui.util;
+    var demoData = "";
+    layui.use(['element','layer', 'dtree'], function(){
+        var dtree1 = layui.dtree,
+        $ = layui.$;
         $.ajax({
             url:path + "/getAuthorityURLMap",
             data: {id: roleId},
@@ -276,61 +274,45 @@ function showUpdAuthority() {
             dataType:"json",
             async:false,
             success:function(result){
-                var list = result?result:null;
-                tree.render({
-                    elem: '#test12'
-                    ,data: list
-                    ,showCheckbox: true  //是否显示复选框
-                    ,id: 'demoId1'
-                    ,click: function(obj){
-                        var data = obj.data;  //获取当前点击的节点数据
-                    }
-                });
-            }
-        });
-        //按钮事件
-        util.event('lay-demo', {
-            getChecked: function(othis){
-                var checkedData = tree.getChecked('demoId1'); //获取选中节点的数据
-                var roleId = updRoleId;
-                var authoritysId = "";
-                for (var i = 0; i < checkedData.length; i ++) {
-                    authoritysId += checkedData[i].id +",";
-                    if (checkedData[i].children != undefined){
-                        for (var j = 0; j < checkedData[i].children.length; j ++) {
-                            authoritysId += checkedData[i].children[j].id + ",";
-                            if (checkedData[i].children[j].children != undefined) {
-                                for (var k = 0; k < checkedData[i].children[j].children.length; k++) {
-                                    authoritysId += checkedData[i].children[j].children[k].id + ",";
-                                    if (checkedData[i].children[j].children[k].children != undefined) {
-                                        for (var l = 0; l < checkedData[i].children[j].children[k].children.length; l++) {
-                                            authoritysId += checkedData[i].children[j].children[k].children[l].id + ",";
-                                            if (checkedData[i].children[j].children[k].children[l].children != undefined) {
-                                                for (var m = 0; m < checkedData[i].children[j].children[k].children[l].children.length; m++) {
-                                                    authoritysId += checkedData[i].children[j].children[k].children[l].children[m].id + ",";
-                                                }
-                                            }
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    }
+                var node = result?result:null;
+                if (node!=null) {
+                    demoData=node;
                 }
-                authoritysId = authoritysId.substring(0,authoritysId.length-1);
-                var authoritys = "["+authoritysId+"]";
-                $.ajax({
-                    type:'POST',
-                    dataType: "json",//数据格式
-                    url:path + "/distributeRoleAuthority",
-                    data:{"roleId": roleId, "authoritys": authoritys},
-                    success:function(data){
-                        backDatd(data,showAuthorityList);
-                    }
-                });
             }
         });
+        var DTreeNode  = dtree1.render({
+            elem: "#demoTree1",  //绑定元素
+            checkbar: true,
+            data: demoData,  //数据
+            checkbarData: "choose"
+        });
+        // 绑定节点点击事件
+        dtree1.on("node(demoTree1)", function(obj){
+            var nodeId = obj.param.nodeId;
 
+            DTreeNode.clickNodeCheckbar(nodeId);// 点击节点选中复选框
+
+            var checkedData = dtree1.getCheckbarNodesParam("demoTree1");
+            var authoritysId = "";
+            for (var i = 0; i < checkedData.length; i ++) {
+                authoritysId += checkedData[i].nodeId + ",";
+            }
+            authoritysId = authoritysId.substring(0,authoritysId.length-1);
+            authoritys = "["+authoritysId+"]";
+        });
+    });
+}
+//确定修改
+function getChecked() {
+    var roleId = updRoleId;
+    $.ajax({
+        type:'POST',
+        dataType: "json",//数据格式
+        url:path + "/distributeRoleAuthority",
+        data:{"roleId": roleId, "authoritys": authoritys},
+        success:function(data){
+            backDatd(data,showAuthorityList);
+        }
     });
 }
 //关闭

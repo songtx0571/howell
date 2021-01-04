@@ -30,10 +30,10 @@
         <%--修改公司页面--%>
         <div class="updateCompany">
             <h1 style="text-align: center;margin-bottom: 30px">修改公司</h1>
-            <input type="hidden" id='updataCompanyId'/>
-            <input type="hidden" id='updataCompanyIsActive'/>
+            <input type="hidden" id='updateCompanyId'/>
+            <input type="hidden" id='updateCompanyIsActive'/>
             <span>公司名称:</span>
-            <input type="text" id="updataInput">
+            <input type="text" id="updateInput">
             <div style="clear: both"></div>
             <div class="btnBox">
                 <button onclick="updateCompany(id)">确定</button>
@@ -46,9 +46,6 @@
             <span>公司名称:</span>
             <input type="text" id="addInput">
             <div style="clear: both"></div>
-            <span>本部:</span>
-            <input type="radio" id="addHeadquarters" name="addHeadquarters" style="width: 50px;height: 20px;margin-top: 15px;">
-            <div style="clear: both"></div>
             <div class="btnBox">
                 <button onclick="addCompany()">确定</button>
                 <button onclick="cancel()">取消</button>
@@ -57,14 +54,13 @@
     </div>
     <%--部门--%>
     <div class="right">
-        <h1 style="text-align: center;margin-bottom: 20px">部门信息</h1>
+        <h1 id="showDepartmentH1">部门信息</h1>
         <button class="addBtn" onclick="showAddDepartment()" id="showAddDepartmentBtn">添加部门</button>
         <table class="departmentTable">
             <thead>
             <tr>
                 <th>部门名称</th>
-                <th style="width: 5%">代号</th>
-                <th style="width: 52%;">状态</th>
+                <th style="width: 65%;">状态</th>
                 <th style="width: 8%;">操作</th>
             </tr>
             </thead>
@@ -81,39 +77,26 @@
                 <input type="hidden" id='addDepartmentId'/>
             </div>
             <div style="clear: both"></div>
-            <div>
-                <span>部门代号:</span>
-                <input type="text" id="addDepartmentCodeName">
-            </div>
-            <div style="clear: both"></div>
             <div class="btnBox">
                 <button onclick="addDepartment()">确定</button>
                 <button onclick="cancel()">取消</button>
             </div>
         </div>
         <%--修改部门页面--%>
-        <div class="updataDepartment">
+        <div class="updateDepartment">
             <h1 style="text-align: center;margin-bottom: 30px">修改部门</h1>
             <div>
                 <span>部门名称:</span>
-                <input type="text" id="updataDepartmentInput">
-                <input type="hidden" id='updataDepartmentId'/>
-            </div>
-            <div style="clear: both"></div>
-            <div>
-                <span>部门代号:</span>
-                <input type="text" id="updataDepartmentCodeName">
+                <input type="text" id="updateDepartmentInput">
+                <input type="hidden" id='updateDepartmentId'/>
             </div>
             <div style="clear: both"></div>
             <div class="btnBox">
-                <button onclick="updataDepartment()">确定</button>
+                <button onclick="updateDepartment()">确定</button>
                 <button onclick="cancel()">取消</button>
             </div>
         </div>
     </div>
 </div>
-<script>
-
-</script>
 </body>
 </html>

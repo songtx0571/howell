@@ -10,6 +10,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.web.bind.annotation.CrossOrigin;
 
 import java.util.Properties;
+import java.util.Random;
 
 @SpringBootApplication
 @MapperScan("com.howei.mapper")

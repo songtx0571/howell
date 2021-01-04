@@ -12,7 +12,6 @@ public class Company {
     private int isactive;
     private int parent;
     private String codeName;//代号
-    private int headQuarters;//标识是否为本部
 
     public int getId() {
         return id;
@@ -70,11 +69,4 @@ public class Company {
         this.codeName = codeName;
     }
 
-    public int getHeadQuarters() {
-        return headQuarters;
-    }
-
-    public void setHeadQuarters(int headQuarters) {
-        this.headQuarters = headQuarters;
-    }
 }

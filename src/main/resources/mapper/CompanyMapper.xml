@@ -10,7 +10,6 @@
         <result column="isactive" property="isactive"></result>
         <result column="parent" property="parent"></result>
         <result column="codeName" property="codeName"></result>
-        <result column="headQuarters" property="headQuarters"></result>
     </resultMap>
 
     <select id="getCompanyList" resultType="com.howei.pojo.Company" parameterType="java.lang.String">
@@ -38,8 +37,8 @@
     </update>
 
     <insert id="addCompany" parameterType="com.howei.pojo.Company" keyProperty="id" useGeneratedKeys="true">
-        insert into company(name,created,createdBy,isactive,parent,codeName,headQuarters) value
-        (#{name},#{created},#{createdBy},#{isactive},#{parent},#{codeName},#{headQuarters})
+        insert into company(name,created,createdBy,isactive,parent,codeName) value
+        (#{name},#{created},#{createdBy},#{isactive},#{parent},#{codeName})
     </insert>
 
     <select id="getCodeNameList" parameterType="java.lang.String" resultType="com.howei.pojo.Company">
@@ -62,12 +61,13 @@
 
     <select id="getCompany" parameterType="com.howei.pojo.Company" resultType="com.howei.pojo.Company">
         select * from company where 1=1
-        <if test="headQuarters!=null">
-            and headQuarters=#{headQuarters}
-        </if>
     </select>
 
     <select id="getDepartmentMap" parameterType="java.lang.Integer" resultType="com.howei.pojo.Company">
         select * from company where parent=#{parent}
+    </select>
+
+    <select id="getAllDepartmentList" resultType="com.howei.pojo.Company">
+        select * from company where parent!=0
     </select>
 </mapper>

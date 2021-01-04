@@ -6,6 +6,10 @@ import com.howei.service.EmployeeService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 @Service
 public class EmployeeServiceImpl implements EmployeeService {
 
@@ -20,5 +24,15 @@ public class EmployeeServiceImpl implements EmployeeService {
     @Override
     public int homeUpdEmployee(Employee employee) {
         return employeeMapper.homeUpdEmployee(employee);
+    }
+
+    @Override
+    public List<Employee> getEmployeeMap(Map hashMap) {
+        return employeeMapper.getEmployeeMap(hashMap);
+    }
+
+    @Override
+    public List<Employee> getEmpListByDepartment(int id) {
+        return employeeMapper.getEmpListByDepartment(id);
     }
 }

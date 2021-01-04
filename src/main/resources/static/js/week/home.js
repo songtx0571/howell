@@ -47,6 +47,11 @@ function authorityManagement(){
 function homePopup(data) {
     $iframeRight.attr("src", "homePopup?data=" + data);
 }
-
-
-
+//通讯
+function message() {
+    $iframeRight.attr("src", "index");
+}
+//通讯管理
+function messageManagement() {
+    $iframeRight.attr("src", "messageManagement");
+}

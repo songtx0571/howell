@@ -45,11 +45,10 @@ function fillRole () {
             tbody.innerHTML = "";
             for(var i=0;i<data.length;i++){
                 var tr = document.createElement("tr");
-
                 tr.setAttribute("class","roleTr");
                 var td = "<td>"+data[i].roleName+"</td><td>"+data[i].departmentName+"</td><td>"+data[i].description+"</td><td>" +
-                       + "<shiro:hasPermission name='修改角色'><input type='button' value='修改'  class='layui-btn' onclick='showUpdateRoleDiv("+data[i].id+")' /></shiro:hasPermission>" +
-                       + "<shiro:hasPermission name='删除角色'><input type='button' value='删除' class='layui-btn' onclick='delRole("+data[i].id+")'/></shiro:hasPermission></td>";
+                    "<shiro:hasPermission name='修改角色'><input type='button' value='修改'  class='layui-btn' onclick='showUpdateRoleDiv("+data[i].id+")' /></shiro:hasPermission>&nbsp;&nbsp;" +
+                    "<shiro:hasPermission name='删除角色'><input type='button' value='删除' class='layui-btn' onclick='delRole("+data[i].id+")'/></shiro:hasPermission></td>";
                 tr.innerHTML = td;
                 tbody.appendChild(tr);
             }
@@ -168,7 +167,7 @@ function delRole(id) {
 function showRolePermission(id) {
     $("#permissionRoleId").val(id)
     $(".white_content1")[0].style.display = "block"
-    fillPermission()
+    fillPermission();
     setTimeout(function () {
         fillChecked(id);
     }, 1000);

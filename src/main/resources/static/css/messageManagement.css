@@ -1,0 +1,46 @@
+*{
+    margin: 0;
+    padding: 0;
+    font-family: "PingFang SC","Lantinghei SC","Microsoft YaHei","HanHei SC","Helvetica Neue","Open Sans",Arial,"Hiragino Sans GB","微软雅黑",STHeiti,"WenQuanYi Micro Hei",SimSun,sans-serif;
+}
+li{
+    list-style: none;
+}
+a{
+    text-decoration: none;
+}
+body{
+    height: 100%;
+    width: 100%;
+    overflow: scroll;
+}
+body::-webkit-scrollbar{
+    display: none;
+}
+.warp{
+    padding-left: 20px;
+    box-sizing: border-box;
+}
+.top{
+    width: 99%;
+    margin: 0 auto;
+    font-size: 20px;
+}
+.navList1{
+    width: 100%;
+    line-height: 50px;
+    margin-top: 20px;
+    display: flex;
+    justify-content: space-around;
+    background: gainsboro;
+    border-radius: 25px;
+    margin-bottom: 12px;
+}
+.navList1 li{
+    float: left;
+    width: 135px;
+    text-align: center;
+}
+.navList1 li a:hover{
+    color: #761c19;
+}

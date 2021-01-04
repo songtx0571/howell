@@ -26,27 +26,24 @@ $(function () {
                 , page: {
                     curr: 1
                 } //开启分页
-                ,limit: 30
+                ,limit: 100
                 ,id: 'testReload'
-                ,limits: [30, 60, 90]
+                ,limits: [100,150]
                 ,cols: [[ //表头
-                    {field: 'userNumber', title: '编号', width:80,sort:true}
-                    ,{field: 'userName', title: '姓名', width:100}
-                    ,{field: 'sexName', title: '性别', width:80}// 1男
-                    ,{field: 'phone', title: '联系方式'}
-                    ,{field: 'email', title: '邮箱'}
-                    ,{field: 'stateName', title: '在职状态', width: 100, sort: true}// 1 在职
-                    ,{field: 'companyName', title: '公司'}
-                    ,{field: 'departName', title: '部门'}
-                    ,{field: 'postName', title: '岗位'}
-                    ,{fixed: '', title:'操作', toolbar: '#barDemo11', width:70,align:'center '}
+                    {field: 'userNumber', title: '编号', width:80,sort:true,align:'center'}
+                    ,{field: 'userName', title: '姓名', width:80,align:'center'}
+                    ,{field: 'sexName', title: '性别', width:60,align:'center'}// 1男
+                    ,{field: 'phone', title: '联系方式',align:'center'}
+                    ,{field: 'email', title: '邮箱',align:'center'}
+                    ,{field: 'stateName', title: '状态', width: 80, sort: true,align:'center'}// 1 在职
+                    ,{field: 'companyName', title: '公司',align:'center'}
+                    ,{field: 'departName', title: '部门',align:'center'}
+                    ,{field: 'postName', title: '岗位',align:'center'}
+                    ,{field: 'roleName', title: '角色', width: 260,align:'center'}
+                    ,{fixed: '', title:'操作', toolbar: '#barDemo11', width:70,align:'center'}
                 ]]
-                , parseData: function(res) {
-                    // alert("权限认证失败");demo
-                }
-                ,done: function(res, curr, count){
-                    // alert("权限认证失败");
-                }
+                , parseData: function(res) {}
+                ,done: function(res, curr, count){}
             });
             //监听行工具事件
             table.on('tool(test)', function(obj) {
@@ -115,26 +112,29 @@ function showUserTable(page,companyId) {
             ,page: {
                 curr: page //重新从第 1 页开始
             }
-            ,limit: 30
+            ,limit: 100
             ,id: 'testReload'
-            ,limits: [30, 60, 90]
+            ,limits: [100, 150]
             ,cols: [[ //表头
-                {field: 'userNumber', title: '编号', width:80,sort:true}
-                ,{field: 'userName', title: '姓名', width:100}
-                ,{field: 'sexName', title: '性别', width:80}// 1男
-                ,{field: 'phone', title: '联系方式'}
-                ,{field: 'email', title: '邮箱'}
-                ,{field: 'stateName', title: '在职状态', width: 100, sort: true}// 1 在职
-                ,{field: 'companyName', title: '公司'}
-                ,{field: 'departName', title: '部门'}
-                ,{field: 'postName', title: '岗位'}
-                ,{fixed: '', title:'操作', toolbar: '#barDemo11', width:70,align:'center '}
+                {field: 'userNumber', title: '编号', width:80,sort:true,align:'center'}
+                ,{field: 'userName', title: '姓名', width:80,align:'center'}
+                ,{field: 'sexName', title: '性别', width:60,align:'center'}// 1男
+                ,{field: 'phone', title: '联系方式',align:'center'}
+                ,{field: 'email', title: '邮箱',align:'center'}
+                ,{field: 'stateName', title: '状态', width: 80, sort: true,align:'center'}// 1 在职
+                ,{field: 'companyName', title: '公司',align:'center'}
+                ,{field: 'departName', title: '部门',align:'center'}
+                ,{field: 'postName', title: '岗位',align:'center'}
+                ,{field: 'roleName', title: '角色', width: 260,align:'center'}
+                ,{fixed: '', title:'操作', toolbar: '#barDemo11', width:70,align:'center'}
             ]]
             , parseData: function(res) {
-                // alert("权限认证失败");demo
+                // alert("权限认证失败
+                //
+                // ");demo
             }
-            ,done: function(res, curr, count){
-                // alert("权限认证失败");
+            ,done: function(res, curr, count) {
+
             }
         });
         //监听行工具事件
@@ -187,19 +187,25 @@ function showCompany() {
             success: function(data){
                 data = data.data;
                 $("#companyList").empty();
+                $("#companyList1").empty();
                 $("#updCompanyList").empty();
                 var option="<option value='' >请选择公司名称</option>";
                 for (var i = 0; i < data.length; i ++) {
                     option += "<option value='"+data[i].id+"'>"+data[i].name+"</option>";
                 }
                 $('#companyList').append(option);
+                $("#companyList1").append(option);
                 $('#updCompanyList').append(option);
                 form.render();//菜单渲染 把内容加载进去
             }
         });
-        form.on('select(companyList)', function(data){
+        form.on('select(companyList1)', function(data){
             $(".layui-form ").css("display", "block");
             $("#companyIdHidden").val(data.value);//得到被选中的值
+        });
+        form.on('select(companyList)', function(data){
+            $("#addCompanyListHidden").val(data.value);//得到被选中的值
+            showAddDepartmentPost();
         });
         form.on('select(updCompanyList)', function(data){
             $("#updCompanyListHidden").val(data.value);
@@ -263,15 +269,51 @@ function showDepartmentPost(companyId) {
             data: {"parent": companyId},
             success: function (data) {
                 data = data.data;
-                $("#departmentList").empty();
                 $("#departmentId").empty();
                 var option = "";
                 var option = "<option value='0' >请选择部门名称</option>"
                 for (var i = 0; i < data.length; i++) {
                     option += "<option value='" + data[i].id + "'>" + data[i].name + "</option>"
                 }
-                $('#departmentList').html(option);
                 $('#departmentId').html(option);
+                form.render();//菜单渲染 把内容加载进去
+            }
+        });
+        $.ajax({
+            type: "GET",
+            url: path + "/user/getPostList",
+            dataType: "json",
+            data: {"companyId": $("#companyIdHidden").val()},
+            success: function (data) {
+                $("#postId").empty();
+                var option = "<option value='0' >请选择岗位名称</option>";
+                for (var i = 0; i < data.length; i++) {
+                    option += "<option value='" + data[i].id + "'>" + data[i].name + "</option>";
+                }
+                $('#postId').html(option);
+                form.render();//菜单渲染 把内容加载进去
+            }
+        });
+    });
+}
+//显示添加页面部门岗位
+function showAddDepartmentPost() {
+    layui.use(['form'], function() {
+        var form = layui.form;
+        $.ajax({
+            type: "GET",
+            url: path + "/user/getCompanyList",
+            dataType: "json",
+            data: {"parent": $("#addCompanyListHidden").val()},
+            success: function (data) {
+                data = data.data;
+                $("#departmentList").empty();
+                var option = "";
+                var option = "<option value='0' >请选择部门名称</option>"
+                for (var i = 0; i < data.length; i++) {
+                    option += "<option value='" + data[i].id + "'>" + data[i].name + "</option>"
+                }
+                $('#departmentList').html(option);
                 form.render();//菜单渲染 把内容加载进去
             }
         });
@@ -282,16 +324,14 @@ function showDepartmentPost(companyId) {
             type: "GET",
             url: path + "/user/getPostList",
             dataType: "json",
-            data: {"companyId": $("#companyIdHidden").val()},
+            data: {"companyId": $("#addCompanyListHidden").val()},
             success: function (data) {
                 $("#postList").empty();
-                $("#postId").empty();
                 var option = "<option value='0' >请选择岗位名称</option>";
                 for (var i = 0; i < data.length; i++) {
                     option += "<option value='" + data[i].id + "'>" + data[i].name + "</option>";
                 }
                 $('#postList').html(option);
-                $('#postId').html(option);
                 form.render();//菜单渲染 把内容加载进去
             }
         });
@@ -334,7 +374,7 @@ function addBtn() {
         //点我触发
         laydate.render({
             elem: '#test25'
-            ,eventElem: '#test25-1'
+            ,eventElem: '#test25'
             ,trigger: 'click'
         });
         layer.open({
@@ -363,7 +403,7 @@ function addUser() {
     noDisabledSelect();//启用公司下拉框
     var departmentIdHidden = $("#departmentIdHidden").val();//部门
     var postIdHidden = $("#postIdHidden").val();//岗位
-    var companyIdHidden = $("#companyIdHidden").val();//公司
+    var companyIdHidden = $("#addCompanyListHidden").val();//公司
     var roles="["+$("#addRoleListHidden").val()+"]";//角色
     if($("#userNumber").val()== "") {
         $("#userNumberSamp").css("display","block");
@@ -376,8 +416,9 @@ function addUser() {
         $("#departmentSamp").css("display","none");
         return;
     }
-    if (postIdHidden == ""){
-        $("#postSamp").css("display","block");
+    if (companyIdHidden == ""){
+        $("#companySamp").css("display","block");
+        $("#postSamp").css("display","none");
         $("#userNumberSamp").css("display","none");
         $("#userNameSamp").css("display","none");
         $("#departmentSamp").css("display","none");
@@ -388,6 +429,15 @@ function addUser() {
         $("#userNumberSamp").css("display","none");
         $("#userNameSamp").css("display","none");
         $("#postSamp").css("display","none");
+        $("#companySamp").css("display","none");
+        return;
+    }
+    if (postIdHidden == ""){
+        $("#companySamp").css("display","none");
+        $("#postSamp").css("display","block");
+        $("#userNumberSamp").css("display","none");
+        $("#userNameSamp").css("display","none");
+        $("#departmentSamp").css("display","none");
         return;
     }
     $.ajax({
@@ -399,14 +449,7 @@ function addUser() {
             layer.closeAll();
             if (data == "success") {
                 showUserTable(1,$("#companyIdHidden").val());
-                $("#email").val("");
-                $("#phone").val("");
-                $("#userNumberInput").val("");
-                $("#userName").val("");
-                $("#userNumberSamp").css("display","none");
-                $("#userNameSamp").css("display","none");
-                $("#postSamp").css("display","none");
-                $("#departmentSamp").css("display","none");
+                resetFun();
                 noDisabledSelect();//启用公司下拉框
             }else if(data == "haveNumber"){
                 alert("该编号已存在");
@@ -452,7 +495,12 @@ function showUpdate() {
 function updUser() {
     layer.closeAll();
     var userId = $("#userIdHidden").val();
-    var roles="["+$("#updRoleListHidden").val()+"]";
+    var roles = "";
+    if ($("#updRoleListHidden").val() == "" || $("#updRoleListHidden").val() == null){
+
+    } else {
+        roles = "["+$("#updRoleListHidden").val()+"]";
+    }
     $.ajax({
         type: "GET",
         url: path + "/user/updateUser",
@@ -468,7 +516,38 @@ function updUser() {
         }
     });
 }
+//重置
+function resetFun() {
+    $("#email").val("");
+    $("#phone").val("");
+    $("#userNumber").val("");
+    $("#userName").val("");
+    $("#userNumberSamp").css("display","none");
+    $("#userNameSamp").css("display","none");
+    $("#postSamp").css("display","none");
+    $("#departmentSamp").css("display","none");
+    $("#companySamp").css("display","none");
+    layui.use('form', function(){
+        var form = layui.form;
+        $("#companyList").val("0");
+        $("#departmentList").val("0");
+        $("#postList").val("0");
+        $("#test25").val("");
+        form.render('select');
+        form.render(); //更新全部
+    });
+    layui.use(['jquery', 'formSelects'], function () {
+        var formSelects = layui.formSelects;
+        formSelects.config('tags2', {
+            keyName: 'name',
+            keyVal: 'id',
+        }).data('tags2', 'server', {
+            url: path + '/user/getRolesMap'
+        });
+    });
+}
 // 取消
 function cancel() {
+    resetFun();
     layer.closeAll();
 }

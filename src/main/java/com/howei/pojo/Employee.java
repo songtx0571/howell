@@ -28,17 +28,63 @@ public class Employee {
     private String address;//住址
     private String created;
     private int createdBy;
-    //private String projectId;
-    //private String postId;//岗位
-    //private int state;//在职
-    //private String sex;//性别
-    //private int department;//部门
+    private String sign;//个性签名
 
     //虚字段
     private String sexName;
     private String departmentName;
     private String postName;//岗位
     private String companyName;
+
+    private String username;
+    private String avatar;//头像
+    private String type;//聊天类型
+    private String status;//状态
+    private String toId;//接受方Id
+    private String content;//发送内容
+
+    @Override
+    public String toString() {
+        return "Employee{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", userNumber='" + userNumber + '\'' +
+                ", idNumber='" + idNumber + '\'' +
+                ", bank='" + bank + '\'' +
+                ", card='" + card + '\'' +
+                ", phone='" + phone + '\'' +
+                ", closhe='" + closhe + '\'' +
+                ", hat='" + hat + '\'' +
+                ", laowupaiqian='" + laowupaiqian + '\'' +
+                ", education='" + education + '\'' +
+                ", credentials1='" + credentials1 + '\'' +
+                ", credentials2='" + credentials2 + '\'' +
+                ", credentials3='" + credentials3 + '\'' +
+                ", entryDate='" + entryDate + '\'' +
+                ", poision='" + poision + '\'' +
+                ", emergency='" + emergency + '\'' +
+                ", emergencyTel='" + emergencyTel + '\'' +
+                ", remark='" + remark + '\'' +
+                ", wages='" + wages + '\'' +
+                ", basicwages='" + basicwages + '\'' +
+                ", meritpay='" + meritpay + '\'' +
+                ", manager='" + manager + '\'' +
+                ", address='" + address + '\'' +
+                ", created='" + created + '\'' +
+                ", createdBy=" + createdBy +
+                ", sign='" + sign + '\'' +
+                ", sexName='" + sexName + '\'' +
+                ", departmentName='" + departmentName + '\'' +
+                ", postName='" + postName + '\'' +
+                ", companyName='" + companyName + '\'' +
+                ", username='" + username + '\'' +
+                ", avatar='" + avatar + '\'' +
+                ", type='" + type + '\'' +
+                ", status='" + status + '\'' +
+                ", toId='" + toId + '\'' +
+                ", content='" + content + '\'' +
+                '}';
+    }
 
     public Integer getId() {
         return id;
@@ -278,5 +324,61 @@ public class Employee {
 
     public void setCreatedBy(int createdBy) {
         this.createdBy = createdBy;
+    }
+
+    public String getSign() {
+        return sign;
+    }
+
+    public void setSign(String sign) {
+        this.sign = sign;
+    }
+
+    public String getUsername() {
+        return username;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
+    }
+
+    public String getAvatar() {
+        return avatar;
+    }
+
+    public void setAvatar(String avatar) {
+        this.avatar = avatar;
+    }
+
+    public String getType() {
+        return type;
+    }
+
+    public void setType(String type) {
+        this.type = type;
+    }
+
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
+    }
+
+    public String getToId() {
+        return toId;
+    }
+
+    public void setToId(String toId) {
+        this.toId = toId;
+    }
+
+    public String getContent() {
+        return content;
+    }
+
+    public void setContent(String content) {
+        this.content = content;
     }
 }

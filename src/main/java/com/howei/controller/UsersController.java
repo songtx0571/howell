@@ -49,11 +49,21 @@ public class UsersController {
         postMap=postService.getPostMap();
     }
 
+
     public Users getPrincipal(){
         Subject subject=SecurityUtils.getSubject();
         Users users=(Users) subject.getPrincipal();
         return users;
     }
+
+    @RequestMapping("/getPrincipal")
+    @ResponseBody
+    public String getPrincipal1(){
+        Subject subject=SecurityUtils.getSubject();
+        Users users=(Users) subject.getPrincipal();
+        return users.getUserName();
+    }
+
     /**
      * 获取公司|部门列表
      * @param request
@@ -178,6 +188,22 @@ public class UsersController {
         map.put("pageSize",limit);
         map.put("page",rows);
         List<Users> list=userService.getUserList(map);
+        if(list!=null){
+            for (Users user:list) {
+                List<Role> rolesList=user.getRoles();
+                String roles="";
+                for(int i=0;i<rolesList.size();i++){
+                    Role role=rolesList.get(i);
+                    if(i<3){
+                        roles+=role.getRoleName()+",";
+                    }
+                }
+                if(!roles.equals("")){
+                    roles=roles.substring(0,roles.length()-1);
+                }
+                user.setRoleName(roles);
+            }
+        }
         Result result=new Result();
         result.setData(list);
         result.setCode(0);
@@ -228,8 +254,6 @@ public class UsersController {
         if(users!=null){
             employeeId=users.getEmployeeId();
         }
-        employeeId=240;
-        companyId="1";
         Users user=new Users();
         Employee employee=new Employee();
         if(companyId!=null&&!companyId.equals("")){
@@ -286,7 +310,6 @@ public class UsersController {
             return JSON.toJSONString("操作失败,请联系技术人员");
         }
         userService.addEmployee(employee);
-        System.out.println(employee.getId());
         if(employee.getId()!=-1){
             user.setEmployeeId(employee.getId());
             userService.addUser(user);
@@ -387,6 +410,22 @@ public class UsersController {
         map.put("page",rows);
         map.put("pageSize",pageSize);
         List<Users> list=userService.searchUsersList(map);
+        if(list!=null){
+            for (Users user:list) {
+                List<Role> rolesList=user.getRoles();
+                String roles="";
+                for(int i=0;i<rolesList.size();i++){
+                    Role role=rolesList.get(i);
+                    if(i<3){
+                        roles+=role.getRoleName()+",";
+                    }
+                }
+                if(!roles.equals("")){
+                    roles=roles.substring(0,roles.length()-1);
+                }
+                user.setRoleName(roles);
+            }
+        }
         Result result=new Result();
         result.setCode(0);
         result.setCount(total.size());

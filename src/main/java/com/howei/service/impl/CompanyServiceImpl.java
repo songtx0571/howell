@@ -85,4 +85,9 @@ public class CompanyServiceImpl  implements CompanyService {
         }
         return result;
     }
+
+    @Override
+    public List<Company> getAllDepartmentList() {
+        return companyMaper.getAllDepartmentList();
+    }
 }

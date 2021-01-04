@@ -26,5 +26,7 @@ public interface CompanyMaper {
 
     Company getCompany(Company company);
 
-    List<Company> getDepartmentMap(@Param("parent")int parent);
+    List<Company> getDepartmentMap(@Param("parent") int parent);
+
+    List<Company> getAllDepartmentList();
 }

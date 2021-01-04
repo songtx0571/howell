@@ -1,6 +1,7 @@
 package com.howei.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.howei.util.MD5;
 import com.howei.util.MenuTree;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authc.UsernamePasswordToken;
@@ -17,16 +18,20 @@ import com.howei.service.MenuService;
 import com.howei.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.ModelAndView;
 
+import javax.rmi.CORBA.Util;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
+import java.io.UnsupportedEncodingException;
+import java.security.NoSuchAlgorithmException;
 import java.util.*;
 
 import static org.apache.shiro.authz.annotation.Logical.OR;
 
 @Controller
-//@CrossOrigin(origins={"http://192.168.1.27:8080","http:localhost:8080","http://192.168.1.27:8848"},allowCredentials = "true")
+@CrossOrigin(origins={"http://192.168.1.27:8080","http:localhost:8080","http://192.168.1.27:8848"},allowCredentials = "true")
 public class HomeController{
 
     @Autowired
@@ -104,8 +109,30 @@ public class HomeController{
         return "authorityManagement";
     }
 
+    // 通讯管理
+    @RequestMapping("/messageManagement")
+    public String toMessageManagement(){
+        return "messageManagement";
+    }
+
+    // 群组管理
+    @RequestMapping("/groupManagement")
+    public String toGroupManagement(){
+        return "groupManagement";
+    }
+
+
+
     @RequestMapping("/")
     public String index(HttpSession session){
+        if(session.getAttribute("userId")!=null){
+            return "home";
+        }
+        return "login";
+    }
+
+    @RequestMapping("/login")
+    public String login(HttpSession session){
         if(session.getAttribute("userId")!=null){
             return "home";
         }
@@ -117,12 +144,14 @@ public class HomeController{
      * @return
      */
     @RequestMapping("/logout")
-    public String logOut(){
+    public String logOut(HttpServletResponse response){
         Subject subject = SecurityUtils.getSubject();
+        response.setStatus(302);
         if (subject.isAuthenticated()) {
             subject.logout();
-            return "redirect:login";
+            return "login";
         }
+        subject.logout();
         return "login";
     }
 
@@ -132,41 +161,44 @@ public class HomeController{
      * @return
      */
     @RequestMapping(value = "/loginPage")
-    @CrossOrigin
-    public String loginadmin(HttpServletRequest request) {
+    public ModelAndView loginadmin(HttpServletRequest request) {
         String username = request.getParameter("userNumber").toUpperCase();
         String password = request.getParameter("password");
-
+        MD5 md5=new MD5();
+        try {
+            password=md5.EncoderByMd5(password);
+        } catch (NoSuchAlgorithmException e) {
+            e.printStackTrace();
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        }
         UsernamePasswordToken upt = new UsernamePasswordToken(username,password);
         Subject subject = SecurityUtils.getSubject();
+        ModelAndView mode=new ModelAndView();
         try {
             subject.login(upt);
         } catch (Exception e) {
             e.printStackTrace();
             if("no_user".equals(e.getMessage())){
-                return JSON.toJSONString("用户不存在");
+                mode.setViewName("login");
+                mode.addObject("no_user","账号不存在");
+                return mode;
             }else if("no_permission".equals(e.getMessage())){
-                return JSON.toJSONString("用户无权限访问");
+                mode.setViewName("login");
+                mode.addObject("no_permission","密码错误");
+                return mode;
             }else if("no_status".equals(e.getMessage())){
-                return JSON.toJSONString("用户已停用");
+                mode.addObject("no_status","账号已过期");
+                mode.setViewName("login");
+                return mode;
             }
-            return JSON.toJSONString("密码错误");
         }
         Session session = subject.getSession();
-        Users user = userService.loginUserNumber(username);
-        user.setPassword("");
+        Users user = userService.loginUserNumber(username,password);
         session.setAttribute(SESSION_USER, user);
-        return "home";
-    }
-
-    @RequestMapping(value="/getMenu")
-    @ResponseBody
-    public String getMenuTree(HttpServletRequest request, HttpServletResponse response){
-        String parentId=request.getParameter("parent");
-        Map map=new HashMap();
-        map.put("parentId",parentId);
-        List<Menu> result=menuService.getMenuTree(map);
-        return JSON.toJSONString(result);
+        session.setAttribute("userName", user.getUserNumber());
+        mode.setViewName("home");
+        return mode;
     }
 
     @RequestMapping("/getMenuTree")
@@ -179,8 +211,10 @@ public class HomeController{
             map.put("template","2");
         }else if(rootMenuId!=null&&rootMenuId.equals("23")){//Guide项目
             map.put("template","1");
-        }else if(rootMenuId!=null&&rootMenuId.equals("24")){//Guide项目
+        }else if(rootMenuId!=null&&rootMenuId.equals("24")){//AI项目
             map.put("template","3");
+        }else if(rootMenuId!=null&&rootMenuId.equals("26")){//Exam项目
+            map.put("template","5");
         }
         map.put("parent",0);
         List<Menu> rootMenuList=menuService.getMenuTree(map);
@@ -247,6 +281,15 @@ public class HomeController{
         Users users=(Users) subject.getPrincipal();
         Integer userId=users.getId();
         return JSON.toJSONString(userId);
+    }
+
+    @RequestMapping(value="/getUserInfo")
+    @ResponseBody
+    public String getUserInfo(){
+        Subject subject=SecurityUtils.getSubject();
+        Users users=(Users) subject.getPrincipal();
+        Integer employeeId=users.getEmployeeId();
+        return JSON.toJSONString(employeeId);
     }
 
 }
