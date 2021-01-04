@@ -14,7 +14,7 @@
         <div class="top">
             <a href="#"><img src="img/logo.png" alt="" style="margin-top: 5px;width: 50px;float: left;margin-right: 10px;margin-left: 50px;" onclick="showMenu()"></a>
            <ul class="top_list">
-               <li><a href="#"><i class="fa fa-envelope-o" style="font-size: 1.8rem;"></i></a></li>
+               <li><a href="#" onclick="message()"><i class="fa fa-envelope-o" style="font-size: 1.8rem;"></i></a></li>
                <li class="comprehensive">
                    <a href="#"><i class="fa fa-wrench" style="font-size: 1.8rem;"></i></a>
                    <ul class="erji">
@@ -37,6 +37,9 @@
                        <shiro:hasPermission name="权限管理">
                            <li><a href="#" onclick="authorityManagement()"><i class="fa fa-cogs"></i>&nbsp;&nbsp;权限管理</a></li>
                        </shiro:hasPermission>
+                       <%--<shiro:hasPermission name="通讯管理">--%>
+                       <li><a href="#" onclick="messageManagement()"><i class="fa fa-cogs"></i>&nbsp;&nbsp;通讯管理</a></li>
+                       <%--</shiro:hasPermission>--%>
                    </ul>
                </li>
                <li class="personal">

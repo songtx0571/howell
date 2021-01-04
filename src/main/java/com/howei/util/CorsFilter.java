@@ -23,8 +23,6 @@ public class CorsFilter implements Filter{
             response.setHeader("Access-Control-Allow-Methods", "HEAD,POST,GET,OPTIONS,DELETE");
             response.setHeader("Access-Control-Allow-Credentials", "true");
             response.setHeader("Access-Control-Allow-Origin", request.getHeader("Origin"));
-            //response.setHeader("Access-Control-Allow-Origin", request.getHeader("http://192.168.1.26:8080"));
-            //DNT,X-Mx-ReqToken,Keep-Alive,User-Agent,X-Requested-With,If-Modified-Since,Cache-Control,Content-Type, Accept-Language, Origin, Accept-Encoding
             response.setHeader("Access-Control-Allow-Headers", "*");
             filterChain.doFilter(servletRequest, servletResponse);
 

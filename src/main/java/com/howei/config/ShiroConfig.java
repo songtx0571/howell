@@ -2,34 +2,25 @@ package com.howei.config;
 
 import com.howei.realm.LoginRealm;
 import org.apache.shiro.authc.credential.CredentialsMatcher;
-import org.apache.shiro.cache.CacheManager;
-import org.apache.shiro.cache.MemoryConstrainedCacheManager;
-import org.apache.shiro.session.mgt.eis.EnterpriseCacheSessionDAO;
-import org.apache.shiro.session.mgt.eis.SessionDAO;
 import org.apache.shiro.spring.LifecycleBeanPostProcessor;
-import org.apache.shiro.spring.security.interceptor.AuthorizationAttributeSourceAdvisor;
 import org.apache.shiro.spring.web.ShiroFilterFactoryBean;
 import org.apache.shiro.web.filter.authc.AnonymousFilter;
 import org.apache.shiro.web.mgt.DefaultWebSecurityManager;
 import org.apache.shiro.web.servlet.SimpleCookie;
 import org.apache.shiro.web.session.mgt.DefaultWebSessionManager;
-import org.apache.shiro.web.session.mgt.WebSessionManager;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.DependsOn;
-import org.springframework.data.redis.cache.RedisCacheManager;
 import org.springframework.web.filter.DelegatingFilterProxy;
 
 import javax.servlet.DispatcherType;
 import javax.servlet.Filter;
-import java.io.File;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
-import java.util.Properties;
 
 @Configuration
 public class ShiroConfig {
@@ -74,15 +65,13 @@ public class ShiroConfig {
         bean.setLoginUrl(masterLoginUrl);
         Map<String, Filter>filters = new LinkedHashMap<>();
         filters.put("anon", new AnonymousFilter());
+        //配置自定义登出 覆盖 logout 之前默认的LogoutFilter
+        filters.put("logout", shiroLogoutFilter());
         bean.setFilters(filters);
-        //shiro配置过滤规则少量的话可以用hashMap,数量多了要用LinkedHashMap,保证有序，原因未知
-        Map<String,String> map1=new HashMap<>();
-        map1.put("/logout","logout");
         //登录
-        bean.setLoginUrl("/login");
+        bean.setLoginUrl("/");
         //首页
         bean.setSuccessUrl("/home");
-        bean.setFilterChainDefinitionMap(map1);
         return bean;
     }
 
@@ -98,7 +87,7 @@ public class ShiroConfig {
     @Bean(name="sessionManager")
     public DefaultWebSessionManager defaultWebSessionManager(RedisSessionDao redisSessionDao) {
         DefaultWebSessionManager sessionManager = new DefaultWebSessionManager();
-        sessionManager.setGlobalSessionTimeout(43200000); //12小时
+        sessionManager.setGlobalSessionTimeout(900000); //15分钟
         sessionManager.setDeleteInvalidSessions(true);
         sessionManager.setSessionDAO(redisSessionDao);
         sessionManager.setSessionValidationSchedulerEnabled(true);
@@ -144,4 +133,15 @@ public class ShiroConfig {
         return new LifecycleBeanPostProcessor();
     }
 
+
+    /**
+     * 配置LogoutFilter
+     * @return
+     */
+    public ShiroLogoutFilter shiroLogoutFilter(){
+        ShiroLogoutFilter shiroLogoutFilter = new ShiroLogoutFilter();
+        //配置登出后重定向的地址，等出后配置跳转到登录接口
+        shiroLogoutFilter.setRedirectUrl("/");
+        return shiroLogoutFilter;
+    }
 }

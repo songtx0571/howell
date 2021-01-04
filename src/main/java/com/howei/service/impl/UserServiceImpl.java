@@ -93,8 +93,8 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public Users loginUserNumber(String userNumber) {
-        return usersMapper.loginUserNumber(userNumber);
+    public Users loginUserNumber(String userNumber,String password) {
+        return usersMapper.loginUserNumber(userNumber,password);
     }
 
     @Override

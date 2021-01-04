@@ -43,7 +43,7 @@ public interface UsersMapper {
 
     int addEmployee(Employee employee);
 
-    Users loginUserNumber(@Param("userNumber") String userNumber);
+    Users loginUserNumber(@Param("userNumber") String userNumber,@Param("password") String password);
 
     int addUserRole(UserRole userRole);
 

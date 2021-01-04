@@ -8,24 +8,21 @@
     height: 100%;
 }
 .left{
-    width: 50%;
-    height: 100%;
+    width: 100%;
     padding-top: 10px;
     box-sizing: border-box;
-    float: left;
     position: relative;
 }
 /*添加按钮*/
 .addBtn{
-    width: 80%;
+    width: 90%;
     height: 50px;
     outline: none;
     font-size: 18px;
     background-color: #1E9FFF;
     color: #fff;
-    margin-left: 10%;
+    margin-left: 5%;
     border: none;
-    border-radius: 8px;
 }
 /*公司表格/部门表格*/
 .companyTable, .departmentTable{
@@ -80,7 +77,7 @@
     color: #fff;
 }
 /*修改/添加公司/添加/修改部门*/
-.updateCompany, .addCompany, .addDepartment,.updataDepartment{
+.updateCompany, .addCompany, .addDepartment,.updateDepartment{
     width: 500px;
     height: 240px;
     border: 1px solid #000;
@@ -91,7 +88,7 @@
     background: #fff;
     display: none;
 }
-.updateCompany span, .addCompany span, .addDepartment span,.updataDepartment span{
+.updateCompany span, .addCompany span, .addDepartment span,.updateDepartment span{
     font-size: 18px;
     display: inline-block;
     width: 100px;
@@ -101,7 +98,7 @@
     float: left;
     margin-left: 85px;
 }
-.updateCompany input, .addCompany input, .addDepartment input,.updataDepartment input{
+.updateCompany input, .addCompany input, .addDepartment input,.updateDepartment input{
     float: left;
     width: 230px;
     height: 40px;
@@ -117,16 +114,22 @@
     justify-content: space-around;
 }
 .right{
-    width: 49%;
-    height: 100%;
-    float: right;
+    width: 100%;
     padding-top: 10px;
     box-sizing: border-box;
     position: relative;
+}
+#showDepartmentH1{
+    text-align: center;
+    margin-bottom: 20px;
+    display: none;
 }
 .departmentTable{
     display: none;
 }
 #showAddDepartmentBtn{
+    display: none;
+}
+body::-webkit-scrollbar{
     display: none;
 }

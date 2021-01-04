@@ -100,7 +100,6 @@ public class CompanyController {
         String name=request.getParameter("name");
         String type=request.getParameter("type");//0为公司，1为部门
         String codeName=request.getParameter("codeName");
-        String headQuarters=request.getParameter("headQuarters");//0：本部
         Subject subject=SecurityUtils.getSubject();
         Users users=(Users) subject.getPrincipal();
         Integer employeeId=users.getEmployeeId();
@@ -108,17 +107,8 @@ public class CompanyController {
         Company company=new Company();
         if(type!=null&&type.equals("1")){
             company.setParent(Integer.parseInt(parent));
-            company.setHeadQuarters(1);
         }else{
             company.setParent(0);
-            company.setHeadQuarters(Integer.parseInt(headQuarters));
-            if(headQuarters.equals("0")){
-                Company resultCompany=companyService.getCompany(company);
-                //判断是否存在本部
-                if(resultCompany!=null){
-                    return JSON.toJSONString("haveHeadQuarters");
-                }
-            }
         }
         if(name!=null){
             company.setName(name);

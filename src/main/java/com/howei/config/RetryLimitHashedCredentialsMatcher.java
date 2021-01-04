@@ -20,16 +20,13 @@ public class RetryLimitHashedCredentialsMatcher extends HashedCredentialsMatcher
 
     @Override
     public boolean doCredentialsMatch(AuthenticationToken token, AuthenticationInfo info) {
-
         //boolean matches = super.doCredentialsMatch(token, info);
         if(token instanceof UsernamePasswordToken){
             //根据用户的登陆信息创建一个token
             UsernamePasswordToken userToken = (UsernamePasswordToken) token;
             //String accountCredentials = (String) info.getCredentials();
-            Users user= userService.loginUserNumber(userToken.getUsername());
-
+            Users user= userService.loginUserNumber(userToken.getUsername(),String.valueOf(userToken.getPassword()));
             char[] passwordchars =userToken.getPassword();
-
             String password = new String(passwordchars);
             //验证令牌
             if(password.equals("")){

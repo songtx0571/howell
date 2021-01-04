@@ -90,7 +90,7 @@
     </insert>
 
     <select id="getURLList" resultMap="layuiTreeMap" parameterType="java.lang.String">
-        select a.id,a.`name` as title,a.parentId as pid from authority a
+        select a.id,a.`name` as title,a.parentId as parentId from authority a
     </select>
 
     <select id="getAuthIdByRoleId" resultType="com.howei.pojo.Authority" parameterType="java.lang.String">

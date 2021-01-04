@@ -12,16 +12,29 @@
     <script type="text/javascript" src="layui/formSelects-v4.js"></script>
     <link rel="stylesheet" href="layui/formSelects-v4.css">
     <link rel="stylesheet" href="js/font/css/font-awesome.css">
+
+
+    <script src="layui/dtree.js" ></script>
+    <link rel="stylesheet" href="layui/dtree.css">
+    <link rel="stylesheet" href="layui/font/dtreefont.css">
+    <style>
+        .dtree-nav-checkbox-div .dtreefont {
+            cursor: no-drop;
+        }
+        .dtree-theme-item cite{
+            font-size: 20px !important;
+        }
+    </style>
 </head>
 <body>
     <div class="warp">
-        <div class="top">
+         <div class="top">
             <nav>
                 <ul class="navList1">
                     <shiro:hasPermission name='开发人员'>
-                        <li onclick="showDevelop()">
-                            <a href="#">开发</a>
-                        </li>
+                    <li onclick="showDevelop()">
+                        <a href="#">开发</a>
+                    </li>
                     </shiro:hasPermission>
                     <shiro:hasPermission name='查看角色所有权限'>
                     <li onclick="showAuthority()">
@@ -138,9 +151,9 @@
                     </div>
                 </div>
                 <div class="authority_update">
-                    <div id="test12" class="demo-tree-more" style="width: 500px;margin: 10px auto;"></div>
+                    <ul id="demoTree1" class="dtree" data-id="0" style="margin: 0 auto;"></ul>
                     <div style="width: 500px;margin: 20px auto;display: flex;justify-content: space-around">
-                        <button type="button" class="layui-btn" lay-demo="getChecked">确定</button>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<button type="button" class="layui-btn" onclick="cancel()">取消</button>
+                        <button type="button" class="layui-btn" onclick="getChecked()">确定</button>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<button type="button" class="layui-btn" onclick="cancel()">取消</button>
                     </div>
                 </div>
             </form>

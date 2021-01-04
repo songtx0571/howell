@@ -40,7 +40,7 @@ public interface UserService {
 
     int addEmployee(Employee employee);
 
-    Users loginUserNumber(String userNumber);
+    Users loginUserNumber(String userNumber,String password);
 
     int addUserRole(UserRole userRole);
 

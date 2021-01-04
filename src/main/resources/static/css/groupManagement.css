@@ -1,0 +1,71 @@
+*{
+    margin: 0;
+    padding: 0;
+    font-family: "PingFang SC","Lantinghei SC","Microsoft YaHei","HanHei SC","Helvetica Neue","Open Sans",Arial,"Hiragino Sans GB","微软雅黑",STHeiti,"WenQuanYi Micro Hei",SimSun,sans-serif;
+}
+.warp{
+    width: 100%;
+    height: 100%;
+    box-sizing: border-box;
+}
+.top,.showGroupMember .groupMemberTop {
+    width: 600px;
+    height: 80px;
+    line-height: 80px;
+    text-align: center;
+    margin: 0 auto;
+    padding-top: 15px;
+    box-sizing: border-box;
+    font-size: 18px;
+}
+.top .addBox{
+    float: left;
+    width: 100px;
+}
+.top .addBox .addBtn,.top #searchBtn, .showGroupMember .groupMemberTop  .addBtn, .showGroupMember .groupMemberTop  #searchGroupMemberBtn{
+    width: 100px;
+    height: 50px;
+    border-radius: 0px;
+    font-size: 18px;
+    float: left;
+}
+.top #groupName, .showGroupMember .groupMemberTop #groupMember{
+    width: 400px;
+    height: 50px;
+    border: 1px solid #009688;
+    text-indent: 10px;
+    float: left;
+}
+.groupContainer{
+    padding: 0 10px;
+    box-sizing: border-box;
+}
+.groupContainer .updGroupNameDiv, .groupContainer .addGroupNameDiv{
+    display: none;
+    width: 100%;
+    height: 100%;
+}
+.groupContainer .updGroupNameDiv table, .groupContainer .addGroupNameDiv table{
+    width: 350px;
+    margin: 0 auto;
+}
+.groupContainer .updGroupNameDiv table tr, .groupContainer .addGroupNameDiv table tr{
+    line-height: 95px;
+}
+.groupContainer .updGroupNameDiv table tr #updGroupName, .groupContainer .addGroupNameDiv table tr #addGroupName{
+    width: 260px;
+    height: 40px;
+}
+/*群员*/
+.showGroupMember{
+    display: none;
+}
+.groupMemberDiv .footBtn{
+    width: 80%;
+    display: flex;
+    justify-content: space-evenly;
+    margin: 10px auto;
+}
+.groupMemberDiv .icon-close{
+    display: none;
+}

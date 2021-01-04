@@ -39,6 +39,8 @@ public class RoleController {
     @Autowired
     private CompanyService companyService;
 
+    private boolean bool=false;
+
     /**
      * 获取角色信息
      */
@@ -190,14 +192,28 @@ public class RoleController {
         List<LayuiTree> menuList = new ArrayList<>();
         for (int i = 0; i < rootMenu.size(); i++) {
             LayuiTree layuiTree=rootMenu.get(i);
-            if (layuiTree.getPid()==-1) {
-                layuiTree.setChecked(false);
+            List<Map<String,String>> listMap=new ArrayList<>();
+            Map<String,String> map=new HashMap<>();
+            map.put("checked","0");
+            map.put("type","0");
+            listMap.add(map);
+            layuiTree.setCheckArr(listMap);
+            if (layuiTree.getParentId()==-1) {
                 menuList.add(layuiTree);
             }
         }
         List<Authority> authorities=roleService.getAuthIdByRoleId(roleId);
         for (LayuiTree layuiTree : menuList) {
             layuiTree.setChildren(getChild(layuiTree.getId()+"", rootMenu,authorities));
+            if(bool){
+                List<Map<String,String>> listMap=new ArrayList<>();
+                Map<String,String> map=new HashMap<>();
+                map.put("checked","1");
+                map.put("type","0");
+                listMap.add(map);
+                layuiTree.setCheckArr(listMap);
+            }
+            bool=false;
         }
         return JSON.toJSONString(menuList);
     }
@@ -205,11 +221,29 @@ public class RoleController {
     private List<LayuiTree> getChild(String id, List<LayuiTree> rootMenu,List<Authority> authorities) {
         List<LayuiTree> childList = new ArrayList<>();
         for (LayuiTree layuiTree : rootMenu) {
-            if (layuiTree.getPid()!=-1) {
-                if ((layuiTree.getPid()+"").equals(id)) {
+            if (layuiTree.getParentId()!=-1) {
+                if ((layuiTree.getParentId()+"").equals(id)) {
+                    List<Map<String, String>> listMap = new ArrayList<>();
+                    Map<String, String> map = new HashMap<>();
+                    map.put("checked", "0");
+                    map.put("type", "0");
+                    listMap.add(map);
+                    layuiTree.setCheckArr(listMap);
+                }
+            }
+        }
+        for (LayuiTree layuiTree : rootMenu) {
+            if (layuiTree.getParentId()!=-1) {
+                if ((layuiTree.getParentId()+"").equals(id)) {
                     for(Authority authority:authorities){
-                        if((layuiTree.getId()==authority.getId())){
-                            layuiTree.setChecked(true);
+                        if(layuiTree.getId().equals(authority.getId())){
+                            List<Map<String,String>> listMap=new ArrayList<>();
+                            Map<String,String> map=new HashMap<>();
+                            map.put("checked","1");
+                            map.put("type","0");
+                            listMap.add(map);
+                            layuiTree.setCheckArr(listMap);
+                            bool=true;
                         }
                     }
                     childList.add(layuiTree);
@@ -282,4 +316,11 @@ public class RoleController {
         return JSON.toJSONString(list);
     }
 
+    public boolean isBool() {
+        return bool;
+    }
+
+    public void setBool(boolean bool) {
+        this.bool = bool;
+    }
 }

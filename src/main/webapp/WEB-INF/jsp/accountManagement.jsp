@@ -23,7 +23,7 @@
                        <div class="layui-form-item">
                            <div class="layui-inline">
                                <div class="layui-input-inline">
-                                   <select name="modules" lay-verify="required" lay-filter="companyList" lay-search="" id="companyList">
+                                   <select name="modules" lay-verify="required" lay-filter="companyList1" lay-search="" id="companyList1">
                                    </select>
                                </div>
                            </div>
@@ -67,6 +67,19 @@
                             <span><samp>*</samp>姓名:</span>
                             <input type="text" id="userName" name="userName" style="width: 296px">
                             <samp style="position: absolute;right: -4px;top: 6px;color: red;display: none;" id="userNameSamp">请输入姓名</samp>
+                        </div>
+                        <div class="userInputDiv">
+                            <input type="hidden" id="addCompanyListHidden">
+                            <div class="layui-form-item">
+                                <div class="layui-inline">
+                                    <label class="layui-form-label" style="width: 115px;"><samp>*</samp>公司:</label>
+                                    <div class="layui-input-inline">
+                                        <select name="companyId" lay-verify="required" lay-filter="companyList" lay-search="" id="companyList">
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                            <samp style="position: absolute;right: -4px;top: 6px;color: red;display: none;" id="companySamp">请输入公司</samp>
                         </div>
                         <div class="userInputDiv">
                             <div class="layui-form-item">

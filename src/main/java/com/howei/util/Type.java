@@ -5,4 +5,5 @@ public enum Type {
      ERROR,//后台错误
      CANCEL,//页面错误
     INVALID,//登录信息失效
+    HAVE,//存在同名
 }
