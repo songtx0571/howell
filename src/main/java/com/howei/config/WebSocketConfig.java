@@ -1,6 +1,8 @@
 package com.howei.config;
 
 import com.howei.service.EmployeeService;
+
+import com.howei.service.GroupService;
 import com.howei.util.WebSocket;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -26,4 +28,8 @@ public class WebSocketConfig {
         WebSocket.employeeService=employeeService;
     }
 
+    @Autowired
+    public void setGroupService(GroupService groupService){
+        WebSocket.groupService=groupService;
+    }
 }

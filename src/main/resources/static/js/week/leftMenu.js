@@ -15,9 +15,9 @@ function showContent(typeHtml) {
     $.ajax({
         type: "POST",
         url: path + '/getMenuTree',
+        sync:true,
         data: {rootMenuId: typeHtml},
         dataType: "json",
-
         success: function(data){
             var two = "";
             for (var i = 0; i < data.length; i ++){
@@ -31,9 +31,9 @@ function showContent(typeHtml) {
                     third[k].url = "'"+third[k].url+"'";
                     two += '<dd style="background: #f2f2f2;"><a href="#" onclick="jump('+typeHtml+','+third[k].url+')" style="padding-left: 40px;box-sizing: border-box;color: #000">'+third[k].text+'</a></dd>';
                 }
-                two+="</dl></dd>";
+                two += "</dl></dd>";
             }
-            $(".erji"+typeHtml).append(two);
+            $(".erji" + typeHtml).append(two);
         }
     });
 }

@@ -1,5 +1,6 @@
 package com.howei.mapper;
 
+import com.howei.pojo.ChatRecord;
 import com.howei.pojo.Employee;
 import com.howei.pojo.EmployeeGroup;
 import com.howei.pojo.Group;
@@ -33,4 +34,8 @@ public interface GroupMapper {
     List<Employee> getEmpListByGroup(@Param("groupName") String groupName);
 
     Group getCreatedByGroup(@Param("id") String id);
+
+    int saveMessage(ChatRecord chatRecord);
+
+    List<ChatRecord> getChatRecord(Map map);
 }

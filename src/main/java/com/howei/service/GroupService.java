@@ -1,5 +1,6 @@
 package com.howei.service;
 
+import com.howei.pojo.ChatRecord;
 import com.howei.pojo.Employee;
 import com.howei.pojo.EmployeeGroup;
 import com.howei.pojo.Group;
@@ -30,4 +31,9 @@ public interface GroupService {
     List<Employee> getEmpListByGroup(String groupName);
 
     Group getCreatedByGroup(String id);
+
+    int saveMessage(ChatRecord chatRecord);
+
+    List<ChatRecord> getChatRecord(Map map);
+
 }

@@ -38,7 +38,15 @@
     </select>
 
     <select id="loginUserNumber" resultType="com.howei.pojo.Users" parameterType="java.lang.String">
-        select * from users where userNumber=#{userNumber} and password=#{password}
+        select * from users
+        <where>
+            <if test="userNumber!=null">
+                and userNumber=#{userNumber}
+            </if>
+            <if test="password!=null">
+                and password=#{password}
+            </if>
+        </where>
     </select>
 
     <select id="findById" resultMap="userMap" resultType="com.howei.pojo.Users" parameterType="java.lang.String">

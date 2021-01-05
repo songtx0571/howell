@@ -10,7 +10,7 @@ import java.util.Map;
 @Component
 public interface CompanyMaper {
 
-    List<Company> getCompanyList(String parent);
+    List<Company> getCompanyList(@Param("parent") String parent);
 
     Company getCompanyById(String id);
 

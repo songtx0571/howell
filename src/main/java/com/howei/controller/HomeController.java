@@ -121,7 +121,11 @@ public class HomeController{
         return "groupManagement";
     }
 
-
+    // 群组管理
+    @RequestMapping("/LayIMManagement")
+    public String toLayIMManagement(){
+        return "LayIMManagement";
+    }
 
     @RequestMapping("/")
     public String index(HttpSession session){

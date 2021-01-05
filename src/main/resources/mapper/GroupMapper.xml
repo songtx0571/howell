@@ -109,4 +109,24 @@
         where g.id=#{id}
     </select>
 
+    <insert id="saveMessage" parameterType="com.howei.pojo.ChatRecord" useGeneratedKeys="true" keyProperty="id">
+        insert into chat_record(sendId,sendToId,`type`,longTime,sendTime,content) values
+        (#{sendId},#{sendToId},#{type},#{longTime},#{sendTime},#{content})
+    </insert>
+
+    <select id="getChatRecord" parameterType="java.util.HashMap" resultType="com.howei.pojo.ChatRecord">
+        select cr.*,e1.name as userName,e2.name as sendToUserName from chat_record cr
+        left join employee e1 on e1.id=cr.sendId
+        left join employee e2 on e2.id=cr.sendToId
+        <where>
+            <if test="type=='friend'">
+                 and type=1 and (sendId=#{sendId} or sendToId=#{sendId} or sendId=#{sendToId} or sendToId=#{sendToId})
+            </if>
+            <if test="type=='group'">
+                and type=2 and sendToId=#{sendToId}
+            </if>
+        </where>
+        ORDER BY longTime
+    </select>
+
 </mapper>

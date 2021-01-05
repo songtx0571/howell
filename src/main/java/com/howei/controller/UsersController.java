@@ -195,7 +195,7 @@ public class UsersController {
                 for(int i=0;i<rolesList.size();i++){
                     Role role=rolesList.get(i);
                     if(i<3){
-                        roles+=role.getRoleName()+",";
+                        roles+=role.getRoleName()+"、";
                     }
                 }
                 if(!roles.equals("")){
@@ -573,6 +573,5 @@ public class UsersController {
         }
         return JSON.toJSONString(Type.ERROR);
     }
-
 
 }

@@ -12,6 +12,7 @@ public class Company {
     private int isactive;
     private int parent;
     private String codeName;//代号
+    private Integer layIMState;//控制LayIM显示
 
     public int getId() {
         return id;
@@ -69,4 +70,11 @@ public class Company {
         this.codeName = codeName;
     }
 
+    public Integer getLayIMState() {
+        return layIMState;
+    }
+
+    public void setLayIMState(Integer layIMState) {
+        this.layIMState = layIMState;
+    }
 }

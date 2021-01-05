@@ -248,57 +248,6 @@ public class MessageController {
         return  JSON.toJSONString(Type.ERROR);
     }
 
-    /**
-     * 获取公司/部门列表
-     * @param request
-     * @return
-     */
-    @RequestMapping("/getLayIMDepMap")
-    @ResponseBody
-    public List<Company> getLayIMDepMap(HttpServletRequest request){
-        String companyId=request.getParameter("companyId");
-        if(companyId!=null){
-            List<Company> list=companyService.getCompanyList(companyId);
-            return list;
-        }
-        return null;
-    }
-
-    /**
-     * 获取公司/部门列表
-     * @param request
-     * @return
-     */
-    @RequestMapping("/getLayIMDepList")
-    @ResponseBody
-    public Result getLayIMDepList(HttpServletRequest request){
-        String companyId=request.getParameter("companyId");
-        Result result=new Result();
-        result.setCode(0);
-        if(companyId!=null){
-            List<Company> list=companyService.getCompanyList(companyId);
-            result.setData(list);
-            result.setCount(list.size());
-        }
-        return result;
-    }
-
-    @RequestMapping("/updLayIMDep")
-    @ResponseBody
-    public String updLayIMDep(HttpServletRequest request){
-        String id=request.getParameter("id");
-        String layIMState=request.getParameter("layIMState");
-        if(id!=null&&!id.equals("")){
-            Company company=companyService.getCompanyById(id);
-            if(company!=null){
-                company.setLayIMState(Integer.parseInt(layIMState));
-                companyService.updateCompany(company);
-                return JSON.toJSONString(Type.SUCCESS);
-            }
-        }
-        return JSON.toJSONString(Type.ERROR);
-    }
-
     /**-------------------------------------------------LayIM初始化----------------------------------------------------*/
 
     @RequestMapping("/LayIMInit")

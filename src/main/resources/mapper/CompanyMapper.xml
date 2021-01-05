@@ -13,7 +13,15 @@
     </resultMap>
 
     <select id="getCompanyList" resultType="com.howei.pojo.Company" parameterType="java.lang.String">
-      select * from company where parent=#{parent}
+      select * from company
+      <where>
+          <if test="parent!=null and parent!=''">
+              and parent=#{parent}
+          </if>
+          <if test="parent==''">
+              and parent!=0
+          </if>
+      </where>
     </select>
 
     <select id="getCompanyById" parameterType="java.lang.String" resultType="com.howei.pojo.Company">
@@ -32,13 +40,16 @@
             <if test="isactive!=null">
                 isactive=#{isactive},
             </if>
+            <if test="layIMState!=null">
+                layIMState=#{layIMState},
+            </if>
         </trim>
         where id=#{id}
     </update>
 
     <insert id="addCompany" parameterType="com.howei.pojo.Company" keyProperty="id" useGeneratedKeys="true">
-        insert into company(name,created,createdBy,isactive,parent,codeName) value
-        (#{name},#{created},#{createdBy},#{isactive},#{parent},#{codeName})
+        insert into company(name,created,createdBy,isactive,parent,codeName,LayIMState) value
+        (#{name},#{created},#{createdBy},#{isactive},#{parent},#{codeName},#{LayIMState})
     </insert>
 
     <select id="getCodeNameList" parameterType="java.lang.String" resultType="com.howei.pojo.Company">
@@ -68,6 +79,6 @@
     </select>
 
     <select id="getAllDepartmentList" resultType="com.howei.pojo.Company">
-        select * from company where parent!=0
+        select * from company where parent!=0 and layIMState=1
     </select>
 </mapper>

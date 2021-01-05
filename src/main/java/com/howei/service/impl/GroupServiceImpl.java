@@ -1,6 +1,8 @@
 package com.howei.service.impl;
 
 import com.howei.mapper.GroupMapper;
+
+import com.howei.pojo.ChatRecord;
 import com.howei.pojo.Employee;
 import com.howei.pojo.EmployeeGroup;
 import com.howei.pojo.Group;
@@ -71,4 +73,15 @@ public class GroupServiceImpl implements GroupService {
     public Group getCreatedByGroup(String id) {
         return groupMapper.getCreatedByGroup(id);
     }
+
+    @Override
+    public int saveMessage(ChatRecord chatRecord) {
+        return groupMapper.saveMessage(chatRecord);
+    }
+
+    @Override
+    public List<ChatRecord> getChatRecord(Map map) {
+        return groupMapper.getChatRecord(map);
+    }
+
 }

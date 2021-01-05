@@ -23,18 +23,17 @@
         <div id="tab">
             <div id="secondPage"  class="show">
                 <form name="register2" action="/loginPage" method="post" enctype="multipart/form-data" id="loginList">
+                    <div style="font-size: 13px;height: 20px;width: 90%;padding: 0;margin: 0;color: #c62828">${requestScope.no_user}${requestScope.no_status}${requestScope.no_permission}</div>
                     <p style="position: relative">
                         账号:<input type="text" name="userNumber" placeholder="请输入账号"
                                   id="userNumber" class="set"  onfocus="this.placeholder=''"
                                   onblur="this.placeholder='请输入账号'">
-                        <span id="admin" style="color: red;line-height: 40px;font-size: 12px;position: absolute; right: -60px;top: 18px;display: none">请输入账号！</span>
                     </p>
                     <p style="position: relative">
                         密码:<input
                             type="password" name="password" placeholder="请输入密码" id="password"
                             class="set"  onfocus="this.placeholder=''"
                             onblur="this.placeholder='请输入密码'">
-                        <span id="pwd" style="color: red;line-height: 40px;font-size: 12px;position: absolute; right: -60px;top: 18px;display: none;">请输入密码！</span>
                     </p>
                     <input type="submit" value="登录" class="button" style="text-align: center;" id="button02">
                 </form>

@@ -119,4 +119,14 @@ public class DateFormat {
         }
         return result;
     }
+
+    /**
+     * 获取当前时间的毫秒数
+     * @return
+     */
+    public static long getLongTime(){
+        Date date=new Date();
+        long time=date.getTime();
+        return time;
+    }
 }

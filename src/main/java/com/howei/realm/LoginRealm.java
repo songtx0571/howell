@@ -59,9 +59,18 @@ public class LoginRealm extends AuthorizingRealm {
         String userNumber=token.getUsername();
         String password=String.copyValueOf(token.getPassword());
         if(userNumber!=null){
-            Users user= userService.loginUserNumber(userNumber,password);
-            if(user == null){
+            Users user=userService.loginUserNumber(userNumber,null);
+            if(user==null){
                 throw new AuthenticationException("no_user");
+            }else{
+                Users user1= userService.loginUserNumber(userNumber,password);
+                if(user1 == null){
+                    throw new AuthenticationException("no_permission");
+                }else{
+                    if(user1.getState()==0){
+                        throw new AuthenticationException("no_status");
+                    }
+                }
             }
             return new SimpleAuthenticationInfo(user,user.getPassword(),getName());
 

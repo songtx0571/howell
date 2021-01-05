@@ -8,14 +8,26 @@ import javax.websocket.*;
 import javax.websocket.server.PathParam;
 import javax.websocket.server.ServerEndpoint;
 import java.io.IOException;
+
+import java.util.Date;
+
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
+
 import com.howei.pojo.Employee;
 import com.howei.service.EmployeeService;
+
+import com.howei.pojo.ChatRecord;
+import com.howei.pojo.Employee;
+import com.howei.service.EmployeeService;
+import com.howei.service.GroupService;
+
 import org.springframework.stereotype.Controller;
+
+import static com.sun.org.apache.xalan.internal.xsltc.compiler.sym.error;
 
 @ServerEndpoint(value = "/socket/{userId}")
 @Controller
@@ -23,8 +35,15 @@ public class WebSocket {
 
     public static EmployeeService employeeService;
 
+    public static GroupService groupService;
+
     public void setEmployeeService(EmployeeService employeeService) {
         WebSocket.employeeService = employeeService;
+    }
+
+
+    public void setGroupService(GroupService groupService) {
+        WebSocket.groupService = groupService;
     }
 
     // 在线人数
@@ -76,7 +95,7 @@ public class WebSocket {
         JSONObject json = JSONObject.parseObject(messageJson);
         String type = json.getString("type").toLowerCase();
         JSONObject data = json.getJSONObject("data");
-        System.out.println(data);
+
         if(type.equals("all")){
             // 推送给所有在线用户
             sendMessageAll(messageJson);
@@ -88,6 +107,36 @@ public class WebSocket {
             // 推送给固定用户
             Employee employee=JSONObject.toJavaObject(data, Employee.class);
             if(employee!=null){
+                //保存消息记录
+                String content=employee.getContent();
+                Integer send=employee.getId();
+                Integer sendToId=Integer.parseInt(employee.getToId());
+                ChatRecord chatRecord=new ChatRecord();
+                chatRecord.setSendId(send);
+                chatRecord.setSendToId(sendToId);
+                chatRecord.setType(2);
+                chatRecord.setContent(content);
+                chatRecord.setSendTime(DateFormat.getYMDHMS(new Date()));
+                chatRecord.setLongTime(DateFormat.getLongTime());
+                groupService.saveMessage(chatRecord);//保存记录
+            }
+            sendMessageGroup(messageJson, employee.getToId(), false);
+        }else if(type.equals("friend")){
+            //推送给固定用户
+            Employee employee=JSONObject.toJavaObject(data, Employee.class);
+            if(employee!=null){
+                //保存消息记录
+                String content=employee.getContent();
+                Integer send=employee.getId();
+                Integer sendToId=Integer.parseInt(employee.getToId());
+                ChatRecord chatRecord=new ChatRecord();
+                chatRecord.setSendId(send);
+                chatRecord.setSendToId(sendToId);
+                chatRecord.setType(1);
+                chatRecord.setContent(content);
+                chatRecord.setSendTime(DateFormat.getYMDHMS(new Date()));
+                chatRecord.setLongTime(DateFormat.getLongTime());
+                groupService.saveMessage(chatRecord);//保存记录
                 sendMessageTo(messageJson, String.valueOf(employee.getToId()));
             }
         }
@@ -131,16 +180,16 @@ public class WebSocket {
 
     public void sendMessageGroup(String message, String To, boolean isWhole) throws IOException {
         String filterId = "," + To + ",";
-        if(isWhole){
+        if (isWhole) {
             for (WebSocket item : clients.values()) {
                 String groupIds = clientGroup.get(item.userId);
-                if(groupIds.indexOf(filterId)>=0){
+                if (groupIds.indexOf(filterId) >= 0) {
                     item.session.getAsyncRemote().sendText(message);
                 }
             }
-        }else{
+        } else {
             for (WebSocket item : clients.values()) {
-                if(!this.userId.equals(item.userId)){
+                if (!this.userId.equals(item.userId)) {
                     item.session.getAsyncRemote().sendText(message);
                 }
             }

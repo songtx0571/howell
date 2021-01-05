@@ -95,8 +95,36 @@
             </div>
             <%--编辑群员--%>
             <div class="groupMemberDiv">
+                <div style="width: 80%;margin: 20px auto 0;">
+                    <input type="hidden" id="companyListHidden">
+                    <form class="layui-form" action="">
+                        <div class="layui-form-item">
+                            <div class="layui-inline" style="width: 100%;">
+                                <div class="layui-input-inline" style="width: 100%;margin-right: 0px;">
+                                    <select name="modules" lay-verify="required" lay-filter="companyList" lay-search="" id="companyList">
+                                        <option value="">请选择公司</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div style="width: 80%;margin: 0 auto;">
+                    <input type="hidden" id="departListHidden">
+                    <form class="layui-form" action="">
+                        <div class="layui-form-item">
+                            <div class="layui-inline" style="width: 100%;">
+                                <div class="layui-input-inline" style="width: 100%;margin-right: 0px;">
+                                    <select name="modules" lay-verify="required" lay-filter="departList" lay-search="" id="departList">
+                                        <option value="">请选择部门</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
                 <div style="width: 80%;margin: 20px auto;">
-                    <select name="name" xm-select="example6_4">
+                    <select name="tags2" id="tags2" lay-verify="tags2" xm-select="tags2">
                         <option value="0">请选择成员</option>
                     </select>
                 </div>

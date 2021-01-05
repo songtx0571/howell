@@ -236,7 +236,7 @@ public class RoleController {
             if (layuiTree.getParentId()!=-1) {
                 if ((layuiTree.getParentId()+"").equals(id)) {
                     for(Authority authority:authorities){
-                        if((layuiTree.getId()==authority.getId())){
+                        if(layuiTree.getId().equals(authority.getId())){
                             List<Map<String,String>> listMap=new ArrayList<>();
                             Map<String,String> map=new HashMap<>();
                             map.put("checked","1");
