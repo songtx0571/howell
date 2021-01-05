@@ -120,6 +120,12 @@ public class HomeController{
         return "groupManagement";
     }
 
+    // LayIM部门管理
+    @RequestMapping("/LayIMManagement")
+    public String toLayIMManagement(){
+        return "LayIMManagement";
+    }
+
     @RequestMapping("/")
     public String index(HttpSession session){
         if(session.getAttribute("userId")!=null){

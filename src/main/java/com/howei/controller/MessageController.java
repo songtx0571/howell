@@ -176,29 +176,28 @@ public class MessageController {
         return result;
     }
 
+
+
     /**
      * 获取员工
      * @return
      */
     @RequestMapping("/getEmployeeMap")
     @ResponseBody
-    public List<CheckboxTree> getEmployeeMap(){
-        List<Employee> list=employeeService.getEmployeeMap(new HashMap<>());
-        List<CheckboxTree> result=new ArrayList<>();
-        CheckboxTree checkboxTree1=new CheckboxTree();
-        checkboxTree1.setName("浩维");
-        checkboxTree1.setValue(1000);
-        List<CheckboxTree> child=new ArrayList<>();
-        if(list!=null){
-            for (Employee employee:list) {
-                CheckboxTree checkboxTree=new CheckboxTree();
-                checkboxTree.setName(employee.getName());
-                checkboxTree.setValue(employee.getId());
-                child.add(checkboxTree);
+    public List<Map> getEmployeeMap(HttpServletRequest request){
+        String companyId=request.getParameter("companyId");//部门id
+        List<Map> result=new ArrayList<>();
+        if(companyId!=null&&!companyId.equals("")){
+            List<Employee> list=employeeService.getEmpListByDepartment(Integer.parseInt(companyId));
+            if(list!=null){
+                for (Employee employee:list) {
+                    Map map=new HashMap();
+                    map.put("name",employee.getName());
+                    map.put("id",employee.getId());
+                    result.add(map);
+                }
             }
         }
-        checkboxTree1.setChildren(child);
-        result.add(checkboxTree1);
         return result;
     }
 
@@ -246,6 +245,75 @@ public class MessageController {
             return JSON.toJSONString(Type.SUCCESS);
         }
         return  JSON.toJSONString(Type.ERROR);
+    }
+
+    /**-------------------------------------------------LayIM部门管理----------------------------------------------------*/
+
+    /**
+     * 获取公司/部门列表
+     * @param request
+     * @return
+     */
+    @RequestMapping("/getLayIMDepMap")
+    @ResponseBody
+    public List<Company> getLayIMDepMap(HttpServletRequest request){
+        String companyId=request.getParameter("companyId");
+        if(companyId!=null){
+            List<Company> list=companyService.getCompanyList(companyId);
+            return list;
+        }
+        return null;
+    }
+
+    /**
+     * 根据公司获取展示状态的部门
+     * @param request
+     * @return
+     */
+    @RequestMapping("/getLayIMDepShowMap")
+    @ResponseBody
+    public List<Company> getLayIMDepShowMap(HttpServletRequest request){
+        String companyId=request.getParameter("companyId");
+        if(companyId!=null){
+            List<Company> list=companyService.getLayIMDepShowMap(companyId);
+            return list;
+        }
+        return null;
+    }
+
+    /**
+     * 获取公司/部门列表
+     * @param request
+     * @return
+     */
+    @RequestMapping("/getLayIMDepList")
+    @ResponseBody
+    public Result getLayIMDepList(HttpServletRequest request){
+        String companyId=request.getParameter("companyId");
+        Result result=new Result();
+        result.setCode(0);
+        if(companyId!=null){
+            List<Company> list=companyService.getCompanyList(companyId);
+            result.setData(list);
+            result.setCount(list.size());
+        }
+        return result;
+    }
+
+    @RequestMapping("/updLayIMDep")
+    @ResponseBody
+    public String updLayIMDep(HttpServletRequest request){
+        String id=request.getParameter("id");
+        String layIMState=request.getParameter("layIMState");
+        if(id!=null&&!id.equals("")){
+            Company company=companyService.getCompanyById(id);
+            if(company!=null){
+                company.setLayIMState(Integer.parseInt(layIMState));
+                companyService.updateCompany(company);
+                return JSON.toJSONString(Type.SUCCESS);
+            }
+        }
+        return JSON.toJSONString(Type.ERROR);
     }
 
     /**-------------------------------------------------LayIM初始化----------------------------------------------------*/

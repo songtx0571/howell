@@ -120,6 +120,7 @@ public class CompanyController {
             company.setCodeName(codeName);
         }
         company.setIsactive(1);
+        company.setLayIMState(1);//显示状态
         company.setCreated(DateFormat.getYMDHMS(new Date()));
         int count=companyService.addCompany(company);
         if(count>0){

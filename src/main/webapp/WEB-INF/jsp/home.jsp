@@ -37,9 +37,9 @@
                        <shiro:hasPermission name="权限管理">
                            <li><a href="#" onclick="authorityManagement()"><i class="fa fa-cogs"></i>&nbsp;&nbsp;权限管理</a></li>
                        </shiro:hasPermission>
-                       <%--<shiro:hasPermission name="通讯管理">--%>
-                       <li><a href="#" onclick="messageManagement()"><i class="fa fa-cogs"></i>&nbsp;&nbsp;通讯管理</a></li>
-                       <%--</shiro:hasPermission>--%>
+                       <shiro:hasPermission name="通讯管理">
+                            <li><a href="#" onclick="messageManagement()"><i class="fa fa-cogs"></i>&nbsp;&nbsp;通讯管理</a></li>
+                       </shiro:hasPermission>
                    </ul>
                </li>
                <li class="personal">

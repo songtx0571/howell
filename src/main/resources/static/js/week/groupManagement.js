@@ -1,5 +1,5 @@
-var path = "";
 var usersId = "";
+var groupList = "";
 $(function () {
     showTable(1,"");
     //查询群名
@@ -24,6 +24,8 @@ $(function () {
             $("#searchGroupMemberBtn").click();
         }
     })
+    //编辑群员的公司
+    getCompanyList();
 });
 /*********************************************************显示群*******************************************************************/
 //显示表格
@@ -51,7 +53,7 @@ function showTable(page,groupName) {
                 ,{field: 'groupName', title: '群名',align:'center',style:'color:red;cursor: pointer;', event: 'edit'}
                 // ,{field: 'number', title: '人数',align:'center'}
                 ,{field: 'created', title: '创建时间',align:'center'}
-                ,{field: 'createdBy', title: '创建人',align:'center'}
+                ,{field: 'userName', title: '创建人',align:'center'}
                 ,{field: 'remark', title: '备注',align:'center'}
                 ,{fixed: '', title:'操作', toolbar: '#groupBarDemo', width:150,align:'center'}
             ]]
@@ -172,12 +174,14 @@ function showTableMember(userName,groupId) {
             ,cols: [[ //表头
                 {field: 'id', title: '编号', width:80,sort:true,align:'center', hide:true}
                 ,{field: 'userNumber', title: '编号',sort:true,align:'center'}
-                ,{field: 'name', title: '人名',align:'center',style:'color:red;cursor: pointer;', event: 'edit'}
+                ,{field: 'name', title: '人名',align:'center'}
                 ,{field: 'companyName', title: '部门',align:'center'}
                 ,{fixed: '', title:'操作', toolbar: '#groupMemberBarDemo', width:150,align:'center'}
             ]]
             , parseData: function(res) {}
-            ,done: function(res, curr, count){}
+            ,done: function(res, curr, count){
+                groupList = res.data;
+            }
         });
         table.on('tool(groupMemberTest)', function(obj) {
             var data = obj.data;
@@ -195,49 +199,112 @@ function showTableMember(userName,groupId) {
         });
     });
 }
+//获取部门
+function getCompanyList() {
+    layui.use(['form'], function() {
+        var form = layui.form;
+        $.ajax({
+            type: "GET",
+            url: "/message/getLayIMDepMap",
+            data: {companyId: "0"},
+            dataType: "json",
+            success: function (data) {
+                $("#companyList").empty();
+                var option = "<option value='' >请选择公司名称</option>";
+                for (var i = 0; i < data.length; i++) {
+                    option += "<option value='" + data[i].id + "'>" + data[i].name + "</option>";
+                }
+                $('#companyList').append(option);
+                form.render();//菜单渲染 把内容加载进去
+            }
+        });
+        form.on('select(companyList)', function (data) {
+            $("#companyListHidden").val(data.value);//得到被选中的值
+            $.ajax({
+                type: "GET",
+                url: "/message/getLayIMDepShowMap",
+                data:{companyId: $("#companyListHidden").val()},
+                dataType: "json",
+                success: function (data) {
+                    $("#departList").empty();
+                    var option = "<option value='' >请选择部门名称</option>";
+                    for (var i = 0; i < data.length; i++) {
+                        option += "<option value='" + data[i].id + "'>" + data[i].name + "</option>";
+                    }
+                    $('#departList').append(option);
+                    form.render();//菜单渲染 把内容加载进去
+                }
+            });
+            form.on('select(departList)', function (data) {
+                $("#departListHidden").val(data.value);//得到被选中的值
+                getPeopel($("#departListHidden").val());
+            })
+        });
+    })
+}
+//显示员工
+function getPeopel(departId) {
+    layui.use(['jquery', 'formSelects'], function(){
+        var formSelects = layui.formSelects;
+        formSelects.config('tags2', {
+            keyName: 'name',
+            keyVal: 'id',
+        }).data('tags2', 'server', {
+            url: "/message/getEmployeeMap?companyId="+departId,
+        });
+        formSelects.closed('tags2', function(id){
+            usersId = layui.formSelects.value('tags2', 'val');
+        });
+    });
+}
 //打开编辑群员
 function showGroupMemberBtn() {
+    $("#departListHidden").val("");
+    //群员
+    getPeopel("");
+    accordId();
+    layui.use('form', function(){
+        var form = layui.form;
+        $("#companyList").val("");//公司
+        $("#departList").val("");//部门
+        form.render('select');
+        form.render(); //更新全部
+    });
+
     $(".groupMemberTop").css("display","none");
     $(".groupMemberDemoTable").css("display","none");
     $(".groupMemberDiv").css("display","block");
-    $.ajax({
-        type: "POST",
-        url: "/message/getEmployeeMap",
-        dataType: "json",
-        success: function(data){
-            layui.use(['jquery', 'formSelects'], function() {
-                var formSelects = layui.formSelects;
-                formSelects.data('example6_4', 'local', {
-                    arr: data
-                });
-                formSelects.closed('example6_4', function (id) {
-                    usersId = layui.formSelects.value('example6_4', 'val');
-                    Array.prototype.remove = function(val) {
-                        var index = this.indexOf(val);
-                        if (index > -1) {
-                            this.splice(index, 1);
-                        }
-                    };
-                    usersId.remove(1000);
-                });
-            })
-        }
-    });
 }
+//根据群ID得出群员
+function accordId() {
+    layui.use('form', function() {
+        var form = layui.form;
+        var formSelects = layui.formSelects;
+        //发送角色ID到后台查询用户所绑定的标签id存入到数组中
+        var vArray = new Array();
+        //遍历id存入到vArray 数组中
+        for (var i = 0; i < groupList.length; i++) {
+            vArray[i] = groupList[i].id;
+        }
+        //这个是查询数据添加到下拉多选框的方法  注意：（动态选中下拉框必须等渲染下拉框完成之后再选中）
+        layui.formSelects.config('tags2', {
+            searchUrl: "/message/getEmployeeMap?companyId="+$("#departListHidden").val(),
+            success: function(id, url, searchVal, result){
+                formSelects.value('tags2', vArray);
+            }
+        });
+        form.render('select');
+        form.render(); //更新全部
+    });
 
-function arrFun(val,arr) {
-    var index = arr.indexOf(val);
-    if (index >= -1) {
-        arr.splice(index, 1);
-    }
-};
+}
 //确定群员groupId,employeeIds
 function editGroupMember() {
     usersId = usersId.toString();
     $.ajax({
         type: "POST",
         url: "/message/addGroupUsers",
-        data: { groupId: $("#groupMemberId").val(), employeeIds:usersId },
+        data: { groupId: $("#groupMemberId").val(), employeeIds:usersId , companyId: $("#departListHidden").val()},
         dataType: "json",
         success: function(data){
             $(".groupMemberTop").css("display","block");

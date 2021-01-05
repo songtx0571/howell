@@ -25,4 +25,6 @@ public interface CompanyService {
     List<Map<String,String>> getDepartmentMap(int companyId);
 
     List<Company> getAllDepartmentList();
+
+    List<Company> getLayIMDepShowMap(String companyId);
 }

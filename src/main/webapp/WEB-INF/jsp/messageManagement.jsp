@@ -20,6 +20,11 @@
                         </a>
                     </li>
                 <%--</shiro:hasPermission>--%>
+                    <li onclick="showDepart()">
+                        <a href="#">
+                            部门管理
+                        </a>
+                    </li>
             </ul>
         </nav>
     </div>

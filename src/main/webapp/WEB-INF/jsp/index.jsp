@@ -28,6 +28,9 @@
         .layui-layim-status .layui-anim-upbit li:last-of-type{
             display: none;
         }
+        #layui-layim-close span{
+            font-size: 30px;
+        }
     </style>
 </head>
 <body>
@@ -54,7 +57,7 @@
         layim.config({
             //初始化接口
             init: {
-                url: '/message/LayIMInit'
+                url: 'message/LayIMInit'
                 ,data: {}
             }
             //查看群员接口
@@ -78,7 +81,9 @@
             ,min: false //是否始 终最小化主面板，默认false
             ,initSkin: '3.jpg' //1-5 设置初始背景
             ,copyright:true
-            ,chatLog: layui.cache.dir + 'css/modules/layim/html/chatlog.html' //聊天记录页面地址，若不开启，剔除该项即可
+
+             ,chatLog: layui.cache.dir + 'css/modules/layim/html/chatlog.html' //聊天记录页面地址，若不开启，剔除该项即可
+
 
         });
         //监听在线状态的切换事件
@@ -96,6 +101,7 @@
         layim.on('ready', function(res){
             // 服务端WebSocket的访问路径（3.2、配置WebSocket处理器与拦截器）。（注意：路径前缀务必添加websocket的“ws://”）
             var action = 'ws://192.168.1.89:8080/socket/'+username;
+
             // 初始化Socket
             if('WebSocket' in window) {
                 websocket = new WebSocket(action);
@@ -154,6 +160,7 @@
                         layim.getMessage(obj);
                     }, 1000);
                 }
+
             };
             //关闭连接
             websocket.onclose = function (event) {
