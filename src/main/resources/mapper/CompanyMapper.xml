@@ -48,8 +48,8 @@
     </update>
 
     <insert id="addCompany" parameterType="com.howei.pojo.Company" keyProperty="id" useGeneratedKeys="true">
-        insert into company(name,created,createdBy,isactive,parent,codeName,LayIMState) value
-        (#{name},#{created},#{createdBy},#{isactive},#{parent},#{codeName},#{LayIMState})
+        insert into company(name,created,createdBy,isactive,parent,codeName,layIMState) value
+        (#{name},#{created},#{createdBy},#{isactive},#{parent},#{codeName},#{layIMState})
     </insert>
 
     <select id="getCodeNameList" parameterType="java.lang.String" resultType="com.howei.pojo.Company">

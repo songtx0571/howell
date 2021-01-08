@@ -89,6 +89,13 @@ public class MessageController {
                 group.setCreatedBy(users.getEmployeeId()+"");
             }
             int count=groupService.addGroup(group);
+            EmployeeGroup employeeGroup=new EmployeeGroup();
+            employeeGroup.setGroupId(group.getId());
+            employeeGroup.setEmployeeId(users.getEmployeeId());
+            employeeGroup.setCreated(DateFormat.getYMDHMS(new Date()));
+            List<EmployeeGroup> list=new ArrayList<>();
+            list.add(employeeGroup);
+            groupService.addGroupUsers(list);
             if(count>=0){
                 return JSON.toJSONString(Type.SUCCESS);
             }
@@ -354,6 +361,16 @@ public class MessageController {
                         mine.setUsername(employee1.getName());
                         mine.setSign(employee1.getSign());
                         mine.setId(employee1.getId()+"");
+                        //查询当前登录对象的未读信息
+                        Map map2=new HashMap();
+                        map2.put("sendId",employee1.getId());
+                        map2.put("sendToId",id);
+                        List<ChatRecord> chatRecords=groupService.getUnReadList(map2);
+                        if(chatRecords!=null){
+                            mine.setRead(chatRecords.size());
+                        }else{
+                            mine.setRead(0);
+                        }
                         //获取WebSocket.clients:用户在线列表
                         boolean bool=false;
                         Map<String, WebSocket> clients=WebSocket.getClients();
@@ -376,7 +393,7 @@ public class MessageController {
             }
             map.put("friend",friend);
             //初始化群组信息
-            List<Group> groupList2=groupService.getGroupList(new HashMap());
+            List<Group> groupList2=groupService.getEmpInGroupList(id);
             List<Map> groupList1=new ArrayList<>();
             if(groupList2!=null) {
                 for (Group group : groupList2) {

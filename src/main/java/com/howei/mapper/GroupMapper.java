@@ -38,4 +38,10 @@ public interface GroupMapper {
     int saveMessage(ChatRecord chatRecord);
 
     List<ChatRecord> getChatRecord(Map map);
+
+    List<ChatRecord> getUnReadList(Map map2);
+
+    List<Group> getEmpInGroupList(@Param("employeeId") String employeeId);
+
+    int updHistoryMessage(Map map);
 }

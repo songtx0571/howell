@@ -12,6 +12,7 @@ public class ChatRecord {
     private Integer type;//1:单聊；2:群聊
     private long longTime;//发送毫秒数
     private String sendTime;//发送时间
+    private Integer read;//是否已读：1为已读 0为未读
 
     //虚字段
     private String userName;//发送人
@@ -87,5 +88,13 @@ public class ChatRecord {
 
     public void setSendToUserName(String sendToUserName) {
         this.sendToUserName = sendToUserName;
+    }
+
+    public Integer getRead() {
+        return read;
+    }
+
+    public void setRead(Integer read) {
+        this.read = read;
     }
 }

@@ -82,4 +82,19 @@ public class GroupServiceImpl implements GroupService {
     public List<ChatRecord> getChatRecord(Map map) {
         return groupMapper.getChatRecord(map);
     }
+
+    @Override
+    public List<ChatRecord> getUnReadList(Map map2) {
+        return groupMapper.getUnReadList(map2);
+    }
+
+    @Override
+    public List<Group> getEmpInGroupList(String id) {
+        return groupMapper.getEmpInGroupList(id);
+    }
+
+    @Override
+    public int updHistoryMessage(Map map) {
+        return groupMapper.updHistoryMessage(map);
+    }
 }

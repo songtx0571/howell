@@ -35,4 +35,10 @@ public interface GroupService {
     int saveMessage(ChatRecord chatRecord);
 
     List<ChatRecord> getChatRecord(Map map);
+
+    List<ChatRecord> getUnReadList(Map map2);
+
+    List<Group> getEmpInGroupList(String id);
+
+    int updHistoryMessage(Map map);
 }
