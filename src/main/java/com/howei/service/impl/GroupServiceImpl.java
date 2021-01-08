@@ -1,7 +1,6 @@
 package com.howei.service.impl;
 
 import com.howei.mapper.GroupMapper;
-
 import com.howei.pojo.ChatRecord;
 import com.howei.pojo.Employee;
 import com.howei.pojo.EmployeeGroup;
@@ -84,4 +83,18 @@ public class GroupServiceImpl implements GroupService {
         return groupMapper.getChatRecord(map);
     }
 
+    @Override
+    public List<ChatRecord> getUnReadList(Map map2) {
+        return groupMapper.getUnReadList(map2);
+    }
+
+    @Override
+    public List<Group> getEmpInGroupList(String id) {
+        return groupMapper.getEmpInGroupList(id);
+    }
+
+    @Override
+    public void updHistoryMessage(Map map) {
+        groupMapper.updHistoryMessage(map);
+    }
 }

@@ -90,4 +90,9 @@ public class CompanyServiceImpl  implements CompanyService {
     public List<Company> getAllDepartmentList() {
         return companyMaper.getAllDepartmentList();
     }
+
+    @Override
+    public List<Company> getLayIMDepShowMap(String companyId) {
+        return companyMaper.getLayIMDepShowMap(companyId);
+    }
 }

@@ -8,26 +8,17 @@ import javax.websocket.*;
 import javax.websocket.server.PathParam;
 import javax.websocket.server.ServerEndpoint;
 import java.io.IOException;
-
 import java.util.Date;
-
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
-
-import com.howei.pojo.Employee;
-import com.howei.service.EmployeeService;
-
 import com.howei.pojo.ChatRecord;
 import com.howei.pojo.Employee;
 import com.howei.service.EmployeeService;
 import com.howei.service.GroupService;
-
 import org.springframework.stereotype.Controller;
-
-import static com.sun.org.apache.xalan.internal.xsltc.compiler.sym.error;
 
 @ServerEndpoint(value = "/socket/{userId}")
 @Controller
@@ -40,7 +31,6 @@ public class WebSocket {
     public void setEmployeeService(EmployeeService employeeService) {
         WebSocket.employeeService = employeeService;
     }
-
 
     public void setGroupService(GroupService groupService) {
         WebSocket.groupService = groupService;
@@ -74,8 +64,10 @@ public class WebSocket {
         }
         usersId=usersId.equals("") ? usersId:usersId.substring(0,usersId.length()-1);
         clientGroup.put(userId, usersId);
-        // 推送上线通知给加我为好友的在线用户
+        // 推送上线通知给在线用户
         sendMessageToFriend("online");
+        //推送未读信息
+        sendHistoryMessageToFriend();
     }
 
     // 离线或关闭窗口、异常关闭浏览器触发
@@ -101,10 +93,6 @@ public class WebSocket {
             sendMessageAll(messageJson);
         }else if(type.equals("group")){
             // 推送给群在线用户
-            Employee employee=JSONObject.toJavaObject(data, Employee.class);
-            sendMessageGroup(messageJson, employee.getToId(), false);
-        }else if(type.equals("friend")){
-            // 推送给固定用户
             Employee employee=JSONObject.toJavaObject(data, Employee.class);
             if(employee!=null){
                 //保存消息记录
@@ -136,10 +124,29 @@ public class WebSocket {
                 chatRecord.setContent(content);
                 chatRecord.setSendTime(DateFormat.getYMDHMS(new Date()));
                 chatRecord.setLongTime(DateFormat.getLongTime());
+                chatRecord.setRead(0);
                 groupService.saveMessage(chatRecord);//保存记录
                 sendMessageTo(messageJson, String.valueOf(employee.getToId()));
             }
+        } else if(type.equals("history")){//历史未读信息
+            int result=updHistoryMessage(data);
         }
+    }
+
+    /**
+     * 未读信息修改为已读
+     * @param data
+     * @return
+     */
+    private int updHistoryMessage(JSONObject data) {
+        Mine mine=JSONObject.toJavaObject(data, Mine.class);
+        if(mine.getId()!=null&&mine.getToId()!=null){
+            Map map=new HashMap();
+            map.put("sendId",mine.getId());
+            map.put("sendToId",mine.getToId());
+            groupService.updHistoryMessage(map);
+        }
+        return 0;
     }
 
     // 异常接收
@@ -164,7 +171,7 @@ public class WebSocket {
      * @param To 好友编号
      */
 
-    public void sendMessageTo(String message, String To) throws IOException {
+    public synchronized void sendMessageTo(String message, String To) throws IOException {
         for (WebSocket item : clients.values()) {
             if (item.userId.equals(To)){
                 item.session.getAsyncRemote().sendText(message);
@@ -179,26 +186,51 @@ public class WebSocket {
      * @param isWhole 推送状态(1推送给所有成员，0推送给非自己外的所有成员)*/
 
     public void sendMessageGroup(String message, String To, boolean isWhole) throws IOException {
-        String filterId = "," + To + ",";
-        if (isWhole) {
-            for (WebSocket item : clients.values()) {
-                String groupIds = clientGroup.get(item.userId);
-                if (groupIds.indexOf(filterId) >= 0) {
-                    item.session.getAsyncRemote().sendText(message);
-                }
+        for (WebSocket item : clients.values()) {
+            if(!this.userId.equals(item.userId)){
+                item.session.getAsyncRemote().sendText(message);
             }
-        } else {
-            for (WebSocket item : clients.values()) {
-                if (!this.userId.equals(item.userId)) {
-                    item.session.getAsyncRemote().sendText(message);
+        }
+    }
+
+    private void sendHistoryMessageToFriend() throws IOException{
+        Map map1=new HashMap();
+        map1.put("state",1);
+        List<Employee> employeeList=employeeService.getEmployeeMap(map1);
+        for(Employee employee:employeeList){
+            Integer sendId=employee.getId();
+            String sendToId=userId;
+            Map map=new HashMap();
+            map.put("sendId",sendId);
+            map.put("sendToId",sendToId);
+            List<ChatRecord> list=groupService.getUnReadList(map);
+            if(list!=null){
+                for (int i=0;i<list.size();i++){
+                    ChatRecord chatRecord=list.get(i);
+                    Mine mine=new Mine();
+                    mine.setType("friend");
+                    mine.setToId(chatRecord.getSendToId()+"");
+                    mine.setAvatar("../../img/logo.png");
+                    mine.setId(chatRecord.getSendId()+"");
+                    mine.setSign("这个人很懒");
+                    mine.setStatus("online");
+                    mine.setUsername(chatRecord.getUserName());
+                    mine.setContent(chatRecord.getContent());
+                    mine.setTimestamp(chatRecord.getLongTime());
+                    Map map2=new HashMap();
+                    map2.put("type","friend");
+                    map2.put("data",mine);
+                    String messageJson=JSON.toJSONString(map2);
+                    sendMessageTo(messageJson, sendToId);
                 }
             }
         }
     }
 
-   /* *
+    /* *
      * 推送给加我为好友的用户
-     * @param lineState 在线状态(在线：online,离线：offline*/
+     * @param lineState 在线状态(在线：online,离线：offline
+     */
 
     public void sendMessageToFriend(String lineState) throws IOException {
         String mineId = userId;

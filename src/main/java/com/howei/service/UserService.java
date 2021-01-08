@@ -40,7 +40,7 @@ public interface UserService {
 
     int addEmployee(Employee employee);
 
-    Users loginUserNumber(String userNumber,String password);
+    Users loginUserNumber(String userNumber, String password);
 
     int addUserRole(UserRole userRole);
 
@@ -52,7 +52,7 @@ public interface UserService {
 
     Users getUserRolesByName(String userName);
 
-    int updPassword(Integer userId,String password);
+    int updPassword(Integer userId, String password);
 
     List<Users> searchUsersList(Map map);
 }

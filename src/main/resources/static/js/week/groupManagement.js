@@ -1,4 +1,3 @@
-var path = "http://192.168.1.89:8080";
 var usersId = "";
 var groupList = "";
 $(function () {
@@ -206,7 +205,7 @@ function getCompanyList() {
         var form = layui.form;
         $.ajax({
             type: "GET",
-            url: path + "/message/getLayIMDepMap",
+            url: "/message/getLayIMDepMap",
             data: {companyId: "0"},
             dataType: "json",
             success: function (data) {
@@ -223,7 +222,7 @@ function getCompanyList() {
             $("#companyListHidden").val(data.value);//得到被选中的值
             $.ajax({
                 type: "GET",
-                url: path + "/message/getLayIMDepShowMap",
+                url: "/message/getLayIMDepShowMap",
                 data:{companyId: $("#companyListHidden").val()},
                 dataType: "json",
                 success: function (data) {
@@ -251,7 +250,7 @@ function getPeopel(departId) {
             keyName: 'name',
             keyVal: 'id',
         }).data('tags2', 'server', {
-            url: path +"/message/getEmployeeMap?companyId="+departId,
+            url: "/message/getEmployeeMap?companyId="+departId,
         });
         formSelects.closed('tags2', function(id){
             usersId = layui.formSelects.value('tags2', 'val');
@@ -289,7 +288,7 @@ function accordId() {
         }
         //这个是查询数据添加到下拉多选框的方法  注意：（动态选中下拉框必须等渲染下拉框完成之后再选中）
         layui.formSelects.config('tags2', {
-            searchUrl: path +"/message/getEmployeeMap?companyId="+$("#departListHidden").val(),
+            searchUrl: "/message/getEmployeeMap?companyId="+$("#departListHidden").val(),
             success: function(id, url, searchVal, result){
                 formSelects.value('tags2', vArray);
             }

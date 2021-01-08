@@ -1,4 +1,3 @@
-var path = "http://192.168.1.89:8080";
 $(function () {
     //显示公司
     getCompanyList();
@@ -11,7 +10,7 @@ function getCompanyList() {
         var form = layui.form;
         $.ajax({
             type: "GET",
-            url: path + "/message/getLayIMDepMap",
+            url: "/message/getLayIMDepMap",
             data: {companyId: "0"},
             dataType: "json",
             success: function (data) {
@@ -43,7 +42,7 @@ function showTable(companyId) {
             elem: '#demo'
             , height: height
             , toolbar: true
-            , url:  path + "/message/getLayIMDepList?companyId="+companyId //数据接口
+            , url:  "/message/getLayIMDepList?companyId="+companyId //数据接口
             , cols: [[ //表头
                 {field: 'name', title: '名称', align: 'center'}
                 , {fixed: '', title: '状态', toolbar: '#barDemo', align: 'center '}
@@ -79,7 +78,7 @@ function showTable(companyId) {
                 $(".closeStatus"+data.id).removeAttr("disabled");
                 $(".closeStatus"+data.id).css("cursor","pointer");
                 $.ajax({
-                    url:   path + '/message/updLayIMDep',
+                    url:   '/message/updLayIMDep',
                     type: 'GET',
                     dataType: 'json',
                     async: false,
@@ -96,7 +95,7 @@ function showTable(companyId) {
                 $(".openStatus"+data.id).removeAttr("disabled");
                 $(".openStatus"+data.id).css("cursor","pointer");
                 $.ajax({
-                    url: path + '/message/updLayIMDep',
+                    url: '/message/updLayIMDep',
                     type: 'GET',
                     dataType: 'json',
                     async: false,

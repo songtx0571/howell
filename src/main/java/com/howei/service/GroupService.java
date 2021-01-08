@@ -36,4 +36,9 @@ public interface GroupService {
 
     List<ChatRecord> getChatRecord(Map map);
 
+    List<ChatRecord> getUnReadList(Map map2);
+
+    List<Group> getEmpInGroupList(String id);
+
+    void updHistoryMessage(Map map);
 }

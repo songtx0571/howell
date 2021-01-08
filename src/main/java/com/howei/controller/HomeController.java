@@ -20,7 +20,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
-import javax.rmi.CORBA.Util;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
@@ -121,7 +120,7 @@ public class HomeController{
         return "groupManagement";
     }
 
-    // 群组管理
+    // LayIM部门管理
     @RequestMapping("/LayIMManagement")
     public String toLayIMManagement(){
         return "LayIMManagement";

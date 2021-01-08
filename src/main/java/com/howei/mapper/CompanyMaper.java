@@ -29,4 +29,6 @@ public interface CompanyMaper {
     List<Company> getDepartmentMap(@Param("parent") int parent);
 
     List<Company> getAllDepartmentList();
+
+    List<Company> getLayIMDepShowMap(@Param("parent") String companyId);
 }

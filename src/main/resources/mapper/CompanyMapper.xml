@@ -81,4 +81,8 @@
     <select id="getAllDepartmentList" resultType="com.howei.pojo.Company">
         select * from company where parent!=0 and layIMState=1
     </select>
+
+    <select id="getLayIMDepShowMap" parameterType="java.lang.String" resultType="com.howei.pojo.Company">
+        select * from company where parent=#{parent} and layIMState=1
+    </select>
 </mapper>

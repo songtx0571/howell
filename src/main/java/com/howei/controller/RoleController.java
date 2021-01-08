@@ -288,6 +288,7 @@ public class RoleController {
             roleAuthority.setCreatedBy(user.getId());
         }else{
             roleAuthority.setCreatedBy(12);
+            //return JSON.toJSONString(Type.INVALID);//登录失效
         }
         if(authorityArr.size()>0){
             for(int i=0;i<authorityArr.size();i++){
