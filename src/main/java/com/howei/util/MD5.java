@@ -26,4 +26,21 @@ public class MD5 {
         else
             return false;
     }
+
+    public static String encodeByMd5(String str){
+
+        try {
+            MessageDigest md5=MessageDigest.getInstance("MD5");
+            byte[] digest = md5.digest(str.getBytes());
+            String s = digest.toString();
+            return s;
+        } catch (NoSuchAlgorithmException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    public static void main(String[] args) {
+        System.out.println(encodeByMd5("123456"));
+    }
 }
