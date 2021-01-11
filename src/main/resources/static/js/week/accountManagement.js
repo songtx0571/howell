@@ -128,14 +128,8 @@ function showUserTable(page,companyId) {
                 ,{field: 'roleName', title: '角色', width: 260,align:'center'}
                 ,{fixed: '', title:'操作', toolbar: '#barDemo11', width:70,align:'center'}
             ]]
-            , parseData: function(res) {
-                // alert("权限认证失败
-                //
-                // ");demo
-            }
-            ,done: function(res, curr, count) {
-
-            }
+            , parseData: function(res) { }
+            ,done: function(res, curr, count) {}
         });
         //监听行工具事件
         table.on('tool(test)', function(obj) {
@@ -474,10 +468,14 @@ function showUpdate() {
             async: true,
             success: function (data) {
                 data = strToJson(data);
+                var arrRole = "";
                 //遍历id存入到vArray 数组中
                 for (var i = 0; i < data.length; i++) {
                     vArray[i] = data[i].id;
+                    arrRole += data[i].id+",";
                 }
+                var str = arrRole.toString();
+                $("#updRoleListHidden").val(str.substring(0,arrRole.toString().length - 1));
             },
         });
         //这个是查询数据添加到下拉多选框的方法  注意：（动态选中下拉框必须等渲染下拉框完成之后再选中）
@@ -495,12 +493,7 @@ function showUpdate() {
 function updUser() {
     layer.closeAll();
     var userId = $("#userIdHidden").val();
-    var roles = "";
-    if ($("#updRoleListHidden").val() == "" || $("#updRoleListHidden").val() == null){
-
-    } else {
-        roles = "["+$("#updRoleListHidden").val()+"]";
-    }
+    var  roles = "["+$("#updRoleListHidden").val()+"]";
     $.ajax({
         type: "GET",
         url: path + "/user/updateUser",

@@ -40,5 +40,5 @@ public interface GroupService {
 
     List<Group> getEmpInGroupList(String id);
 
-    void updHistoryMessage(Map map);
+    int updHistoryMessage(Map map);
 }

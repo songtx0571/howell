@@ -43,5 +43,5 @@ public interface GroupMapper {
 
     List<Group> getEmpInGroupList(@Param("employeeId") String employeeId);
 
-    void updHistoryMessage(Map map);
+    int updHistoryMessage(Map map);
 }

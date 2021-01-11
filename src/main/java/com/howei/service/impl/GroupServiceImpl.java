@@ -94,7 +94,7 @@ public class GroupServiceImpl implements GroupService {
     }
 
     @Override
-    public void updHistoryMessage(Map map) {
-        groupMapper.updHistoryMessage(map);
+    public int updHistoryMessage(Map map) {
+        return groupMapper.updHistoryMessage(map);
     }
 }

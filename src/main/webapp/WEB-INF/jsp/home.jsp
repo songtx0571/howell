@@ -10,7 +10,7 @@
         <link rel="stylesheet" href="css/home.css">
     </head>
     <body>
-        <!--  页面上方区域     -->
+        <!--  页面上方区域  -->
         <div class="top">
             <a href="#"><img src="img/logo.png" alt="" style="margin-top: 5px;width: 50px;float: left;margin-right: 10px;margin-left: 50px;" onclick="showMenu()"></a>
            <ul class="top_list">
