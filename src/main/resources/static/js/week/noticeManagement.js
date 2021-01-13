@@ -1,8 +1,8 @@
 var index=0;//layer弹窗
 var path = "";
-// 修改类型
+/*// 修改类型
 // 如果改变了id值，返回true
-var identification = "0";
+var identification = "0";*/
 var filedir = "";
 $(function () {
     showCompany();
@@ -24,46 +24,13 @@ $(function () {
             error: function (index, upload) {}
         });
     });
-    // 修改类型
-    // 如果改变了id值，返回trues
+   /* // 修改类型
+    // 如果改变了id值，返回true
     $("#updateTypeTypeName").keyup(function () {
         identification = "1";
-    });
+    });*/
 
 });
-//添加通知
-function addInfo() {
-    var title = $("#addInfoTitle").val();
-    var content = $("#addInfoContent").val();
-    var informTypeId =  $("#addTypeSonId").val();
-    var userId = $("#addUserSelectId").val();
-    if ($("#addInfoTitle").val() == "" || $("#addInfoContent").val() == 0) {
-        alert("请将消息填写完整");
-        return;
-    }
-    if (informTypeId == ""){
-        alert("请选择类型");
-        return;
-    }
-    if (filedir != "ERROR"){
-        $.ajax({
-            type: "POST",
-            url: path+'/inform/addInform',
-            data: {title: title, content: content, informTypeId: informTypeId, usersId: userId, filedir: filedir},
-            dataType: "json",
-            success: function (data) {
-                layer.closeAll();
-                $("#addInfoTitle").val("");
-                $("#addInfoContent").val("");
-                $("#addTypeList").val(0);
-                $("#addTypeSonList").val(0);
-                $("#showUser").text("");
-                noticeClick("1");
-            }
-        });
-    }
-
-}
 // 显示公司
 function showCompany() {
     layui.use(['form'], function () {
@@ -86,43 +53,50 @@ function showCompany() {
         });
         form.on('select(companyList)', function (data) {
             $("#companyIdHidden").val(data.value);
-            layui.use(['form'], function () {
-                var form = layui.form;
-                // 查询部门
-                $.ajax({
-                    type: "GET",
-                    url: path + "/inform/getDepartmentList",
-                    data: {"parent": $("#companyIdHidden").val()},
-                    dataType: "json",
-                    success: function (data) {
-                        //选择部门
-                        $("#addUserDepartment").empty();
-                        var option = "<option value='0' >请选择部门名称</option>";
-                        for (var i = 0; i < data.length; i++) {
-                            option += "<option value='" + data[i].id + "'>" + data[i].name + "</option>"
-                        }
-                        $('#addUserDepartment').html(option);
-                        form.render();//菜单渲染 把内容加载进去
-                    }
+            layui.use(['jquery', 'formSelects'], function(){
+                var formSelects = layui.formSelects;
+                //server模式
+                formSelects.config('tags', {
+                    keyName: 'name',
+                    keyVal: 'id',
+                }).data('tags', 'server', {
+                    url: path + '/inform/getUsersList?parent='+ data.value
                 });
-                form.on('select(addUserDepartment)', function (data) {// 根据部门的选择，显示人员
-                    var departmentId = data.value;
-                    layui.use(['jquery', 'formSelects'], function(){
-                        var formSelects = layui.formSelects;
-                        //server模式
-                        formSelects.config('tags', {
-                            keyName: 'name',
-                            keyVal: 'id',
-                        }).data('tags', 'server', {
-                            url: path + '/inform/getUsersList?departmentId='+ departmentId
-                        });
+            });
+            // 查询部门
+            $.ajax({
+                type: "GET",
+                url: path + "/inform/getDepartmentList",
+                data: {"parent": $("#companyIdHidden").val()},
+                dataType: "json",
+                success: function (data) {
+                    //选择部门
+                    $("#addUserDepartment").empty();
+                    var option = "<option value='0' >请选择部门名称</option>";
+                    for (var i = 0; i < data.length; i++) {
+                        option += "<option value='" + data[i].id + "'>" + data[i].name + "</option>"
+                    }
+                    $('#addUserDepartment').html(option);
+                    form.render();//菜单渲染 把内容加载进去
+                }
+            });
+            form.on('select(addUserDepartment)', function (data) {// 根据部门的选择，显示人员
+                var departmentId = data.value;
+                layui.use(['jquery', 'formSelects'], function(){
+                    var formSelects = layui.formSelects;
+                    //server模式
+                    formSelects.config('tags', {
+                        keyName: 'name',
+                        keyVal: 'id',
+                    }).data('tags', 'server', {
+                        url: path + '/inform/getUsersList?departmentId='+ departmentId
                     });
                 });
             });
         });
     });
 }
-// 显示类型
+/*// 显示类型
 function showInfo() {
     layui.use(['form'], function () {
         var form = layui.form;
@@ -173,7 +147,7 @@ function showSonInfo(id) {
             $("#addTypeSonId").val(data.value);
         });
     });
-}
+}*/
 //根据通知按钮查询数据
 function  noticeClick(isactive) {
     $(".demoType").css("display", "none");
@@ -290,7 +264,12 @@ function  noticeClick(isactive) {
 }
 // 显示添加通知
 function showAddInfo() {
-    showInfo();
+    // showInfo();
+    $("#addInfoTitle").val("");
+    $("#addInfoContent").val("");
+    // $("#addTypeList").val(0);
+    // $("#addTypeSonList").val(0);
+    $("#showUser").text("");
     layui.use('layer', function() { //独立版的layer无需执行这一句
         var $ = layui.jquery, layer = layui.layer; //独立版的layer无需执行这一句
         layer.open({
@@ -304,6 +283,45 @@ function showAddInfo() {
             }
         });
     });
+}
+//添加通知
+function addInfo() {
+    var title = $("#addInfoTitle").val();
+    var content = $("#addInfoContent").val();
+    // var informTypeId =  $("#addTypeSonId").val();
+    var userId = "";
+    if ($("#addInfoTitle").val() == "" || $("#addInfoContent").val() == 0) {
+        layer.alert("请填写通知标题");
+        return;
+    }
+    if ($("#addInfoContent").val() == "" || $("#addInfoContent").val() == 0) {
+        layer.alert("请填写通知内容");
+        return;
+    }
+    if ($("#addUserSelectId").val() != "") {
+        userId = $("#addUserSelectId").val();
+    } else {
+        layer.alert("请选择通知人员");
+        return;
+    }
+    /*if (informTypeId == ""){
+        layer.alert("请选择类型");
+        return;
+    }*/
+    if (filedir != "ERROR"){
+        $.ajax({
+            type: "POST",
+            url: path+'/inform/addInform',
+            // data: {title: title, content: content, informTypeId: informTypeId, usersId: userId, filedir: filedir},
+            data: {title: title, content: content, usersId: userId, filedir: filedir},
+            dataType: "json",
+            success: function (data) {
+                layer.closeAll();
+                noticeClick("1");
+            }
+        });
+    }
+
 }
 // 显示人员弹框
 function showAddUser() {
@@ -353,7 +371,6 @@ function addUser() {
 // 下载按钮
 function downLoad() {
     var data = $("#detailData").text().substring(0);
-    console.log(data)
     // 将字符串转换为json
     function strToJson(str){
         var json = eval('(' + str + ')');
@@ -370,18 +387,16 @@ function downLoad() {
             window.location.href = path + "/inform/downloadFile?id=" + data.id;
         }
     } else {
-        layer.closeAll();
-        alert("无文件");
+        layer.alert("无文件");
     }
 }
 // 修改通知
 function updInfo() {
-    layer.closeAll();
     var title = $("#updInfoTitle").val();
     var content = $("#updInfoContent").val();
     var id = $("#updInformId").val();
     if (title == "" || content == "") {
-        alert("请将消息填写完整");
+        layer.alert("请将消息填写完整");
         return;
     }
     $.ajax({
@@ -391,14 +406,13 @@ function updInfo() {
         dataType: "json",
         success: function(data){
             layer.closeAll();
-            noticeClick();
+            noticeClick("1");
         }
     });
 }
 
-//根据类型按钮查询类型
+/*//根据类型按钮查询类型
 function typeClick() {
-    // debugger;
     $(".demoInfo").css("display", "none");
     $(".demoType").css("display", "block");
     layui.use('table', function(){
@@ -480,10 +494,9 @@ function showAddType() {
 }
 // 添加父类类型
 function addType() {
-    layer.closeAll();
     var name = $("#addTypeTypeName").val();
     if (name == "") {
-        alert("请将消息填写完整");
+        layer.alert("请将消息填写完整");
         return;
     }
     $("#addTypeBtn").css("display", "none");
@@ -506,11 +519,10 @@ function addType() {
 }
 // 添加子类类型
 function addSonType() {
-    layer.closeAll();
     var id = $("#addSonTypeTypeId").val();
     var name = $("#addSonTypeTypeName").val();
     if (name == "") {
-        alert("请将消息填写完整");
+        layer.alert("请将消息填写完整");
         return;
     }
     $("#addSonTypeBtn").css("display", "none");
@@ -533,11 +545,10 @@ function addSonType() {
 }
 // 修改类型
 function updateType() {
-    layer.closeAll();
     var name = $("#updateTypeTypeName").val();
     var id = $("#updateTypeId").val();
     if (name == "") {
-        alert("请将消息填写完整");
+        layer.alert("请将消息填写完整");
         return;
     }
     $("#updateTypeBtn").css("display", "none");
@@ -555,7 +566,7 @@ function updateType() {
         }
     });
     identification = "0";
-}
+}*/
 // 取消
 function cancel() {
     layer.closeAll();

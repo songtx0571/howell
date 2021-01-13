@@ -10,7 +10,6 @@
     <link rel="stylesheet" href="layui/css/layui.css">
     <script type="text/javascript" src="layui/formSelects-v4.js"></script>
     <link rel="stylesheet" href="layui/formSelects-v4.css">
-    <script type="text/javascript" src="js/week/alert.js"></script>
     <style>
         .content {
             padding: 15px 10px;
@@ -26,27 +25,6 @@
         .btnTop .topList .notLi {
             position: relative;
         }
-        .btnTop .topList li .erji {
-            display: none;
-            position: absolute;
-            top: 50px;
-            left: -25px;
-            font-size: 16px;
-            width: 90px;
-            line-height: 35px;
-            background: #cccccc;
-            text-align: center;
-            z-index: 99;
-        }
-        .btnTop .topList .notLi:hover .erji {
-            display: block;
-        }
-        .btnTop .topList li .erji a {
-            color: #fff;
-        }
-        .btnTop .topList li .erji a:hover {
-            color: #761c19;
-        }
     </style>
 </head>
 <body>
@@ -55,43 +33,34 @@
         <div class="btnTop">
             <ul class="topList">
                 <li class="notLi">
-                    <a href="#">通知</a>
-                    <ul class="erji">
-                        <%--isactive--%>
-                        <shiro:hasPermission name="添加通知">
-                            <li><a href="#" onclick="noticeClick('1')">我发送的</a></li>
-                        </shiro:hasPermission>
-                        <shiro:hasPermission name="查询通知">
-                            <li><a href="#" onclick="noticeClick('2')">我收到的</a></li>
-                        </shiro:hasPermission>
-                    </ul>
+                    <a href="#" onclick="noticeClick('1')">我发送的</a>
                 </li>
-                <shiro:hasPermission name="通知类型">
+                <li>
+                    <a href="#" onclick="noticeClick('2')">我收到的</a>
+                </li>
+                <shiro:hasPermission name="添加通知">
+                    <li>
+                        <a href="#"onclick="showAddInfo()">添加通知</a>
+                    </li>
+                </shiro:hasPermission>
+                <%--<shiro:hasPermission name="通知类型">
                     <li>
                         <a href="#" onclick="typeClick()">类型</a>
                     </li>
-                </shiro:hasPermission>
+                </shiro:hasPermission>--%>
             </ul>
         </div>
-        <h1 style="text-align: center;margin-top: 10px;">信息</h1>
         <%--通知--%>
         <script type="text/html" id="barDemo1">
             <a class="layui-btn layui-btn-sm" lay-event="detail">查看</a>
-            <shiro:hasPermission name="修改通知">
-                <a class="layui-btn layui-btn-sm" lay-event="edit">编辑</a></shiro:hasPermission>
+                <shiro:hasPermission name="修改通知">
+                    <a class="layui-btn layui-btn-sm" lay-event="edit">编辑</a>
+                </shiro:hasPermission>
             <a class="layui-btn layui-btn-sm" lay-event="viewed">已查看人员</a>
         </script>
         <div class="demoInfo" style="display: none;margin-top: 10px;">
+
             <table id="demoInfo" lay-filter="test" style="width: 100%">
-                <tr>
-                    <th>
-                        <shiro:hasPermission name="添加通知">
-                            <button style="width: 100%;margin-bottom: -10px;border: 1px solid #e6e6e6;height: 75px;color: #666;font-weight: 400;border-bottom: none;font-size: 22px;"
-                                    onclick="showAddInfo()">添加
-                            </button>
-                        </shiro:hasPermission>
-                    </th>
-                </tr>
             </table>
         </div>
         <%--添加通知--%>
@@ -105,18 +74,15 @@
             <div style="clear: both"></div>
             <div>
                 <span class="span1">内容:</span>
-                <textarea style="float: left;width: 300px;height: 100px;outline: none;font-size: 18px;" type="text"
-                          id="addInfoContent"></textarea>
+                <textarea style="float: left;width: 300px;height: 100px;outline: none;font-size: 18px;" type="text" id="addInfoContent"></textarea>
             </div>
             <br>
             <div style="clear: both"></div>
-            <div class="addInfoDiv">
+           <%-- <div class="addInfoDiv">
                 <form class="layui-form" action="">
                     <div class="layui-form-item">
                         <div class="layui-inline">
-                            <shiro:hasPermission name="通知类型">
-                                <label class="layui-form-label">类型:&nbsp;&nbsp;</label>
-                            </shiro:hasPermission>
+                            <label class="layui-form-label">类型:&nbsp;&nbsp;</label>
                             <div class="layui-input-inline">
                                 <select name="addTypeList" lay-verify="required" lay-filter="addTypeList" lay-search=""
                                         id="addTypeList">
@@ -139,7 +105,7 @@
                 </form>
                 <input type="hidden" id="addTypeId">
                 <input type="hidden" id="addTypeSonId">
-            </div>
+            </div>--%>
             <br>
             <div style="clear: both"></div>
             <div>
@@ -158,7 +124,7 @@
             <br>
             <div style="clear: both"></div>
             <div class="btnBox">
-                <button id="addInfoBtn" onclick="addInfo()">确定</button>
+                <button id="addInfoBtn" onclick="addInfo()">确定</button>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
                 <button onclick="cancel()">取消</button>
             </div>
         </div>
@@ -215,7 +181,7 @@
             </div>
             <div style="clear: both"></div>
             <div class="btnBox">
-                <button id="addUserBtn" onclick="addUser()">确定</button>
+                <button id="addUserBtn" onclick="addUser()">确定</button>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
                 <button onclick="cancel1()">取消</button>
             </div>
         </div>
@@ -248,7 +214,7 @@
             </div>
             <div style="clear: both"></div>
             <div class="btnBox">
-                <button id="updInfoBtn" onclick="updInfo()">确定</button>
+                <button id="updInfoBtn" onclick="updInfo()">确定</button>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
                 <button onclick="cancel()">取消</button>
             </div>
         </div>
@@ -257,8 +223,7 @@
             <h1 style="text-align: center;margin-bottom: 30px">已查看过的人员</h1>
             <div id="userAgo"></div>
         </div>
-        <%--修改通知--%>
-        <%--类型--%>
+        <%--&lt;%&ndash;类型&ndash;%&gt;
         <script type="text/html" id="barDemo2">
             <button class="layui-btn layui-btn-sm" lay-event="add">添加</button>
             <a class="layui-btn layui-btn-sm" lay-event="edit">编辑</a>
@@ -267,11 +232,9 @@
             <table class="demoType1" id="demoType" lay-filter="test" style="width: 100%">
                 <tr>
                     <th>
-                        <shiro:hasPermission name="通知类型添加">
-                            <button style="width: 100%;margin-bottom: -10px;border: 1px solid #e6e6e6;height: 75px;color: #666;font-weight: 400;border-bottom: none;font-size: 22px;"
-                                    onclick="showAddType()">添加
-                            </button>
-                        </shiro:hasPermission>
+                        <button style="width: 100%;margin-bottom: -10px;border: 1px solid #e6e6e6;height: 75px;color: #666;font-weight: 400;border-bottom: none;font-size: 22px;"
+                                onclick="showAddType()">添加
+                        </button>
                     </th>
                 </tr>
             </table>
@@ -279,7 +242,7 @@
         <div>
             <input type="hidden" id="addSonTypeTypeId">
         </div>
-        <%--添加父类类型--%>
+        &lt;%&ndash;添加父类类型&ndash;%&gt;
         <div class="addType">
             <h1 style="text-align: center;margin-bottom: 30px">添加类型</h1>
             <div>
@@ -292,7 +255,7 @@
                 <button onclick="cancel()">取消</button>
             </div>
         </div>
-        <%--添加子类类型--%>
+        &lt;%&ndash;添加子类类型&ndash;%&gt;
         <div class="addSonType">
             <h1 style="text-align: center;margin-bottom: 30px">添加类型</h1>
             <div>
@@ -305,7 +268,7 @@
                 <button onclick="cancel()">取消</button>
             </div>
         </div>
-        <%--修改父类类型--%>
+        &lt;%&ndash;修改父类类型&ndash;%&gt;
         <div class="updateType">
             <h1 style="text-align: center;margin-bottom: 30px;">修改类型</h1>
             <input type="hidden" id="updateTypeId">
@@ -318,7 +281,7 @@
                 <button id="updateTypeBtn" onclick="updateType()">确定</button>
                 <button onclick="cancel()">取消</button>
             </div>
-        </div>
+        </div>--%>
     </div>
 </div>
 </body>

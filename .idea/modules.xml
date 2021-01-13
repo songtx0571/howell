@@ -2,7 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/.idea/howell.iml" filepath="$PROJECT_DIR$/.idea/howell.iml" />
+      <module fileurl="file://$PROJECT_DIR$/howei.iml" filepath="$PROJECT_DIR$/howei.iml" />
     </modules>
   </component>
 </project>

@@ -159,11 +159,23 @@ public class HomeController{
     }
 
     /**
+     *  登录页面
+     * @param request
+     * @return
+     */
+    @GetMapping(value = "/loginPage")
+    public ModelAndView loginPage(HttpServletRequest request){
+        ModelAndView modelAndView=new ModelAndView();
+        modelAndView.setViewName("login");
+        return modelAndView;
+    }
+
+    /**
      * 登录
      * @param request
      * @return
      */
-    @RequestMapping(value = "/loginPage")
+    @PostMapping(value = "/loginPage")
     public ModelAndView loginadmin(HttpServletRequest request) {
         String username = request.getParameter("userNumber").toUpperCase();
         String password = request.getParameter("password");
