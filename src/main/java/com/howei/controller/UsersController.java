@@ -238,7 +238,7 @@ public class UsersController {
     @RequestMapping("/addUser")
     @ResponseBody
     public String addUser(HttpServletRequest request){
-        String userName=request.getParameter("userName");
+        String userName=request.getParameter("userName").toUpperCase();
         String state=request.getParameter("state");
         String sex=request.getParameter("sex");
         String phone=request.getParameter("phone");
@@ -331,7 +331,7 @@ public class UsersController {
     @ResponseBody
     public String updateUser(HttpServletRequest request){
         String id=request.getParameter("id");
-        String userName=request.getParameter("userName");
+        String userName=request.getParameter("userName").toUpperCase();
         String state=request.getParameter("state");
         String sex=request.getParameter("sex");
         String phone=request.getParameter("phone");

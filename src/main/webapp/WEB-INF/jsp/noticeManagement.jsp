@@ -67,29 +67,27 @@
                         <shiro:hasPermission name="添加通知">
                             <li><a href="#" onclick="noticeClick('1')">我发送的</a></li>
                         </shiro:hasPermission>
-                        <shiro:hasPermission name="查询通知">
-                            <li><a href="#" onclick="noticeClick('2')">我收到的</a></li>
-                        </shiro:hasPermission>
+                        <li><a href="#" onclick="noticeClick('2')">我收到的</a></li>
                     </ul>
                 </li>
-                <%--<shiro:hasPermission name="通知类型">--%>
                 <shiro:hasPermission name="通知类型">
                     <li>
                         <a href="#" onclick="typeClick()">类型</a>
                     </li>
                 </shiro:hasPermission>
-                <%--</shiro:hasPermission>--%>
             </ul>
         </div>
         <h1 style="text-align: center;margin-top: 10px;">信息</h1>
         <%--通知--%>
         <script type="text/html" id="barDemo1">
             <a class="layui-btn layui-btn-sm" lay-event="detail">查看</a>
-            <shiro:hasPermission name="修改通知">
-                <a class="layui-btn layui-btn-sm" lay-event="edit">编辑</a></shiro:hasPermission>
+                <shiro:hasPermission name="修改通知">
+                <a class="layui-btn layui-btn-sm" lay-event="edit">编辑</a>
+            </shiro:hasPermission>
             <a class="layui-btn layui-btn-sm" lay-event="viewed">已查看人员</a>
         </script>
         <div class="demoInfo" style="display: none;margin-top: 10px;">
+
             <table id="demoInfo" lay-filter="test" style="width: 100%">
                 <tr>
                     <th>
@@ -97,6 +95,7 @@
                             <button style="width: 100%;margin-bottom: -10px;border: 1px solid #e6e6e6;height: 75px;color: #666;font-weight: 400;border-bottom: none;font-size: 22px;"
                                     onclick="showAddInfo()">添加
                             </button>
+
                         </shiro:hasPermission>
                     </th>
                 </tr>
@@ -122,9 +121,7 @@
                 <form class="layui-form" action="">
                     <div class="layui-form-item">
                         <div class="layui-inline">
-                            <shiro:hasPermission name="通知类型">
-                                <label class="layui-form-label">类型:&nbsp;&nbsp;</label>
-                            </shiro:hasPermission>
+                            <label class="layui-form-label">类型:&nbsp;&nbsp;</label>
                             <div class="layui-input-inline">
                                 <select name="addTypeList" lay-verify="required" lay-filter="addTypeList" lay-search=""
                                         id="addTypeList">
@@ -275,11 +272,9 @@
             <table class="demoType1" id="demoType" lay-filter="test" style="width: 100%">
                 <tr>
                     <th>
-                        <shiro:hasPermission name="通知类型添加">
-                            <button style="width: 100%;margin-bottom: -10px;border: 1px solid #e6e6e6;height: 75px;color: #666;font-weight: 400;border-bottom: none;font-size: 22px;"
-                                    onclick="showAddType()">添加
-                            </button>
-                        </shiro:hasPermission>
+                        <button style="width: 100%;margin-bottom: -10px;border: 1px solid #e6e6e6;height: 75px;color: #666;font-weight: 400;border-bottom: none;font-size: 22px;"
+                                onclick="showAddType()">添加
+                        </button>
                     </th>
                 </tr>
             </table>
