@@ -157,7 +157,7 @@
     </select>
 
     <select id="selSeen" parameterType="java.lang.String" resultType="java.util.HashMap" >
-        select distinct userId from user_inform where informId=#{informId}
+        select distinct userId from user_inform where informId=#{informId} and rdStatus=1
     </select>
 
     <select id="selSeenUser" parameterType="java.lang.String" resultType="java.lang.String" >

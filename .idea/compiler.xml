@@ -6,10 +6,12 @@
         <sourceOutputDir name="target/generated-sources/annotations" />
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
+        <module name="howei" />
         <module name="howell" />
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel>
+      <module name="howei" target="1.8" />
       <module name="howell" target="1.8" />
     </bytecodeTargetLevel>
   </component>
