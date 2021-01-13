@@ -16,7 +16,6 @@
             padding: 15px 10px;
             box-sizing: border-box;
         }
-
         .btnTop .topList {
             display: flex;
             justify-content: space-around;
@@ -24,11 +23,9 @@
             background: gainsboro;
             border-radius: 20px;
         }
-
         .btnTop .topList .notLi {
             position: relative;
         }
-
         .btnTop .topList li .erji {
             display: none;
             position: absolute;
@@ -41,15 +38,12 @@
             text-align: center;
             z-index: 99;
         }
-
         .btnTop .topList .notLi:hover .erji {
             display: block;
         }
-
         .btnTop .topList li .erji a {
             color: #fff;
         }
-
         .btnTop .topList li .erji a:hover {
             color: #761c19;
         }
@@ -72,13 +66,11 @@
                         </shiro:hasPermission>
                     </ul>
                 </li>
-                <%--<shiro:hasPermission name="通知类型">--%>
                 <shiro:hasPermission name="通知类型">
                     <li>
                         <a href="#" onclick="typeClick()">类型</a>
                     </li>
                 </shiro:hasPermission>
-                <%--</shiro:hasPermission>--%>
             </ul>
         </div>
         <h1 style="text-align: center;margin-top: 10px;">信息</h1>
