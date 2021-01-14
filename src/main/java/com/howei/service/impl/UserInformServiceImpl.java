@@ -16,4 +16,10 @@ public class UserInformServiceImpl implements UserInformService {
     public int addUserInform(UserInform userInform) {
         return userInformMapper.addUserInform(userInform);
     }
+
+    @Override
+    public int updateRdStatusByInformId(String id) {
+        return userInformMapper.updateRdStatusByInformId(id);
+
+    }
 }

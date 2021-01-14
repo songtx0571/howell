@@ -222,16 +222,19 @@ function showSonInfo(id) {
         });
     });
 }*/
-//根据通知按钮查询数据
-function  noticeClick(isactive) {
-    $(".demoType").css("display", "none");
-    $(".demoInfo").css("display", "block");
+//根据通知按钮查询发送的数据
+function  noticeClickFS() {
+    // $(".demoType").css("display", "none");
+    $(".demoInfoSD").css("display", "none");
+    $(".demoInfoFS").css("display", "block");
+    var win = $(window).height();
+    var height = win-100;
     layui.use('table', function(){
         var table = layui.table;
         table.render({
-            elem: '#demoInfo'
-            ,height: 'full'
-            ,url: path + '/inform/getInformList?isactive='+isactive //数据接口
+            elem: '#demoInfoFS'
+            ,height: height
+            ,url: path + '/inform/getInformList?isactive=1'//数据接口
             ,page: true //开启分页
             ,limit: 10
             ,limits: [10, 20, 30]
@@ -243,7 +246,7 @@ function  noticeClick(isactive) {
                 ,{field: 'createdByName', title: '创建人', align:'center', width: 100}
                 ,{field: 'filedir', title: '地址', align:'center', hide: 'false'}
                 ,{field: 'informTypeName', title: '类别', hide: 'false', align:'center'}
-                ,{fixed: '', title:'操作', toolbar: '#barDemo1', width:270, align:'center'}
+                ,{fixed: '', title:'操作', toolbar: '#barDemoFS', width:270, align:'center'}
             ]]
             ,parseData: function(res) {
             }
@@ -251,7 +254,7 @@ function  noticeClick(isactive) {
             }
         });
         //监听工具条
-        table.on('tool(test)', function(obj){ //注：tool 是工具条事件名，test 是 table 原始容器的属性 lay-filter="对应的值"
+        table.on('tool(testFS)', function(obj){ //注：tool 是工具条事件名，test 是 table 原始容器的属性 lay-filter="对应的值"
             var data = obj.data; //获得当前行数据
             // 将data转为字符串
             var jStr = "{ ";
@@ -343,6 +346,78 @@ function  noticeClick(isactive) {
         });
     });
 }
+//根据通知按钮查询收到的数据
+function  noticeClickSD() {
+    // $(".demoType").css("display", "none");
+    $(".demoInfoSD").css("display", "block");
+    $(".demoInfoFS").css("display", "none");
+    var win = $(window).height();
+    var height = win-100;
+    layui.use('table', function(){
+        var table = layui.table;
+        table.render({
+            elem: '#demoInfoSD'
+            ,height: height
+            ,url: path + '/inform/getInformList?isactive=2'//数据接口
+            ,page: true //开启分页
+            ,limit: 10
+            ,limits: [10, 20, 30]
+            ,id: 'demoInfo'
+            ,cols: [[ //表头
+                {field: 'created', title: '时间', align:'center', sort: true, width: 150}
+                ,{field: 'title', title: '标题', align:'center',width: 200}
+                ,{field: 'content', title: '内容', align:'center'}
+                ,{field: 'createdByName', title: '创建人', align:'center', width: 100}
+                ,{field: 'filedir', title: '地址', align:'center', hide: 'false'}
+                ,{field: 'informTypeName', title: '类别', hide: 'false', align:'center'}
+                ,{fixed: '', title:'操作', toolbar: '#barDemoSD', width:270, align:'center'}
+            ]]
+            ,parseData: function(res) {
+            }
+            ,done: function(res, curr, count){
+            }
+        });
+        //监听工具条
+        table.on('tool(testSD)', function(obj){ //注：tool 是工具条事件名，test 是 table 原始容器的属性 lay-filter="对应的值"
+            var data = obj.data; //获得当前行数据
+            // 将data转为字符串
+            var jStr = "{ ";
+            for(var item in data){
+                jStr += "'"+item+"':'"+data[item]+"',";
+            }
+            jStr += " }";
+            var layEvent = obj.event; //获得 lay-event 对应的值（也可以是表头的 event 参数对应的值）
+            if (obj.event === "detailSD") {// 查看
+                index=layer.open({
+                    type: 1
+                    ,id: 'detailSD' //防止重复弹出
+                    ,content: $(".detail")
+                    ,data: {"data": data}
+                    ,shade: 0.4 //不显示遮罩
+                    ,area: ['510px', '450px']
+                    ,success: function (layero, index) {
+                        $("#detailData").text(jStr);
+                        $("#detailDataTitle").text(data.title);
+                        $("#detailDataContent").text(data.content);
+                        $.ajax({
+                            type: "GET",
+                            url: path + "/inform/updateStatus",
+                            data: {"informId": data.id},
+                            dataType: "json",
+                            success: function(data){
+                            }
+                        });
+                    }
+                    ,yes: function(){
+                    }
+                    ,style: {
+                        top: '10%'
+                    }
+                });
+            }
+        });
+    });
+}
 // 显示添加通知
 function showAddInfo() {
     // showInfo();
@@ -410,7 +485,7 @@ function addInfo() {
             dataType: "json",
             success: function (data) {
                 layer.closeAll();
-                noticeClick("2");
+                noticeClickSD();
             }
         });
     }
@@ -426,7 +501,7 @@ function showAddUser() {
             , content: $(".addUser")
             , btnAlign: 'c' //按钮居中
             , shade: 0.4 //不显示遮罩
-            , area: ['80%', '540px']
+            , area: ['80%', '580px']
             , yes: function () {
             }
         });
@@ -475,7 +550,7 @@ function updInfo() {
         dataType: "json",
         success: function(data){
             layer.closeAll();
-            noticeClick("1");
+            noticeClickFS();
         }
     });
 }

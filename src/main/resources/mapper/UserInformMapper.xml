@@ -14,5 +14,8 @@
     <insert id="addUserInform" parameterType="com.howei.pojo.UserInform" keyProperty="id" useGeneratedKeys="true">
         insert into user_inform(userId,informId,created,rdStatus) value (#{userId},#{informId},#{created},#{rdStatus})
     </insert>
+    <update id="updateRdStatusByInformId" parameterType="java.lang.String">
+        update user_inform set rdStatus = 0 where informId =#{informId}
+    </update>
 
 </mapper>
