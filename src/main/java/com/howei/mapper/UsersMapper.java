@@ -35,7 +35,7 @@ public interface UsersMapper {
 
     List<Users> getUsersList(Map map);
 
-    List<Map> selSeen(String informId);
+    List<Map> selSeen(String informId );
 
     String selSeenUser(@Param("userId") String userId);
 
