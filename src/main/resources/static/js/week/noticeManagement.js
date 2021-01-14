@@ -1,5 +1,6 @@
 var index=0;//layer弹窗
-var path = "";
+var path = "http://192.168.1.154:8080";
+// var path = "";
 /*// 修改类型
 // 如果改变了id值，返回true
 var identification = "0";*/
@@ -59,8 +60,43 @@ function showCompany() {
                 formSelects.config('tags', {
                     keyName: 'name',
                     keyVal: 'id',
+                    keySel: 'selected',
+                    direction: 'auto',
+                    success: function(id, url, searchVal, result){      //使用远程方式的success回调
+                        var data = result.data;
+                        var names = "";
+                        for (var i = 0; i < data.length; i ++) {
+                            names += data[i].id + ",";
+                        }
+                        names = names.substring(0,names.length - 1);
+                        if (names.length < 1){
+                            $("#checkUser").text("0人");
+                        } else{
+                            var nameCount = 1;
+                            var arr = "["+names+"]";
+                            arr = arr.split(',');
+                            for (var i = 1; i <= arr.length; i ++){
+                                nameCount = i;
+                            }
+                            $("#checkUser").text(nameCount + "人");
+                        }
+                        $("#addUserSelectId").val(names);
+                    },
                 }).data('tags', 'server', {
                     url: path + '/inform/getUsersList?parent='+ data.value
+                });
+                formSelects.closed('tags', function(id){
+                    var names = layui.formSelects.value('tags', 'name');
+                    if (names.length < 1){
+                        $("#checkUser").text("0人");
+                    } else{
+                        var nameCount = 1;
+                        for (var i = 1; i <= names.length; i ++){
+                            nameCount = i;
+                        }
+                        $("#checkUser").text(nameCount + "人");
+                    }
+                    $("#addUserSelectId").val(layui.formSelects.value('tags', 'val'));
                 });
             });
             // 查询部门
@@ -82,17 +118,56 @@ function showCompany() {
             });
             form.on('select(addUserDepartment)', function (data) {// 根据部门的选择，显示人员
                 var departmentId = data.value;
-                layui.use(['jquery', 'formSelects'], function(){
-                    var formSelects = layui.formSelects;
-                    //server模式
-                    formSelects.config('tags', {
-                        keyName: 'name',
-                        keyVal: 'id',
-                    }).data('tags', 'server', {
-                        url: path + '/inform/getUsersList?departmentId='+ departmentId
-                    });
-                });
+                showUser(departmentId);
             });
+        });
+    });
+}
+//显示人员
+function showUser(departmentId) {
+    layui.use(['jquery', 'formSelects'], function(){
+        var formSelects = layui.formSelects;
+        //server模式
+        formSelects.config('tags', {
+            keyName: 'name',
+            keyVal: 'id',
+            keySel: 'selected',
+            direction: 'auto',
+            success: function(id, url, searchVal, result){      //使用远程方式的success回调
+                var data = result.data;
+                var names = "";
+                for (var i = 0; i < data.length; i ++) {
+                    names += data[i].id + ",";
+                }
+                names = names.substring(0,names.length - 1);
+                if (names.length < 1){
+                    $("#checkUser").text("0人");
+                } else{
+                    var nameCount = 1;
+                    var arr = "["+names+"]";
+                    arr = arr.split(',');
+                    for (var i = 1; i <= arr.length; i ++){
+                        nameCount = i;
+                    }
+                    $("#checkUser").text(nameCount + "人");
+                }
+                $("#addUserSelectId").val(names);
+            },
+        }).data('tags', 'server', {
+            url: path + '/inform/getUsersList?departmentId='+ departmentId
+        });
+        formSelects.closed('tags', function(id){
+            var names = layui.formSelects.value('tags', 'name');
+            if (names.length < 1){
+                $("#checkUser").text("0人");
+            } else{
+                var nameCount = 1;
+                for (var i = 1; i <= names.length; i ++){
+                    nameCount = i;
+                }
+                $("#checkUser").text(nameCount + "人");
+            }
+            $("#addUserSelectId").val(layui.formSelects.value('tags', 'val'));
         });
     });
 }
@@ -247,16 +322,23 @@ function  noticeClick(isactive) {
                             data: {"informId": data.id},
                             dataType: "json",
                             success: function(res){
+                                $("#userAfter").html("");
+                                $("#userAgo").html("");
                                 for (var i = 0 ; i < res.data.length; i ++) {
-                                    $("#userAgo").append("<span class='userAgoSpan'>"+res.data[i]+"</span>");
+                                    if (res.data[i].rdStatus == "0") {//未读
+                                        $("#userAfter").append("<span class='userSpan'>"+res.data[i].username+"</span>");
+                                    } else {
+                                        $("#userAgo").append("<span class='userSpan'>"+res.data[i].username+"</span>");
+                                    }
+
                                 }
                             }
                         });
                     }
                     ,yes: function () {}
-                });
-                layer.style( {
-                    top: '0'
+                    ,style: {
+                        top: '0'
+                    }
                 });
             }
         });
@@ -283,6 +365,18 @@ function showAddInfo() {
             }
         });
     });
+    //显示人员框里的接口调用
+    layui.use('form', function(){
+        var form = layui.form;
+        $("#companyList").val("0");
+        $("#addUserDepartment").val("0");
+        $("#checkUser").text("0人");
+        $("#addUserSelectId").val("");
+        form.render('select');
+        form.render(); //更新全部
+    });
+    // 未选择部门显示所有人员
+    showUser('0');
 }
 //添加通知
 function addInfo() {
@@ -298,7 +392,7 @@ function addInfo() {
         layer.alert("请填写通知内容");
         return;
     }
-    if ($("#addUserSelectId").val() != "") {
+    if ($("#addUserSelectId").val() != "" && $("#showUser").text() != "") {
         userId = $("#addUserSelectId").val();
     } else {
         layer.alert("请选择通知人员");
@@ -317,7 +411,7 @@ function addInfo() {
             dataType: "json",
             success: function (data) {
                 layer.closeAll();
-                noticeClick("1");
+                noticeClick("2");
             }
         });
     }
@@ -333,33 +427,9 @@ function showAddUser() {
             , content: $(".addUser")
             , btnAlign: 'c' //按钮居中
             , shade: 0.4 //不显示遮罩
-            , area: ['80%', '80%']
+            , area: ['80%', '540px']
             , yes: function () {
             }
-        });
-    });
-    // 未选择部门显示所有人员
-    layui.use(['jquery', 'formSelects'], function(){
-        var formSelects = layui.formSelects;
-        //server模式
-        formSelects.config('tags', {
-            keyName: 'name',
-            keyVal: 'id',
-        }).data('tags', 'server', {
-            url: path + '/inform/getUsersList?$departmentId=0'
-        });
-        formSelects.closed('tags', function(id){
-            var names = layui.formSelects.value('tags', 'name');
-            if (names.length < 1){
-                $("#checkUser").text("0人");
-            } else{
-                var nameCount = 1;
-                for (var i = 1; i <= names.length; i ++){
-                    nameCount = i;
-                }
-                $("#checkUser").text(nameCount + "人");
-            }
-            $("#addUserSelectId").val(layui.formSelects.value('tags', 'val'));
         });
     });
 }
