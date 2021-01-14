@@ -1,6 +1,5 @@
 var index=0;//layer弹窗
-var path = "http://192.168.1.154:8080";
-// var path = "";
+var path = "";
 /*// 修改类型
 // 如果改变了id值，返回true
 var identification = "0";*/
