@@ -26,7 +26,7 @@ public interface GroupService {
 
     int addGroupUsers(List<EmployeeGroup> list);
 
-    int delGroupUser(String groupId,String employeeId);
+    int delGroupUser(String groupId, String employeeId);
 
     List<Employee> getEmpListByGroup(String groupName);
 

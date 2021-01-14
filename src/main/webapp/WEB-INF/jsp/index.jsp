@@ -30,7 +30,6 @@
         }
         #layui-layim-close span{
             font-size: 30px;
-            /*background: rgba(200,200,200,0.5);*/
         }
     </style>
 </head>
@@ -117,7 +116,9 @@
             // 监听layim建立就绪
             layim.on('ready', function(res){
                 // 服务端WebSocket的访问路径（3.2、配置WebSocket处理器与拦截器）。（注意：路径前缀务必添加websocket的“ws://”）
-                var action = 'ws://192.168.1.89:8080/socket/'+username;
+
+                var action = 'ws://192.168.1.27:8080/socket/'+username;
+
                 // 初始化Socket
                 if('WebSocket' in window) {
                     websocket = new WebSocket(action);
@@ -229,9 +230,6 @@
                 var type = layimChangeTo.type;
                 layimChat = document.getElementById("layui-layim-chat");
                 var divId = "layim-read-"+type+toId;
-                // 获取当前对象未读消息数量（2.2中已经初始化）
-                /*var readCount = document.getElementById(divId).value;
-                console.log("窗口切换"+readCount);*/
                 //左侧li集合
                 var lis = layimChat.childNodes[0].childNodes;
                 //右侧聊天窗口
@@ -256,6 +254,7 @@
                         }
                     }
                 }
+
                 // 去除未读消息提示
                 var layimT =  document.getElementsByClassName("layim-"+type+toId)[0];
                 var span = layimT.childNodes[2];

@@ -144,7 +144,7 @@ public class WebSocket {
             Map map=new HashMap();
             map.put("sendId",mine.getId());
             map.put("sendToId",mine.getToId());
-            int result=groupService.updHistoryMessage(map);
+            groupService.updHistoryMessage(map);
         }
         return 0;
     }

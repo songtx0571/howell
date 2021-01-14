@@ -64,6 +64,7 @@
             <if test="userId!=null">
                 and u.id=#{userId}
             </if>
+            order by i.created desc
             <if test="page!=null">
                 limit ${page},${pageSize}
             </if>
@@ -76,6 +77,7 @@
             <if test="userId!=null">
                 and ui.userId=#{userId}
             </if>
+            order by i.created desc
             <if test="page!=null">
                 limit ${page},${pageSize}
             </if>

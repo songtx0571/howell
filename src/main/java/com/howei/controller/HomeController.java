@@ -211,7 +211,6 @@ public class HomeController{
         Session session = subject.getSession();
         Users user = userService.loginUserNumber(username,password);
         session.setAttribute(SESSION_USER, user);
-        session.setAttribute("userName", user.getUserNumber());
         mode.setViewName("home");
         return mode;
     }

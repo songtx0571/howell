@@ -19,7 +19,7 @@ public interface GroupMapper {
 
     int addGroup(Group group);
 
-    Group findByGroupNameAndId(@Param("groupName")String groupName,@Param("id") Integer id);
+    Group findByGroupNameAndId(@Param("groupName") String groupName, @Param("id") Integer id);
 
     int updGroup(Group group);
 
@@ -29,7 +29,7 @@ public interface GroupMapper {
 
     int addGroupUsers(List<EmployeeGroup> list);
 
-    int delGroupUser(@Param("groupId") String groupId,@Param("employeeId") String employeeId);
+    int delGroupUser(@Param("groupId") String groupId, @Param("employeeId") String employeeId);
 
     List<Employee> getEmpListByGroup(@Param("groupName") String groupName);
 

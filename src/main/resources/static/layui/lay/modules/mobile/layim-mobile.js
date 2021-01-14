@@ -645,7 +645,6 @@ layui.define(['laytpl', 'upload', 'layer-mobile', 'zepto'], function(exports){
     
     var group = {}, thatChat = thisChat(), thisData = thatChat.data || {}
     ,isThisData = thisData.id == data.id && thisData.type == data.type; //是否当前打开联系人的消息
-    
     data.timestamp = data.timestamp || new Date().getTime();
     data.system || pushChatlog(data);
     console.log(data)
@@ -710,7 +709,7 @@ layui.define(['laytpl', 'upload', 'layer-mobile', 'zepto'], function(exports){
       ul.append('<li class="layim-chat-system"><span>'+ data.content +'</span></li>');
     } else if(data.content.replace(/\s/g, '') !== ''){
       if(data.timestamp - (sendMessage.time||0) > 60*1000){
-        ul.append('<li class="layim-chat-system"><span>'+ layui.data.date(data.timestamp) +'</span></li>');
+        ul.append('<li class="layim-chat-system"><span>'+ layui.data.date() +'</span></li>');
         sendMessage.time = data.timestamp;
       }
       ul.append(laytpl(elemChatMain).render(data));
@@ -744,7 +743,7 @@ layui.define(['laytpl', 'upload', 'layer-mobile', 'zepto'], function(exports){
     var ul = thatChat.elem.find('.layim-chat-main ul');
     layui.each(chatlog[thatChat.data.type + thatChat.data.id], function(index, item){
       if(new Date().getTime() > item.timestamp && item.timestamp - (sendMessage.time||0) > 60*1000){
-        ul.append('<li class="layim-chat-system"><span>'+ layui.data.date(item.timestamp) +'</span></li>');
+          ul.append('<li class="layim-chat-system"><span>'+ layui.data.date() +'</span></li>');
         sendMessage.time = item.timestamp;
       }
       ul.append(laytpl(elemChatMain).render(item));

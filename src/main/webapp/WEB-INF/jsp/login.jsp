@@ -70,12 +70,12 @@
         <%--萧山--%>
         <%--<div style="margin:0 auto; padding:10px 0;display:inline-block;height:20px;line-height:20px;">
             <a target="_blank" href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=33010602011394">
-                < img src="img/keeponrecord.png" style="float:left;"/>
+                <img src="img/keeponrecord.png" style="float:left;"/>
                 <span style="float:left;height:20px;line-height:20px;margin: 0px 0px 0px 5px; color:#333;">浙公网安备 33010602011394号</span>
-            </ a>
+            </a>
             <a target="_blank" href="http://beian.miit.gov.cn/">
                 <span>&nbsp;&nbsp;&nbsp;&nbsp;浙ICP备2020033598号-2</span>
-            </ a>
+            </a>
         </div>--%>
     </div>
     <div class="aboutDiv">

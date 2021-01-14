@@ -43,7 +43,7 @@ public interface UsersMapper {
 
     int addEmployee(Employee employee);
 
-    Users loginUserNumber(@Param("userNumber") String userNumber,@Param("password") String password);
+    Users loginUserNumber(@Param("userNumber") String userNumber, @Param("password") String password);
 
     int addUserRole(UserRole userRole);
 
@@ -55,7 +55,7 @@ public interface UsersMapper {
 
     Users getUserRolesByName(@Param("userNumber") String userNumber);
 
-    int updPassword(@Param("userId") Integer userId,@Param("password")String password);
+    int updPassword(@Param("userId") Integer userId, @Param("password") String password);
 
     List<Users> searchUsersList(Map map);
 }
