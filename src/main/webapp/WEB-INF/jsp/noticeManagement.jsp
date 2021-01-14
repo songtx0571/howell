@@ -36,10 +36,10 @@
         <div class="btnTop">
             <ul class="topList">
                 <li class="notLi">
-                    <a href="#" onclick="noticeClick('1')">我发送的</a>
+                    <a href="#" onclick="noticeClickFS('1')">我发送的</a>
                 </li>
                 <li>
-                    <a href="#" onclick="noticeClick('2')">我收到的</a>
+                    <a href="#" onclick="noticeClickSD('2')">我收到的</a>
                 </li>
                 <shiro:hasPermission name="添加通知">
                     <li>
@@ -54,15 +54,23 @@
             </ul>
         </div>
         <%--通知--%>
-        <script type="text/html" id="barDemo1">
+        <script type="text/html" id="barDemoFS">
             <a class="layui-btn layui-btn-sm" lay-event="detail">查看</a>
                 <shiro:hasPermission name="修改通知">
                     <a class="layui-btn layui-btn-sm" lay-event="edit">编辑</a>
                 </shiro:hasPermission>
             <a class="layui-btn layui-btn-sm" lay-event="viewed">查看情况</a>
         </script>
-        <div class="demoInfo" style="display: none;margin-top: 10px;">
-            <table id="demoInfo" lay-filter="test" style="width: 100%">
+        <div class="demoInfoFS" style="display: none;margin-top: 10px;">
+            <table id="demoInfoFS" lay-filter="testFS" style="width: 100%">
+            </table>
+        </div>
+        <%--收到--%>
+        <script type="text/html" id="barDemoSD">
+            <a class="layui-btn layui-btn-sm" lay-event="detailSD">查看</a>
+        </script>
+        <div class="demoInfoSD" style="display: none;margin-top: 10px;">
+            <table id="demoInfoSD" lay-filter="testSD" style="width: 100%">
             </table>
         </div>
         <%--添加通知--%>
