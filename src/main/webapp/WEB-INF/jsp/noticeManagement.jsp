@@ -25,6 +25,9 @@
         .btnTop .topList .notLi {
             position: relative;
         }
+        .layui-input-inline .xm-select-parent .xm-select{
+            height: 36px;
+        }
     </style>
 </head>
 <body>
@@ -56,10 +59,9 @@
                 <shiro:hasPermission name="修改通知">
                     <a class="layui-btn layui-btn-sm" lay-event="edit">编辑</a>
                 </shiro:hasPermission>
-            <a class="layui-btn layui-btn-sm" lay-event="viewed">已查看人员</a>
+            <a class="layui-btn layui-btn-sm" lay-event="viewed">查看情况</a>
         </script>
         <div class="demoInfo" style="display: none;margin-top: 10px;">
-
             <table id="demoInfo" lay-filter="test" style="width: 100%">
             </table>
         </div>
@@ -220,8 +222,10 @@
         </div>
         <%--已查看人员--%>
         <div class="viewedInfo">
-            <h1 style="text-align: center;margin-bottom: 30px">已查看过的人员</h1>
+            <h3 style="text-align: center;margin-bottom: 30px">已查看人员</h3>
             <div id="userAgo"></div>
+            <h3 style="text-align: center;margin-bottom: 30px">未查看人员</h3>
+            <div id="userAfter"></div>
         </div>
         <%--&lt;%&ndash;类型&ndash;%&gt;
         <script type="text/html" id="barDemo2">

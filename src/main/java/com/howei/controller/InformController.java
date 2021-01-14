@@ -482,22 +482,28 @@ public class InformController {
     @ResponseBody
     public String selSeen(HttpServletRequest request){
         String informId=request.getParameter("informId");
-        List<String> list=new ArrayList<>();
+        List<Map<String,Object>> list=new ArrayList<>();
+        Map<String,Object> mapResult;
         if(informId!=null){
-            List<Map> map=userService.selSeen(informId);
-            for (Map map1:map){
+            List<Map> mapList=userService.selSeen(informId);
+            System.out.println("mapList:::"+mapList);
+            for (Map map1:mapList){
+                Integer rdStatus =(Integer) map1.get("rdStatus");
                 Integer userId=(Integer)map1.get("userId");
                 String userName=userService.selSeenUser(userId+"");
                 if(userName==null||userName.equals("")){
 
                 }else {
-                    list.add(userName);
+                    mapResult=new HashMap<>();
+                    mapResult.put("username",userName);
+                    mapResult.put("rdStatus",rdStatus);
+                    list.add(mapResult);
                 }
             }
         }
         Result result=new Result();
         result.setCode(0);
-        result.setMsg("");
+        result.setMsg("查询成功");
         result.setData(list);
         return JSON.toJSONString(result);
     }

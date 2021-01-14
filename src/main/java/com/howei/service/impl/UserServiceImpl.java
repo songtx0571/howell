@@ -19,7 +19,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public Users findUser(String userNumber, String password) {
-        return usersMapper.findUser(userNumber,password);
+        return usersMapper.findUser(userNumber, password);
     }
 
     @Override
@@ -49,23 +49,24 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public Map<Integer, String> getUsersMap() {
-        List<Users> list=usersMapper.getUsersMap();
-        Map<Integer,String> map=new HashMap<>();
-        for (Users users:list) {
-            map.put(users.getId(),users.getUserName());
+        List<Users> list = usersMapper.getUsersMap();
+        Map<Integer, String> map = new HashMap<>();
+        for (Users users : list) {
+            map.put(users.getId(), users.getUserName());
         }
         return map;
     }
 
     @Override
     public List<Map<String, String>> getUsersList(Map m) {
-        List<Users> list=usersMapper.getUsersList(m);
-        List<Map<String, String>> result=new ArrayList<>();
-        if(list!=null){
-            for (Users users:list) {
-                Map<String,String> map=new HashMap<>();
-                map.put("id",users.getId()+"");
-                map.put("name",users.getUserName());
+        List<Users> list = usersMapper.getUsersList(m);
+        List<Map<String, String>> result = new ArrayList<>();
+        if (list != null) {
+            for (Users users : list) {
+                Map<String, String> map = new HashMap<>();
+                map.put("id", users.getId() + "");
+                map.put("name", users.getUserName());
+                map.put("selected", "selected");
                 result.add(map);
             }
         }
@@ -73,7 +74,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public List<Map> selSeen(String informId) {
+    public List<Map> selSeen(String informId ) {
         return usersMapper.selSeen(informId);
     }
 
@@ -93,8 +94,8 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public Users loginUserNumber(String userNumber,String password) {
-        return usersMapper.loginUserNumber(userNumber,password);
+    public Users loginUserNumber(String userNumber, String password) {
+        return usersMapper.loginUserNumber(userNumber, password);
     }
 
     @Override
@@ -114,18 +115,18 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public List<Users> getUserRoleList(Map map) {
-        List<Users> list=usersMapper.getUserRoleList(map);
-        for(int i=0;i<list.size();i++){
-            Users users=list.get(i);
-            String rolesName="";
-            if(users.getRoles()!=null){
-                List<Role> roles=users.getRoles();
-                for(Role role:roles){
-                    rolesName+=role.getRoleName()+"，";
+        List<Users> list = usersMapper.getUserRoleList(map);
+        for (int i = 0; i < list.size(); i++) {
+            Users users = list.get(i);
+            String rolesName = "";
+            if (users.getRoles() != null) {
+                List<Role> roles = users.getRoles();
+                for (Role role : roles) {
+                    rolesName += role.getRoleName() + "，";
                 }
             }
-            if(rolesName.length()>0){
-                rolesName=!rolesName.equals("null，")? rolesName.substring(0,rolesName.length()-1):"";
+            if (rolesName.length() > 0) {
+                rolesName = !rolesName.equals("null，") ? rolesName.substring(0, rolesName.length() - 1) : "";
             }
             users.setRoleName(rolesName);
         }
@@ -138,8 +139,8 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public int updPassword(Integer userId,String password) {
-        return usersMapper.updPassword(userId,password);
+    public int updPassword(Integer userId, String password) {
+        return usersMapper.updPassword(userId, password);
     }
 
     @Override

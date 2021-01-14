@@ -123,15 +123,16 @@ body::-webkit-scrollbar{
     display: none;
     margin: 20px auto;
 }
-.userAgoSpan{
-    width: 100px;
-    line-height: 50px;
+.userSpan{
+    line-height: 39px;
     display: inline-block;
     border: 1px solid;
     margin-left: 5px;
     margin-top: 10px;
     text-align: center;
-    font-size: 20px;
+    font-size: 16px;
+    padding: 0 15px;
+    box-sizing: border-box;
 }
 #layui-layer1{
     top: 0px;
