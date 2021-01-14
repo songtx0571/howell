@@ -1,0 +1,48 @@
+/*-全局样式-*/
+*{
+   margin: 0;
+   padding: 0;
+   font-family: "PingFang SC","Lantinghei SC","Microsoft YaHei","HanHei SC","Helvetica Neue","Open Sans",Arial,"Hiragino Sans GB","微软雅黑",STHeiti,"WenQuanYi Micro Hei",SimSun,sans-serif;
+}
+a{
+    text-decoration: none;
+    color: #777;
+}
+li{
+    list-style: none;
+}
+/*局部样式*/
+.leftBox{
+    width: 199px;
+    height: 100%;
+    /*background: #f8f8f8;*/
+    font-size: 17px;
+    border-right: 1px solid #e7e7e7;
+}
+.leftBox ul li{
+    width: 100%;
+    line-height: 50px;
+    text-indent: 15px;
+    border-bottom: 1px solid #e7e7e7;
+}
+.leftBox ul li:hover a,.leftBox ul li:hover .left_listIcon{
+    color: #fff;
+}
+.leftBox .left_listIcon{
+    float: right;
+    margin-right: 15px;
+    line-height: 40px;
+    color: rgba(225,225,225,0.7);
+}
+.layui-nav .layui-nav-itemed>a, .layui-nav .layui-nav-item>a{
+    color: #000 !important;
+}
+.layui-nav-tree .layui-nav-item>a:hover {
+    color: #000 !important;
+}
+.layui-nav-child:hover .layui-nav-item>a{
+    color: #000 !important;
+}
+.layui-nav-child:hover + .layui-nav-item>a{
+    color: #000 !important;
+}

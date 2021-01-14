@@ -1,0 +1,196 @@
+*{
+     margin: 0;
+     padding: 0;
+     font-family: "PingFang SC","Lantinghei SC","Microsoft YaHei","HanHei SC","Helvetica Neue","Open Sans",Arial,"Hiragino Sans GB","微软雅黑",STHeiti,"WenQuanYi Micro Hei",SimSun,sans-serif;
+ }
+.warp{
+    width: 100%;
+    height: 100%;
+    box-sizing: border-box;
+}
+.top{
+    width: 100%;
+    height: 60px;
+    font-size: 1.3rem;
+    line-height: 80px;
+    padding-top: 20px;
+    box-sizing: border-box;
+}
+.departmentDiv, .postDiv{
+    display: none;
+}
+.addBtn{
+    width: 10%;
+    height: 50px;
+    outline: none;
+    font-size: 18px;
+    background-color: #1E9FFF;
+    color: #fff;
+    margin-left: 5%;
+    border: none;
+    border-radius: 8px;
+    display: none;
+}
+/*修改/添加账户*/
+.updateUser{
+    width: 98%;
+    position: absolute;
+    top: 30%;
+    background: #fff;
+    display: none;
+    z-index: 99;
+    font-size: 18px;
+}
+.addUser{
+    width: 98%;
+    background: #fff;
+    display: none;
+    z-index: 99;
+    font-size: 18px;
+    padding-top: 20px;
+}
+.updateUser{
+    width: 440px;
+    position: relative;
+    top: 25px;
+    left: 50%;
+    transform: translate(-50%, 10px);
+}
+.addUser span{
+    display: inline-block;
+    width: 135px;
+    text-align: right;
+    height: 50px;
+    line-height: 50px;
+    float: left;
+    margin-right: 10px;
+}
+.updateUser span{
+    display: inline-block;
+    width: 135px;
+    text-align: right;
+    height: 50px;
+    line-height: 50px;
+    float: left;
+    margin-right: 10px;
+}
+.addUser samp, .updateUser samp{
+color: red;
+}
+.addUser input[type=text], .addUser input[type=number]{
+    float: left;
+    width: 298px;
+    height: 40px;
+    outline: none;
+    font-size: 18px;
+}
+.updateUser input[type=number]{
+    float: left;
+    width: 250px;
+    height: 40px;
+    outline: none;
+    font-size: 18px;
+}
+.updateUser input[type=text]{
+    float: left;
+    width: 250px;
+    height: 40px;
+    outline: none;
+    font-size: 18px;
+}
+.updateUser i[class=layui-edge] {
+    margin: 13px -41px 10px 0px;
+}
+.addUser select{
+    width: 200px;
+    float: left;
+    height: 40px;
+    outline: none;
+    font-size: 18px;
+}
+.addUser .userInputDiv,.updateUser .userInputDiv{
+    height: 70px;
+    position: relative;
+}
+.addUser .userInputDiv i[class=layui-edge]{
+    margin: 15px -100px 10px 0px;
+}
+.addUser .userInputDiv2 i[class=layui-edge]{
+    margin: 15px 10px;
+}
+/*按钮盒子*/
+.btnBox{
+    width: 500px;
+    height: 50px;
+    display: flex;
+    justify-content: space-around;
+    margin: 10px auto;
+}
+.btnBox button{
+    display: inline-block;
+    height: 38px;
+    line-height: 38px;
+    padding: 0 18px;
+    background-color: #1E9FFF;
+    color: #fff;
+    white-space: nowrap;
+    text-align: center;
+    font-size: 14px;
+    border: none;
+    border-radius: 2px;
+    cursor: pointer;
+    outline: none;
+}
+.center{
+    width: 100%;
+    padding: 10px 15px;
+    box-sizing: border-box;
+    display: none;
+}
+.companyDiv{
+    width: 190px;
+    float: left;
+}
+.addBox{
+    float: left;
+}
+#addBtn{
+    height: 38px;
+    border-radius: 0px;
+}
+#searchName{
+    width: 350px;
+    height: 38px;
+    float: left;
+    font-size: 20px;
+    padding-left: 8px;
+    box-sizing: border-box;
+    border: 1px solid #ccc;
+    border-left: none;
+}
+.top .btn{
+    width: 150px;
+    height: 38px;
+    outline: none;
+    font-size: 18px;
+    background-color: #ccc;
+    color: #fff;
+    border: none;
+}
+.userInputDiv1 .layui-form-select div:first-of-type .layui-input{
+    width: 188px;
+}
+.addUser .userInputDiv1 i[class=layui-edge] {
+    margin: 15px 9px 10px 0px;
+}
+/*下拉框高度*/
+.center .layui-anim-upbit{
+    height: 150px;
+}
+/*layui多选框*/
+.icon-close{
+    display: none;
+}
+body::-webkit-scrollbar{
+    display: none;
+}

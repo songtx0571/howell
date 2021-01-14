@@ -429,10 +429,12 @@ public class InformController {
                 inform.setContent(content);
             }
             int result=informService.updateInform(inform);
+            int count=userInformService.updateRdStatusByInformId(id);
+
             if(result!=-1){
-                res.setMsg("添加成功");
+                res.setMsg("修改成功");
             }else{
-                res.setMsg("添加失败");
+                res.setMsg("修改失败");
             }
         }else{
             res.setMsg("系统中不存在此通知");

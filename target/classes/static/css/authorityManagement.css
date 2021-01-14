@@ -1,0 +1,172 @@
+*{
+    margin: 0;
+    padding: 0;
+    font-family: "PingFang SC","Lantinghei SC","Microsoft YaHei","HanHei SC","Helvetica Neue","Open Sans",Arial,"Hiragino Sans GB","微软雅黑",STHeiti,"WenQuanYi Micro Hei",SimSun,sans-serif;
+}
+li{
+    list-style: none;
+}
+a{
+    text-decoration: none;
+}
+body{
+    height: 100%;
+    width: 100%;
+    overflow: scroll;
+}
+body::-webkit-scrollbar{
+    display: none;
+}
+.warp{
+    padding-left: 20px;
+    box-sizing: border-box;
+}
+.top{
+    width: 99%;
+    margin: 0 auto;
+    font-size: 20px;
+}
+.navList1{
+    width: 100%;
+    line-height: 50px;
+    margin-top: 20px;
+    display: flex;
+    justify-content: space-around;
+    background: gainsboro;
+    border-radius: 25px;
+    margin-bottom: 12px;
+}
+.navList1 li{
+    float: left;
+    width: 135px;
+    text-align: center;
+}
+.navList1 li a:hover{
+    color: #761c19;
+}
+/*开发*/
+.develop{
+    display: none;
+}
+.develop_insert,.develop_update{
+    display: none;
+}
+.develop_add,.develop_upd{
+    width: 700px;
+    margin: 40px auto;
+    padding-top: 20px;
+}
+.develop_add tr,.develop_upd tr{
+    line-height: 79px;
+}
+.develop_add tr td input, .develop_add tr td textarea{
+    width: 270px;
+}
+.develop_add tr td input{
+    height: 40px;
+}
+/*权限*/
+.authority{
+    display: none;
+    width: 99%;
+}
+.authority .authorityDiv{
+    margin-bottom: 20px;
+}
+.authorityTable{
+    width: 100%;
+    border: 1px solid;
+    text-align: center;
+}
+.authorityTable th{
+    background: #f2f2f2;
+}
+.authorityTable tr{
+    line-height: 38px;
+}
+.authorityTable th, .authorityTable td{
+   border: 1px solid #e6e6e6
+}
+.authorityDiv_div{
+    width: 100%;
+    /*min-height: 200px;*/
+    border: 1px solid #e6e6e6;
+    text-align: center;
+    line-height: 50px;
+    display: none;
+    position: relative;
+}
+.authorityList{
+    width: 100%;
+}
+.authorityDiv .authorityList li{
+    text-align: center;
+    padding: 0px 10px;
+    box-sizing: border-box;
+    float: left;
+    margin: 20px;
+    background: #44ACFF;
+    color: #fff;
+    height: 30px;
+    line-height: 30px;
+}
+.authority_update{
+display: none;
+padding-top: 50px;
+box-sizing: border-box;
+}
+.authority_upd{
+width: 340px;
+margin: 0 auto;
+padding-top: 20px;
+}
+.authority_upd th,.authority_upd tr{
+line-height: 80px;
+}
+.authority_upd tr td input{
+width: 270px;
+height: 40px;
+}
+.authority_upd tr td .xm-select-parent{
+width: 270px;
+}
+/*layui*/
+.xm-iconfont{
+    display: none;
+}
+.xm-form-checkbox  .xm-iconfont{
+    display: block;
+}
+.xm-select-dl,.layui-anim-upbit{
+    height: 160px;
+}
+.layui-table-body::-webkit-scrollbar {
+    display:none
+}
+.layui-table-cell{
+    overflow: visible !important;
+}
+.xm-select-title {
+    width: 217px;
+}
+.authority .xm-select-title {
+    width: 270px;
+}
+/*角色*/
+.layui-table tr td .layui-table-cell {
+    height: auto;
+    line-height: 28px;
+    padding: 0 15px;
+    position: relative;
+    box-sizing: border-box;
+    overflow: visible;
+    text-overflow: initial;
+    white-space: normal;
+}
+/*layui表格内容换行*/
+.layui-table-cell {
+    height:auto;
+    overflow:visible;
+    text-overflow:inherit;
+    white-space:normal;
+}

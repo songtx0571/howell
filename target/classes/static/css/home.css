@@ -1,0 +1,107 @@
+/*--全局样式--*/
+*{
+   margin: 0;
+   padding: 0;
+    font-family: "PingFang SC","Lantinghei SC","Microsoft YaHei","HanHei SC","Helvetica Neue","Open Sans",Arial,"Hiragino Sans GB","微软雅黑",STHeiti,"WenQuanYi Micro Hei",SimSun,sans-serif;
+}
+li{
+    list-style: none;
+}
+a{
+    text-decoration: none;
+    color: #777;
+}
+.clear{
+    clear: both;
+}
+/*局部样式*/
+/*头部*/
+.top{
+    height:60px;
+    font-size: 18px;
+    background: #f8f8f8;
+    line-height: 60px;
+    padding: 0 20px;
+    box-sizing: border-box;
+    color: #777;
+    border-bottom: 1px solid #e7e7e7;
+}
+.top_list{
+    height: 100%;
+    width: 382px;
+    float: right;
+    padding-right: 10px;
+    box-sizing: border-box;
+    text-align: center;
+    line-height: 70px;
+}
+.top_list li{
+    float: left;
+    margin-right: 90px;
+}
+/*综合管理*/
+.top_list .comprehensive,.top_list .personal{
+    position: relative;
+}
+.top_list .comprehensive .erji,.top_list .personal .erji2{
+    display: none;
+    position: absolute;
+    font-size: 15px;
+    top: 60px;
+    left: -50px;
+    width: 122px;
+    z-index: 99;
+    box-shadow: 0 2px 4px rgba(0,0,0,.12);
+    border-right: 1px solid #e7e7e7;
+    background: #fff;
+}
+.top_list .comprehensive .erji li,.top_list .personal .erji2 li{
+    width: 100%;
+    margin-right: 0px;
+    line-height: 35px;
+}
+.top_list .comprehensive .erji li:hover,.top_list .personal .erji2 li:hover{
+    background: #f2f2f2;
+}
+.top_list .comprehensive:hover .erji,.top_list .personal:hover .erji2{
+    display: block;
+}
+.top_list .comprehensive .erji li:hover a, a:hover ,.top_list .personal .erji2 li:hover a{
+    color: #33A4D9;
+}
+.top_list li .erji a,.top_list li .erji2 a{
+    color: #777;
+}
+.top_list li:last-of-type{
+    margin-right: 0px;
+}
+/*中间*/
+.center{
+    width: 100%;
+    height: calc(100% - 70px);
+}
+.center_left{
+    width: 200px;
+    height:100%;
+    float: left;
+}
+.iframeLeft{
+    width: 100%;
+    height: 100%;
+    overflow-y: hidden;
+    overflow-x: hidden;
+}
+.center_right {
+    width: calc(100% - 201px);
+    height:100%;
+    float: left;
+}
+.iframeRight{
+    width: 100%;
+    height: 100%;
+    overflow-y: hidden;
+    overflow-x: hidden;
+}
+.center_left::-webkit-scrollbar{
+    display: none;
+}

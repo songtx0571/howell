@@ -1,0 +1,171 @@
+*{
+    margin: 0;
+    padding: 0;
+    font-family: "PingFang SC","Lantinghei SC","Microsoft YaHei","HanHei SC","Helvetica Neue","Open Sans",Arial,"Hiragino Sans GB","微软雅黑",STHeiti,"WenQuanYi Micro Hei",SimSun,sans-serif;
+}
+body::-webkit-scrollbar{
+    display: none;
+}
+.warp{
+    width: 100%;
+    height: 100%;
+}
+.btnTop{
+    width: 100%;
+    height: 50px;
+    line-height: 50px;
+    font-size: 1.2rem;
+    display: flex;
+    justify-content: space-around;
+}
+/*修改/添加通知/添加/修改类型*/
+.addType{
+    width: 98%;
+    background: #fff;
+    display: none;
+    height: 265px;
+    padding-top: 10px;
+    font-size: 1.2rem;
+}
+.addInfo{
+    width: 435px;
+    display: none;
+    margin: 20px auto;
+    font-size: 1.2rem;
+}
+.updateType,.addSonType,.detail,.viewedInfo,.updateInfo{
+    width: 98%;
+    height: 274px;
+    background: #fff;
+    display: none;
+    border: none;
+    position: absolute;
+    z-index: 80;
+    font-size: 1.2rem;
+}
+.viewedInfo{
+    padding-left: 35px;
+    box-sizing: border-box;
+}
+.detail{
+    height: 397px;
+    border: none;
+    margin-top: 10px;
+}
+.updateInfo{
+    height: 240px;
+}
+.addType span,.updateType span,.addSonType span,.addInfo span, .addUser span, .addUser label,.updateInfo span{
+    font-size: 18px;
+    display: inline-block;
+    width: 95px;
+    text-align: center;
+    height: 50px;
+    line-height: 50px;
+    float: left;
+    margin-left: 85px;
+}
+.updateInfo span,.addInfo span{
+    margin-left: 0px;
+}
+.addUser span,.addUser label{
+    margin-left: 35px;
+}
+.addType input,.addType select,.updateType input,.updateType select,.addSonType input,.addSonType select,.addInfo input,.addInfo select, .addUser select:first-of-type,.updateInfo input,.updateInfo select {
+    float: left;
+    width: 230px;
+    height: 40px;
+    outline: none;
+    font-size: 18px;
+}
+.addInfo input,.addInfo select{
+    width: 300px;
+}
+.updateInfo input{
+    width: 305px;
+}
+.addUser select:first-of-type{
+    width: 68%;
+}
+.addInfo select, .updateInfo select{
+    height: 40px;
+}
+/*按钮盒子*/
+.btnBox{
+    width: 80%;
+    margin: 20px auto 0;
+    height: 50px;
+    text-align: center;
+}
+.btnBox button, #showAddUserBtn{
+    display: inline-block;
+    height: 38px;
+    line-height: 38px;
+    padding: 0 18px;
+    background-color: #1E9FFF;
+    color: #fff;
+    white-space: nowrap;
+    text-align: center;
+    font-size: 14px;
+    border: none;
+    border-radius: 2px;
+    cursor: pointer;
+    outline: none;
+}
+#showAddUserBtn{
+    width: 80px;
+    text-align: center;
+    float: left;
+}
+/*人员*/
+.addUser{
+    width: 504px;
+    display: none;
+    margin: 20px auto;
+}
+.userSpan{
+    line-height: 39px;
+    display: inline-block;
+    border: 1px solid;
+    margin-left: 5px;
+    margin-top: 10px;
+    text-align: center;
+    font-size: 16px;
+    padding: 0 15px;
+    box-sizing: border-box;
+}
+#layui-layer1{
+    top: 0px;
+}
+.addTypeDiv i[class=layui-edge]{
+    margin: 15px -38px 10px 10px;
+}
+.addInfoDiv {
+    height: 108px;
+    margin: 13px 0 3px -17px;
+}
+.addInfoDiv i[class=layui-edge]{
+    margin: 15px -110px 10px 10px;
+}
+.xm-select-parent .xm-form-selected .xm-select-dl {
+    height: 200px;
+}
+.icon-close{
+    display: none;
+}
+.addSonType .layui-anim-upbit,.addType .layui-anim-upbit{
+    height: 125px;
+    width: 230px;
+}
+.layui-layer-page::-webkit-scrollbar{
+    display: none;
+}
+#addType{
+    height: 90%;
+}
+.xm-select-tips .xm-cz-group .xm-cz{
+    height: 40px;
+    margin-top: -16px;
+    line-height: 48px;
+    overflow: hidden;
+}

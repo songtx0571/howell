@@ -1,0 +1,158 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.howei.mapper.GroupMapper" >
+
+    <resultMap id="groupMap" type="com.howei.pojo.Group">
+        <result column="id" property="id"></result>
+        <result column="groupName" property="groupName"></result>
+        <result column="created" property="created"></result>
+        <result column="createdBy" property="createdBy"></result>
+        <result column="remark" property="remark"></result>
+    </resultMap>
+
+    <select id="getGroupList" parameterType="java.util.HashMap" resultType="com.howei.pojo.Group">
+        select g.*,e.name as userName from `group` g
+        left join employee e on e.id=g.createdBy
+        <where>
+            <if test="groupName!=null">
+                and groupName like concat('%',#{groupName},'%')
+            </if>
+        </where>
+        <if test="page!=null">
+            limit ${page},${pageSize}
+        </if>
+    </select>
+
+    <select id="getEmpInGroupList" parameterType="java.lang.String" resultType="com.howei.pojo.Group">
+        select * from `group` g
+        left join employee_group eg on eg.groupId=g.id
+        where eg.employeeId=#{employeeId}
+    </select>
+
+    <select id="findByGroupName" parameterType="java.lang.String" resultType="com.howei.pojo.Group">
+        select * from `group`
+        <where>
+            <if test="groupName!=null">
+                and groupName=#{groupName}
+            </if>
+        </where>
+    </select>
+
+    <insert id="addGroup" keyProperty="id" useGeneratedKeys="true" parameterType="com.howei.pojo.Group">
+        insert into `group`(groupName,created,createdBy,remark) values (#{groupName},#{created},#{createdBy},#{remark})
+    </insert>
+
+    <select id="findByGroupNameAndId" parameterType="java.lang.String" resultType="com.howei.pojo.Group">
+        select * from `group`
+        <where>
+            <if test="groupName!=null">
+                and groupName=#{groupName}
+            </if>
+            <if test="id!=null">
+                and id!=#{id}
+            </if>
+        </where>
+    </select>
+
+    <update id="updGroup" useGeneratedKeys="true" keyProperty="id" parameterType="com.howei.pojo.Group">
+        update `group`
+        <set>
+            <if test="groupName!=null">
+                groupName=#{groupName},
+            </if>
+            <if test="remark!=null">
+                remark=#{remark},
+            </if>
+        </set>
+        where id=#{id}
+    </update>
+
+    <delete id="delGroup" parameterType="java.lang.String">
+        delete from `group` where id=#{id}
+    </delete>
+
+    <select id="getGroupUsersList" parameterType="java.util.HashMap" resultType="com.howei.pojo.Employee">
+        select e.id,e.name,e.userNumber,c.name as companyName from employee_group eg
+        left join employee e on e.id=eg.employeeId
+        left join users u on u.employeeId=e.id
+        left join company c on c.id=u.departmentId
+        <where>
+            <if test="groupId!=null">
+                and eg.groupId=#{groupId}
+            </if>
+            <if test="userName!=null">
+                and (e.name like concat('%',#{userName},'%') or e.userNumber like concat('%',#{userName},'%'))
+            </if>
+        </where>
+
+    </select>
+
+    <insert id="addGroupUsers" parameterType="java.util.List" useGeneratedKeys="true" keyProperty="id">
+        insert ignore employee_group(groupId,employeeId,created) values
+        <foreach collection="list" item="item" separator="," index="index">
+            (#{item.groupId},#{item.employeeId},#{item.created})
+        </foreach>
+    </insert>
+
+    <delete id="delGroupUser" parameterType="java.lang.String">
+        delete from employee_group where groupId=#{groupId} and employeeId=#{employeeId}
+    </delete>
+
+    <select id="getEmpListByGroup" parameterType="java.lang.String" resultType="com.howei.pojo.Employee">
+        select e.* from employee e
+        left join employee_group eg on eg.employeeId=e.id
+        left join `group` g on g.id=eg.groupId
+        <where>
+            <if test="groupName!=null">
+                and g.groupName=#{groupName}
+            </if>
+        </where>
+    </select>
+
+    <select id="getCreatedByGroup" resultType="com.howei.pojo.Group" parameterType="java.lang.String">
+        select g.*,e.id as employeeId,e.name as userName,e.sign as sign from `group` g
+        left join employee e on e.id=g.createdBy
+        where g.id=#{id}
+    </select>
+
+    <insert id="saveMessage" parameterType="com.howei.pojo.ChatRecord" useGeneratedKeys="true" keyProperty="id">
+        insert into chat_record(sendId,sendToId,`type`,longTime,sendTime,content,`read`) values
+        (#{sendId},#{sendToId},#{type},#{longTime},#{sendTime},#{content},#{read})
+    </insert>
+
+    <select id="getChatRecord" parameterType="java.util.HashMap" resultType="com.howei.pojo.ChatRecord">
+        select cr.*,e1.name as userName,e2.name as sendToUserName from chat_record cr
+        left join employee e1 on e1.id=cr.sendId
+        left join employee e2 on e2.id=cr.sendToId
+        <where>
+            <if test="type=='friend'">
+                and type=1 and (sendId=#{sendId} and sendToId=#{sendId}) or (sendId=#{sendToId} or sendToId=#{sendToId})
+            </if>
+            <if test="type=='group'">
+                and type=2 and sendToId=#{sendToId}
+            </if>
+        </where>
+        ORDER BY longTime
+    </select>
+
+    <!--获取当前人的未读信息-->
+    <select id="getUnReadList" parameterType="java.util.Map" resultType="com.howei.pojo.ChatRecord">
+        select cr.*,e1.name as `userName`,e2.name as `sendToUserName` from chat_record cr
+        left join employee e1 on e1.id=cr.sendId
+        left join employee e2 on e2.id=cr.sendToId
+        <where>
+            cr.`read`=0
+            <if test="sendId!=null">
+                and cr.sendId=#{sendId}
+            </if>
+            <if test="sendToId!=null">
+                and cr.sendToId=#{sendToId}
+            </if>
+        </where>
+    </select>
+
+    <!--修改未读信息为已读-->
+    <update id="updHistoryMessage" parameterType="java.util.Map" useGeneratedKeys="true" keyProperty="id">
+        update chat_record set `read`=1 where sendId=#{sendId} and sendToId=#{sendToId}
+    </update>
+</mapper>
