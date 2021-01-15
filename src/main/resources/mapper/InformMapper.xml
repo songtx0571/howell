@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
-<mapper namespace="com.howei.mapper.InformMapper" >
+<mapper namespace="com.howei.mapper.InformMapper">
 
     <resultMap id="informMap" type="com.howei.pojo.InformType">
         <result column="id" property="id"></result>
@@ -9,6 +9,9 @@
         <result column="parent" property="parent"></result>
         <result column="companyId" property="companyId"></result>
     </resultMap>
+    <delete id="deleteById" parameterType="java.lang.String">
+       delete i,ui from inform i LEFT JOIN user_inform ui ON i.id=ui.informId where  i.id=#{informId}
+    </delete>
 
     <select id="getInformType" parameterType="java.util.HashMap" resultType="com.howei.pojo.InformType">
         select * from informType where 1=1
@@ -55,7 +58,9 @@
 
     <select id="getInformList" parameterType="java.util.HashMap" resultType="com.howei.pojo.Inform">
         <if test="isactive!=null and isactive==1">
-            select i.id,i.title,i.content,i.createdBy,u.userName as createdByName,i.informTypeId,i.companyId,i.filedir,date_format(i.created,'%Y-%m-%d') as created from inform i
+            select i.id,i.title,i.content,i.createdBy,u.userName as
+            createdByName,i.informTypeId,i.companyId,i.filedir,date_format(i.created,'%Y-%m-%d') as created from inform
+            i
             left join users u on u.id=i.createdBy
             where 1=1
             <if test="companyId!=null">
@@ -70,7 +75,9 @@
             </if>
         </if>
         <if test="isactive!=null and isactive==2">
-            select i.id,i.title,i.content,i.createdBy,u.userName as createdByName,i.informTypeId,i.companyId,i.filedir,date_format(i.created,'%Y-%m-%d') as created from user_inform ui
+            select i.id,i.title,i.content,i.createdBy,u.userName as
+            createdByName,i.informTypeId,i.companyId,i.filedir,date_format(i.created,'%Y-%m-%d') as created from
+            user_inform ui
             left join inform i on ui.informId=i.id
             left join users u on u.id=i.createdBy
             where 1=1
@@ -82,6 +89,17 @@
                 limit ${page},${pageSize}
             </if>
         </if>
+        <if test="isactive!=null and isactive==3">
+            select i.id,i.title,i.content,i.createdBy,u.userName as
+            createdByName,i.informTypeId,i.companyId,i.filedir,date_format(i.created,'%Y-%m-%d') as created from inform
+            i
+            left join users u on u.id=i.createdBy
+            order by i.created desc
+            <if test="page!=null">
+                limit ${page},${pageSize}
+            </if>
+        </if>
+
     </select>
 
     <insert id="addInform" parameterType="com.howei.pojo.Inform" useGeneratedKeys="true" keyProperty="id">

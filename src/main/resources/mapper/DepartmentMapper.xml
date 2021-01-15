@@ -11,5 +11,8 @@
     <select id="getDepList" resultType="com.howei.pojo.Department" parameterType="java.lang.String">
       select * from company where parent=#{parent}
     </select>
+    <select id="getById" resultType="com.howei.pojo.Department">
+        select * from department where id=#{id}
+    </select>
 
 </mapper>

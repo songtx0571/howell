@@ -4,6 +4,7 @@ import com.howei.pojo.Inform;
 import com.howei.pojo.InformType;
 import com.howei.pojo.ReadStatus;
 import com.howei.pojo.UserInform;
+import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
 import java.util.Map;
@@ -33,4 +34,6 @@ public interface InformService {
     Inform getInformById(String id);
 
     int updateStatus(UserInform userInform);
+
+    int deleteById( String informId);
 }
