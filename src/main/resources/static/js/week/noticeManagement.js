@@ -496,7 +496,7 @@ function addInfo() {
             dataType: "json",
             success: function (data) {
                 layer.closeAll();
-                noticeClickSD();
+                noticeClickSD('2');
             }
         });
     }

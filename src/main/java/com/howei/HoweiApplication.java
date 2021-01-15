@@ -21,6 +21,7 @@ public class HoweiApplication extends SpringBootServletInitializer {
         return application.sources(HoweiApplication.class);
     }
 
+
     public static void main(String[] args) {
         SpringApplication.run(HoweiApplication.class,args);
     }
