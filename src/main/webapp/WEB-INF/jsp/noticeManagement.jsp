@@ -22,9 +22,6 @@
             background: gainsboro;
             border-radius: 20px;
         }
-        .btnTop .topList .notLi {
-            position: relative;
-        }
         .layui-input-inline .xm-select-parent .xm-select{
             height: 36px;
         }
@@ -35,12 +32,19 @@
     <div class="content">
         <div class="btnTop">
             <ul class="topList">
-                <li class="notLi">
-                    <a href="#" onclick="noticeClickFS('1')">我发送的</a>
-                </li>
+                <shiro:hasPermission name="添加通知">
+                    <li>
+                        <a href="#" onclick="noticeClickFS()">我发送的</a>
+                    </li>
+                </shiro:hasPermission>
                 <li>
                     <a href="#" onclick="noticeClickSD('2')">我收到的</a>
                 </li>
+                <%--<shiro:hasPermission name="添加通知">--%>
+                    <li>
+                        <a href="#"onclick="noticeClickSD('3')">查看所有通知</a>
+                    </li>
+                <%--</shiro:hasPermission>--%>
                 <shiro:hasPermission name="添加通知">
                     <li>
                         <a href="#"onclick="showAddInfo()">添加通知</a>
@@ -55,11 +59,12 @@
         </div>
         <%--通知--%>
         <script type="text/html" id="barDemoFS">
-            <a class="layui-btn layui-btn-sm" lay-event="detail">查看</a>
+            <a class="layui-btn layui-btn-sm layui-btn-normal" lay-event="detail">查看</a>
                 <shiro:hasPermission name="修改通知">
                     <a class="layui-btn layui-btn-sm" lay-event="edit">编辑</a>
                 </shiro:hasPermission>
-            <a class="layui-btn layui-btn-sm" lay-event="viewed">查看情况</a>
+            <a class="layui-btn layui-btn-sm layui-btn-normal" lay-event="viewed">查看情况</a>
+            <a class="layui-btn layui-btn-sm layui-btn-danger" lay-event="del">删除</a>
         </script>
         <div class="demoInfoFS" style="display: none;margin-top: 10px;">
             <table id="demoInfoFS" lay-filter="testFS" style="width: 100%">
@@ -78,13 +83,13 @@
             <h1 style="text-align: center;margin-bottom: 30px">添加通知</h1>
             <div>
                 <span class="span1">标题:</span>
-                <input type="text" id="addInfoTitle">
+                <input type="text" style="width: 445px" id="addInfoTitle">
             </div>
             <br>
             <div style="clear: both"></div>
             <div>
                 <span class="span1">内容:</span>
-                <textarea style="float: left;width: 300px;height: 100px;outline: none;font-size: 18px;" type="text" id="addInfoContent"></textarea>
+                <textarea style="float: left;width: 445px;height: 210px;outline: none;font-size: 18px;" type="text" id="addInfoContent"></textarea>
             </div>
             <br>
             <div style="clear: both"></div>

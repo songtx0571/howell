@@ -246,7 +246,7 @@ function  noticeClickFS() {
                 ,{field: 'createdByName', title: '创建人', align:'center', width: 100}
                 ,{field: 'filedir', title: '地址', align:'center', hide: 'false'}
                 ,{field: 'informTypeName', title: '类别', hide: 'false', align:'center'}
-                ,{fixed: '', title:'操作', toolbar: '#barDemoFS', width:270, align:'center'}
+                ,{fixed: '', title:'操作', toolbar: '#barDemoFS', width:300, align:'center'}
             ]]
             ,parseData: function(res) {
             }
@@ -342,12 +342,23 @@ function  noticeClickFS() {
                         top: '0'
                     }
                 });
+            }else if (obj.event === "del"){ //删除
+                $.ajax({
+                    type: "GET",
+                    url: path + "/inform/del",
+                    data: {"informId": data.id},
+                    dataType: "json",
+                    success: function(res){
+                        layer.alert("删除成功！");
+                        noticeClickFS();
+                    }
+                });
             }
         });
     });
 }
 //根据通知按钮查询收到的数据
-function  noticeClickSD() {
+function  noticeClickSD(isactive) {
     // $(".demoType").css("display", "none");
     $(".demoInfoSD").css("display", "block");
     $(".demoInfoFS").css("display", "none");
@@ -358,7 +369,7 @@ function  noticeClickSD() {
         table.render({
             elem: '#demoInfoSD'
             ,height: height
-            ,url: path + '/inform/getInformList?isactive=2'//数据接口
+            ,url: path + '/inform/getInformList?isactive='+isactive//数据接口
             ,page: true //开启分页
             ,limit: 10
             ,limits: [10, 20, 30]
@@ -370,7 +381,7 @@ function  noticeClickSD() {
                 ,{field: 'createdByName', title: '创建人', align:'center', width: 100}
                 ,{field: 'filedir', title: '地址', align:'center', hide: 'false'}
                 ,{field: 'informTypeName', title: '类别', hide: 'false', align:'center'}
-                ,{fixed: '', title:'操作', toolbar: '#barDemoSD', width:270, align:'center'}
+                ,{fixed: '', title:'操作', toolbar: '#barDemoSD', width:100, align:'center'}
             ]]
             ,parseData: function(res) {
             }
