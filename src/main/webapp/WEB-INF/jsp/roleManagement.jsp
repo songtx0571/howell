@@ -9,6 +9,18 @@
     <script src="js/week/alert.js"></script>
     <script type="text/javascript"  src="layui/layui.js"></script>
     <link rel="stylesheet" href="layui/css/layui.css">
+
+    <script src="layui/dtree.js" ></script>
+    <link rel="stylesheet" href="layui/dtree.css">
+    <link rel="stylesheet" href="layui/font/dtreefont.css">
+    <style>
+        .dtree-nav-checkbox-div .dtreefont {
+            cursor: no-drop;
+        }
+        .dtree-theme-item cite{
+            font-size: 20px !important;
+        }
+    </style>
 </head>
 <body>
     <input type="hidden" id="companyIdHidden">
@@ -23,10 +35,11 @@
             <table class="roleTable">
                 <thead>
                 <tr>
-                    <th width='25%'>角色名称</th>
-                    <th width='20%'>部门</th>
+                    <th width='10%'>角色名称</th>
+                    <th width='10%'>部门</th>
                     <th width='30%'>备注</th>
-                    <th width='25%'>操作</th>
+                    <th width='30%'>权限</th>
+                    <th width='20%'>操作</th>
                 </tr>
                 </thead>
                 <tbody id='roleTbody'>
@@ -38,7 +51,7 @@
         <form class="layui-form" action="">
         <div class="updateRole">
             <h1 style="text-align: center;margin-bottom: 30px">修改角色</h1>
-            <input type="hidden" id='updataPermissionRoleId'/>
+            <input type="hidden" id='updatePermissionRoleId'/>
             <div class="addDiv">
                 <span><samp style="color: #ff210b">*</samp>角色名称:</span>
                 <input type="text" id="updataInput">
@@ -91,18 +104,12 @@
         </div>
         </form>
         <%--修改角色权限--%>
-        <div id='permission' class="white_content1">
-            <h1 style="text-align: center;margin-bottom: 30px">修改角色权限</h1>
-            <input type="hidden" id='permissionRoleId'/>
-            <div id="tDiv" class="tab-div">
-                <div class="tab-content tab-content-show">
-                    <div id='permissionFrom'>
-
-                    </div>
-                    <div class="btnBox btnBox1">
-                        <button onclick="addUpdPermission()">确定</button>
-                        <button onclick="cancel()">取消</button>
-                    </div>
+        <div class="updateAuth" style="display: none;">
+            <h1 style="text-align: center;line-height: 75px;">修改权限</h1>
+            <div class="authority_update">
+                <ul id="demoTree1" class="dtree" data-id="0" style="margin: 0 auto;"></ul>
+                <div style="width: 500px;margin: 20px auto;display: flex;justify-content: space-around">
+                    <button type="button" class="layui-btn" onclick="getChecked()">确定</button>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<button type="button" class="layui-btn" onclick="cancel()">取消</button>
                 </div>
             </div>
         </div>

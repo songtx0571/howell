@@ -1,8 +1,11 @@
 var path = "";
+// 角色id
+var updateRoleId = $("#updatePermissionRoleId")[0];
+var updRoleId = "";
+var authoritys = "";
 $(function () {
     fillRole();
     showUpdDepartment();
-
 });
 //部门下拉框
 function showUpdDepartment() {
@@ -46,17 +49,16 @@ function fillRole () {
             for(var i=0;i<data.length;i++){
                 var tr = document.createElement("tr");
                 tr.setAttribute("class","roleTr");
-                var td = "<td>"+data[i].roleName+"</td><td>"+data[i].departmentName+"</td><td>"+data[i].description+"</td><td>" +
+                var td = "<td>"+data[i].roleName+"</td><td>"+data[i].departmentName+"</td><td>"+data[i].description+"</td><td>"+data[i].description+"</td><td>" +
                     "<shiro:hasPermission name='修改角色'><input type='button' value='修改'  class='layui-btn' onclick='showUpdateRoleDiv("+data[i].id+")' /></shiro:hasPermission>&nbsp;&nbsp;" +
-                    "<shiro:hasPermission name='删除角色'><input type='button' value='删除' class='layui-btn' onclick='delRole("+data[i].id+")'/></shiro:hasPermission></td>";
+                    "<shiro:hasPermission name='修改权限'><input type='button' value='权限'  class='layui-btn layui-btn-normal' onclick='showUpdateAuthDiv("+data[i].id+")' /></shiro:hasPermission>&nbsp;&nbsp;" +
+                    "<shiro:hasPermission name='删除角色'><input type='button' value='删除' class='layui-btn  layui-btn-danger' onclick='delRole("+data[i].id+")'/></shiro:hasPermission></td>";
                 tr.innerHTML = td;
                 tbody.appendChild(tr);
             }
         }
     })
 }
-// 角色id
-var updataRoleId = $("#updataPermissionRoleId")[0];
 // 将将要修改的角色名称显示在文本框中
 function showUpdateRoleDiv(id) {
     layui.use('layer', function() { //独立版的layer无需执行这一句
@@ -82,7 +84,7 @@ function showUpdateRoleDiv(id) {
         success: function (data) {
             updataInput.value = JSON.parse(data).roleName;
             updDescription.value = JSON.parse(data).description;
-            updataRoleId = id;
+            updateRoleId = id;
             layui.use('form', function(){
                 var form = layui.form;
                 $("#updDepartmentList").val(JSON.parse(data).departmentId);
@@ -95,7 +97,7 @@ function showUpdateRoleDiv(id) {
 // 修改角色
 function updateRole() {
     var role = {};
-    role.id = updataRoleId;
+    role.id = updateRoleId;
     role.roleName = $("#updataInput").val();
     role.description = $("#updDescription").val();
     $.ajax({
@@ -162,151 +164,86 @@ function delRole(id) {
         }
     });
 }
+//显示权限
+function showUpdateAuthDiv(roleId) {
+    updRoleId = roleId;
+    layui.use('layer', function() { //独立版的layer无需执行这一句
+        var $ = layui.jquery, layer = layui.layer; //独立版的layer无需执行这一句
+        layer.open({
+            type: 1
+            , id: 'updateAuth' //防止重复弹出
+            , content: $(".updateAuth")
+            , btnAlign: 'c' //按钮居中
+            , shade: 0.4 //不显示遮罩
+            , area: ['100%', '100%']
+            , yes: function () {
+            }
+        });
+    });
+    var demoData = "";
+    layui.use(['element','layer', 'dtree'], function(){
+        var dtree1 = layui.dtree,
+            $ = layui.$;
+        $.ajax({
+            url:path + "/getAuthorityURLMap",
+            data: {id: roleId},
+            type:"GET",
+            dataType:"json",
+            async:false,
+            success:function(result){
+                var node = result?result:null;
+                if (node!=null) {
+                    demoData=node;
+                }
+            }
+        });
+        var DTreeNode  = dtree1.render({
+            elem: "#demoTree1",  //绑定元素
+            checkbar: true,
+            data: demoData,  //数据
+            checkbarData: "choose"
+        });
+        // 绑定节点点击事件
+        dtree1.on("node(demoTree1)", function(obj){
+            var nodeId = obj.param.nodeId;
 
-// 查看角色权限
-function showRolePermission(id) {
-    $("#permissionRoleId").val(id)
-    $(".white_content1")[0].style.display = "block"
-    fillPermission();
-    setTimeout(function () {
-        fillChecked(id);
-    }, 1000);
-}
-//显示权限管理数据
-function fillPermission(){
-    $('#permissionFrom').html('');
-    $.ajax({
-        url: path + "getPermissionByparentId",//请求地址
-        datatype: "json",//数据格式
-        type: "get",//请求方式
-        data: {"parentId": 0},
-        success: function (data) {
-            data = JSON.parse(data)
-            var permissionFrom = document.getElementById('permissionFrom'); //2、找到父级元素
-            for(var i=0;i<data.length;i++){
-                var div = document.createElement('div');
-                div.setAttribute("id","div-"+data[i].id);
-                div.innerHTML = "<input type='checkbox' id='check-"+data[i].id+"' value='"+data[i].id+"' onclick='change1("+data[i].id+")'>" +
-                    "<label id='labelcheck' for='check-"+data[i].id+"'></label>"+ data[i].permissionName;
-                permissionFrom.appendChild(div);
-                fillPermissionChild(data[i].id);
+            DTreeNode.clickNodeCheckbar(nodeId);// 点击节点选中复选框
+
+            var checkedData = dtree1.getCheckbarNodesParam("demoTree1");
+            var authoritysId = "";
+            for (var i = 0; i < checkedData.length; i ++) {
+                authoritysId += checkedData[i].nodeId + ",";
             }
-        }
+            authoritysId = authoritysId.substring(0,authoritysId.length-1);
+            authoritys = "["+authoritysId+"]";
+        });
     });
-}
-function fillChecked(roleId){
-    $.ajax({
-        url: path + "getRolePermissionByRoleId",//请求地址
-        datatype: "json",//数据格式
-        type: "get",//请求方式
-        data: {"roleId": roleId},
-        success: function (data) {
-            data = JSON.parse(data)
-            for(var i=0;i<data.length;i++){
-                if(data[i].type==1){
-                    if(data[i].parentId1==0){
-                        if(data[i].parentId2==0){
-                            document.getElementById('check-'+data[i].permissionId).checked = true;
-                        }else{
-                            document.getElementById('check-'+data[i].parentId2+'-'+data[i].permissionId).checked = true;
-                        }
-                    }else{
-                        document.getElementById('check-'+data[i].parentId1+'-'+data[i].parentId2+'-'+data[i].permissionId).checked = true;
-                    }
-                }
-            }
-        }
-    });
-}
-function fillPermissionChild(id){
-    $.ajax({
-        url: path + "getPermissionByparentId",//请求地址
-        datatype: "json",//数据格式
-        type: "get",//请求方式
-        data: {"parentId": id},
-        success: function (data) {
-            data = JSON.parse(data)
-            if(data.length>0){
-                var permissionFrom = document.getElementById('div-'+id);
-                for(var i=0;i<data.length;i++){
-                    var div = document.createElement('div')
-                    div.setAttribute("id",'div-'+id+'-'+data[i].id);
-                    div.innerHTML = "<input type='checkbox' id='check-"+id+"-"+data[i].id+"' value='"+data[i].id+"' onclick='change2("+id+","+data[i].id+")'>" +
-                        "<label id='labelcheck' for='check-"+id+"-"+data[i].id+"'></label>"+ data[i].permissionName;
-                    permissionFrom.appendChild(div);
-                    fillPermissionChild2(id,data[i].id)
-                }
-            }
-        }
-    });
-}
-function fillPermissionChild2(parentId,id){
-    $.ajax({
-        url: path + "getPermissionByparentId",//请求地址
-        datatype: "json",//数据格式
-        type: "post",//请求方式
-        data: {"parentId": id},
-        success: function (data) {
-            data = JSON.parse(data)
-            if(data.length>0){
-                var permissionFrom = document.getElementById('div-'+parentId+'-'+id);
-                for(var i=0;i<data.length;i++){
-                    var div = document.createElement('div')
-                    div.setAttribute("id",'div-'+parentId+'-'+id+'-'+data[i].id);
-                    div.innerHTML = "<input type='checkbox' id='check-"+parentId+"-"+id+"-"+data[i].id+"' onclick='change3("+parentId+","+id+","+data[i].id+")' value='"+data[i].id+"'>" +
-                        "<label id='labelcheck' for='check-"+parentId+"-"+id+"-"+data[i].id+"'></label>"+ data[i].permissionName;
-                    permissionFrom.appendChild(div);
-                    fillPermissionChild2(id,data[i].id)
-                }
-            }
-        }
-    });
-}
-function change1(id){
-    var obj = document.getElementById('check-'+id);
-    $("input[id^=check-"+id+"]").each(function(){
-        this.checked = obj.checked;
-    })
-}
-function change2(parentId,id){
-    var obj = document.getElementById('check-'+parentId+'-'+id);
-    if(!obj.checked){
-        document.getElementById('check-'+parentId).checked = false;
-    }
-    $("input[id^=check-"+parentId+"-"+id+"]").each(function(){
-        this.checked = obj.checked;
-    })
-}
-function change3(parentId,id,childId){
-    var obj = document.getElementById('check-'+parentId+'-'+id+'-'+childId);
-    if(!obj.checked){
-        document.getElementById('check-'+parentId).checked = false;
-        document.getElementById('check-'+parentId+'-'+id).checked = false;
-    }
 }
 //修改权限
-function addUpdPermission(){
-    var roleId = $('#permissionRoleId').val();
-    var checkVal = new Array();
-    $('input[id^="check-"]:checked').each(function(){
-        checkVal.push($(this).val());
-    });
-    var permissionIds = checkVal.join(',');
+function getChecked() {
     $.ajax({
-        url: path + "updateRolePermission",//请求地址
-        datatype: "json",//数据格式
-        type: "get",//请求方式
-        data: {"roleId": roleId,"permissionIds":permissionIds},
-        success: function (data) {
-            $(".white_content1")[0].style.display='none';
-            location.reload();
+        type:'POST',
+        dataType: "json",//数据格式
+        url:path + "/distributeRoleAuthority",
+        data:{"roleId": updRoleId, "authoritys": authoritys},
+        success:function(data){
+            if (data == 'SUCCESS'){
+                layer.closeAll();
+                fillRole();
+            } else if (data == 'ERROR'){
+                layer.closeAll();
+                alert("系统发生错误");
+            } else if(data == 'CANCEL'){
+                layer.closeAll();
+                alert("页面发生错误");
+            } else {
+                layer.closeAll();
+                alert("登录信息失效")
+            }
         }
     });
 }
 // 取消按钮
 function cancel() {
     layer.closeAll();
-    // 角色权限
-    var white_content1 =  $(".white_content1")[0];
-    white_content1.style.display = "none";
 }
