@@ -3,6 +3,7 @@ package com.howei.mapper;
 import com.howei.pojo.Inform;
 import com.howei.pojo.InformType;
 import com.howei.pojo.UserInform;
+import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
@@ -34,4 +35,6 @@ public interface InformMapper {
     Inform getInformById(String id);
 
     int updateStatus(UserInform userInform);
+
+    int deleteById(@Param("informId") String  informId);
 }

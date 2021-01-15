@@ -27,4 +27,5 @@ public interface CompanyService {
     List<Company> getAllDepartmentList();
 
     List<Company> getLayIMDepShowMap(String companyId);
+
 }

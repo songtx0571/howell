@@ -83,4 +83,11 @@ public class InformServiceImpl implements InformService {
     public int updateStatus(UserInform userInform) {
         return informMapper.updateStatus(userInform);
     }
+
+    @Override
+    public int deleteById(String informId) {
+        return informMapper.deleteById(informId);
+    }
+
+
 }

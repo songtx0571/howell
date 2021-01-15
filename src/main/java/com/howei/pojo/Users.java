@@ -7,6 +7,33 @@ import java.util.List;
  * 账户表
  */
 public class Users implements Serializable {
+    @Override
+    public String toString() {
+        return "Users{" +
+                "id=" + id +
+                ", userName='" + userName + '\'' +
+                ", password='" + password + '\'' +
+                ", employeeId=" + employeeId +
+                ", state=" + state +
+                ", sex=" + sex +
+                ", phone='" + phone + '\'' +
+                ", email='" + email + '\'' +
+                ", companyId=" + companyId +
+                ", departmentId=" + departmentId +
+                ", postId=" + postId +
+                ", userNumber='" + userNumber + '\'' +
+                ", manager=" + manager +
+                ", entryDate='" + entryDate + '\'' +
+                ", stateName='" + stateName + '\'' +
+                ", departName='" + departName + '\'' +
+                ", sexName='" + sexName + '\'' +
+                ", postName='" + postName + '\'' +
+                ", companyName='" + companyName + '\'' +
+                ", managerName='" + managerName + '\'' +
+                ", roles=" + roles +
+                ", roleName='" + roleName + '\'' +
+                '}';
+    }
 
     private static final long serialVersionUID = -2071565876962058344L;
 
