@@ -7,7 +7,6 @@
     <script type="text/javascript" src="js/week/homePopup.js"></script>
     <script src="layui/layui.js"></script>
     <link rel="stylesheet" href="layui/css/layui.css">
-    <script src="js/week/alert.js"></script>
 </head>
 <body>
     <div class="warp">
@@ -35,8 +34,8 @@
                             <tr>
                                 <td>联系方式：</td>
                                 <td><input type="text" name="uPhone" id="uPhone"></td>
-                                <td>学历：</td>
-                                <td><input type="text" name="uEducation" id="uEducation"></td>
+                                <td>邮箱：</td>
+                                <td><input type="text" id="uEmail" name="uEmail"></td>
                             </tr>
                             <tr>
                                 <td>衣服尺寸：</td>
@@ -49,6 +48,10 @@
                                 <td><input type="text" name="uEmergency" id="uEmergency"></td>
                                 <td>应急联系人电话：</td>
                                 <td><input type="text" name="uEmergencyTel" id="uEmergencyTel"></td>
+                            </tr>
+                            <tr>
+                                <td>学历：</td>
+                                <td colspan="3"><input type="text" name="uEducation" id="uEducation"></td>
                             </tr>
                             <tr>
                                 <td>开户行：</td>

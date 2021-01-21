@@ -15,6 +15,7 @@ $(function () {
                 $("#uIdnumber").val(data.idNumber);
                 $("#uCard").val(data.card);
                 $("#uPhone").val(data.phone);
+                $("#uEmail").val(data.email);
                 $("#uEducation").val(data.education);
                 $("#uCloshe").val(data.closhe);
                 $("#uHat").val(data.hat);
@@ -66,6 +67,7 @@ function updateInfo() {
     employee.idNumber = $("#uIdnumber").val();
     employee.card = $("#uCard").val();
     employee.phone = $("#uPhone").val();
+    employee.email = $("#uEmail").val();
     employee.education = $("#uEducation").val();
     employee.closhe = $("#uCloshe").val();
     employee.hat = $("#uHat").val();
@@ -81,8 +83,7 @@ function updateInfo() {
         data: JSON.stringify(employee),
         contentType: "application/json; charset=utf-8",
         success:function(data){
-            layer.closeAll();
-            alert("修改成功")
+            layer.alert("修改成功")
         }
     });
 }
@@ -104,8 +105,7 @@ function updatePwd() {
         crossDomain: true,
         xhrFields: {withCredentials: true},
         success:function(data){
-            layer.closeAll();
-            alert("修改成功");
+            layer.alert("修改成功");
         }
     });
 }
@@ -117,8 +117,7 @@ function reset() {
         url:path + "/user/updPassword",
         data:{"password": ""},
         success:function(data){
-            layer.closeAll();
-            alert("密码重置成功");
+            layer.alert("密码重置成功");
         }
     });
 }

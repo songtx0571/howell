@@ -57,7 +57,7 @@
             <li>|</li>
             <li><a target="_blank" href="http://www.hopeepe.com">浙江浩普</a></li>
         </ul>
-        <p>Copyright © 2020  hopeop.com 版权所有</p>
+        <p>Copyright © 2020  hopeop.com 版权所有&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;版本: 2.1.1.210120</p>
         <div style="margin:0 auto; padding:10px 0;display:inline-block;height:20px;line-height:20px;">
             <a target="_blank" href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=33010602011230">
                 <img src="img/keeponrecord.png" style="float:left;"/>
