@@ -17,19 +17,18 @@ $(function () {
         var tp = top.indexOf("p");
         var topHeight = top.substring(0,tp);
         var height = win-topHeight-20;
-        layui.use(['table','form'], function(){
+        layui.use('table', function(){
             var table = layui.table;
-            var form = layui.form;
             table.render({
                 elem: '#demo'
                 ,height: height
                 ,url: path + '/user/searchUsersList?search='+ searchName+'&companyId='+ $("#companyIdHidden").val() //数据接口
-                ,page: {
-                    curr: 1 //重新从第 1 页开始
-                }
+                , page: {
+                    curr: 1
+                } //开启分页
                 ,limit: 100
                 ,id: 'testReload'
-                ,limits: [100, 150]
+                ,limits: [100,150]
                 ,cols: [[ //表头
                     {field: 'userNumber', title: '编号', width:80,sort:true,align:'center'}
                     ,{field: 'userName', title: '姓名', width:80,align:'center'}
@@ -38,36 +37,38 @@ $(function () {
                     ,{field: 'email', title: '邮箱',align:'center'}
                     ,{field: 'stateName', title: '状态', width: 80, sort: true,align:'center'}// 1 在职
                     ,{field: 'companyName', title: '公司',align:'center'}
-                    ,{field: 'departName', title: '部门',align:'center', sort: true}
-                    ,{field: 'postName', title: '岗位',align:'center', sort: true}
-                    ,{field: 'roleName', title: '角色', width: 260,align:'center', sort: true}
+                    ,{field: 'departName', title: '部门',align:'center'}
+                    ,{field: 'postName', title: '岗位',align:'center'}
+                    ,{field: 'roleName', title: '角色', width: 260,align:'center'}
                     ,{fixed: '', title:'操作', toolbar: '#barDemo11', width:70,align:'center'}
                 ]]
-                , parseData: function(res) { }
-                ,done: function(res, curr, count) {}
+                , parseData: function(res) {}
+                ,done: function(res, curr, count){}
             });
             //监听行工具事件
             table.on('tool(test)', function(obj) {
                 var data = obj.data;
-                if (obj.event === 'edit') {
-                    //执行重载
-                    table.reload('testReload', {});
-                    $("#userIdHidden").val(data.id);
-                    $("#userName1").val(data.userName);//姓名
-                    $("#phone1").val(data.phone);//电话
-                    if (data.stateName == '在职') {
+                $("#userIdHidden").val(data.id);
+                $("#userName1").val(data.userName);//姓名
+                $("#phone1").val(data.phone);//电话
+                layui.use('form', function(){
+                    var form = layui.form;
+                    if(data.stateName == '在职'){
                         $("input[name=state][value='1']").prop("checked", "true");
-                    } else {
+                    }else{
                         $("input[name=state][value='0']").prop("checked", "true");
                     }
                     $("#updCompanyList").val(data.companyId);//公司
-                    $("#updDepartmentId").val(data.departmentId);//部门
                     $("#departmentId").val(data.departmentId);//部门
-                    $("#updPostId").val(data.postId);//岗位
                     $("#postId").val(data.postId);//岗位
-                    $("#searchName").val("");
                     form.render('select');
                     form.render(); //更新全部
+                });
+                if (obj.event === 'edit') {
+                    $("#searchName").val("");
+                    //执行重载
+                    table.reload('testReload', {});
+                    showUpdate();
                     layer.open({
                         type: 1
                         ,id: 'updateUser' //防止重复弹出
@@ -77,7 +78,6 @@ $(function () {
                         ,area: ['100%', '100%']
                         ,yes: function(){}
                     });
-                    showUpdate();
                 }
             });
         });
@@ -97,14 +97,14 @@ function strToJson(str){
 }
 // 显示表格
 function showUserTable(page,companyId) {
+    companyId = $("#companyIdHidden").val();
     var top = $(".top").css("height");
     var win = $(window).height();
     var tp = top.indexOf("p");
     var topHeight = top.substring(0,tp);
     var height = win-topHeight-20;
-    layui.use(['table','form'], function(){
+    layui.use('table', function(){
         var table = layui.table;
-        var form = layui.form;
         table.render({
             elem: '#demo'
             ,height: height
@@ -123,9 +123,9 @@ function showUserTable(page,companyId) {
                 ,{field: 'email', title: '邮箱',align:'center'}
                 ,{field: 'stateName', title: '状态', width: 80, sort: true,align:'center'}// 1 在职
                 ,{field: 'companyName', title: '公司',align:'center'}
-                ,{field: 'departName', title: '部门',align:'center', sort: true}
-                ,{field: 'postName', title: '岗位',align:'center', sort: true}
-                ,{field: 'roleName', title: '角色', width: 260,align:'center', sort: true}
+                ,{field: 'departName', title: '部门',align:'center'}
+                ,{field: 'postName', title: '岗位',align:'center'}
+                ,{field: 'roleName', title: '角色', width: 260,align:'center'}
                 ,{fixed: '', title:'操作', toolbar: '#barDemo11', width:70,align:'center'}
             ]]
             , parseData: function(res) { }
@@ -134,25 +134,27 @@ function showUserTable(page,companyId) {
         //监听行工具事件
         table.on('tool(test)', function(obj) {
             var data = obj.data;
-            if (obj.event === 'edit') {
-                //执行重载
-                table.reload('testReload', {});lo
-                $("#userIdHidden").val(data.id);
-                $("#userName1").val(data.userName);//姓名
-                $("#phone1").val(data.phone);//电话
-                if (data.stateName == '在职') {
+            $("#userIdHidden").val(data.id);
+            $("#userName1").val(data.userName);//姓名
+            $("#phone1").val(data.phone);//电话
+            layui.use('form', function(){
+                var form = layui.form;
+                if(data.stateName == '在职'){
                     $("input[name=state][value='1']").prop("checked", "true");
-                } else {
+                }else{
                     $("input[name=state][value='0']").prop("checked", "true");
                 }
                 $("#updCompanyList").val(data.companyId);//公司
-                $("#updDepartmentId").val(data.departmentId);//部门
                 $("#departmentId").val(data.departmentId);//部门
-                $("#updPostId").val(data.postId);//岗位
                 $("#postId").val(data.postId);//岗位
-                $("#searchName").val("");
                 form.render('select');
                 form.render(); //更新全部
+            });
+            if (obj.event === 'edit') {
+                $("#searchName").val("");
+                //执行重载
+                table.reload('testReload', {});
+                showUpdate();
                 layer.open({
                     type: 1
                     ,id: 'updateUser' //防止重复弹出
@@ -162,7 +164,6 @@ function showUserTable(page,companyId) {
                     ,area: ['100%', '100%']
                     ,yes: function(){}
                 });
-                showUpdate();
             }
         });
     });
@@ -202,12 +203,56 @@ function showCompany() {
         });
         form.on('select(updCompanyList)', function(data){
             $("#updCompanyListHidden").val(data.value);
-            showDepartmentPost($("#updCompanyListHidden").val())
+            //根据公司id得到部门
+            layui.use(['form'], function() {
+                var form = layui.form;
+                $.ajax({
+                    type: "GET",
+                    url: path + "/user/getCompanyList",
+                    dataType: "json",
+                    data: {"parent": $("#updCompanyListHidden").val()},
+                    success: function (data) {
+                        data = data.data;
+                        $("#departmentId").empty();
+                        var option = "";
+                        var option = "<option value='0' >请选择部门名称</option>"
+                        for (var i = 0; i < data.length; i++) {
+                            option += "<option value='" + data[i].id + "'>" + data[i].name + "</option>"
+                        }
+                        $('#departmentId').html(option);
+                        form.render();//菜单渲染 把内容加载进去
+                    }
+                });
+                form.on('select(departmentList)', function(data){//  // 选择部门
+                    $("#updDepartmentIdHidden").val(data.value);
+                })
+                $.ajax({
+                    type: "GET",
+                    url: path + "/user/getPostList",
+                    dataType: "json",
+                    data: {"companyId": $("#updCompanyListHidden").val()},
+                    success: function (data) {
+                        console.log(data)
+                        $("#postId").empty()
+                        var option = "";
+                        var option = "<option value='0' >请选择岗位名称</option>";
+                        for (var i = 0; i < data.length; i++) {
+                            option += "<option value='" + data[i].id + "'>" + data[i].name + "</option>";
+                        }
+                        $('#postId').html(option);
+                        form.render();//菜单渲染 把内容加载进去
+                    }
+                });
+                form.on('select(postList)', function(data){//  选择岗位
+                    $("#updPostIdHidden").val(data.value);
+                });
+            });
         });
     });
 }
 //显示部门岗位
 function showDepartmentPost(companyId) {
+    companyId = $("#companyIdHidden").val();
     //根据公司id得到部门
     layui.use(['form'], function() {
         var form = layui.form;
@@ -218,36 +263,30 @@ function showDepartmentPost(companyId) {
             data: {"parent": companyId},
             success: function (data) {
                 data = data.data;
-                $("#updDepartmentId").empty();
+                $("#departmentId").empty();
                 var option = "";
                 var option = "<option value='0' >请选择部门名称</option>"
                 for (var i = 0; i < data.length; i++) {
                     option += "<option value='" + data[i].id + "'>" + data[i].name + "</option>"
                 }
-                $('#updDepartmentId').html(option);
+                $('#departmentId').html(option);
                 form.render();//菜单渲染 把内容加载进去
             }
-        });
-        form.on('select(updDepartmentId)', function(data){
-            $("#departmentId").val(data.value);
         });
         $.ajax({
             type: "GET",
             url: path + "/user/getPostList",
             dataType: "json",
-            data: {"companyId": companyId},
+            data: {"companyId": $("#companyIdHidden").val()},
             success: function (data) {
-                $("#updPostId").empty();
+                $("#postId").empty();
                 var option = "<option value='0' >请选择岗位名称</option>";
                 for (var i = 0; i < data.length; i++) {
                     option += "<option value='" + data[i].id + "'>" + data[i].name + "</option>";
                 }
-                $('#updPostId').html(option);
+                $('#postId').html(option);
                 form.render();//菜单渲染 把内容加载进去
             }
-        });
-        form.on('select(updPostId)', function(data){
-            $("#postId").val(data.value);
         });
     });
 }
@@ -407,16 +446,15 @@ function addUser() {
                 resetFun();
                 noDisabledSelect();//启用公司下拉框
             }else if(data == "haveNumber"){
-                layer.alert("该编号已存在");
+                alert("该编号已存在");
             } else{
-                layer.alert("添加失败");
+                alert("添加失败");
             }
         }
     });
 }
 //根据id获取所有角色
 function showUpdate() {
-
     var userId = $("#userIdHidden").val();
     layui.use('form', function() {
         var form = layui.form;
@@ -453,6 +491,7 @@ function showUpdate() {
 }
 // 修改账户
 function updUser() {
+    layer.closeAll();
     var userId = $("#userIdHidden").val();
     var  roles = "["+$("#updRoleListHidden").val()+"]";
     $.ajax({
@@ -465,7 +504,7 @@ function updUser() {
             if (data == "success") {
                 showUserTable(1,$("#companyIdHidden").val())
             }else{
-                layer.alert("修改失败");
+                alert("修改失败");
             }
         }
     });

@@ -248,7 +248,7 @@ public class UsersController {
         String postId=request.getParameter("postId");
         String userNumber=request.getParameter("userNumber");
         String entryDate=request.getParameter("entryDate");
-
+        String roles=request.getParameter("roles");
         Users users=this.getPrincipal();
         Integer employeeId=null;
         if(users!=null){
@@ -315,11 +315,13 @@ public class UsersController {
             userService.addUser(user);
         }
         if(user.getId()>0){
+            addUserRole(Integer.parseInt(user.getId().toString()),roles);
             return JSON.toJSONString("success");
         }else {
             return JSON.toJSONString("error");
         }
     }
+
 
     /**
      * 修改user
