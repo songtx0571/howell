@@ -155,6 +155,8 @@
                     <div style="width:440px;">
                         <h1 style="text-align: center;margin-bottom: 30px">修改账户</h1>
                         <input type="hidden" id="userIdHidden">
+                        <input type="hidden" id="departmentId" name="departmentId">
+                        <input type="hidden" id="postId" name="postId">
                         <div class="userInputDiv">
                             <span><samp>*</samp>姓名:</span>
                             <input type="text" id="userName1" name="userName">
@@ -176,7 +178,7 @@
                                 <div class="layui-inline">
                                     <label class="layui-form-label" style="width: 115px;"><samp>*</samp>部门:</label>
                                     <div class="layui-input-inline">
-                                        <select name="departmentId" lay-verify="required" lay-filter="departmentId" lay-search="" id="departmentId">
+                                        <select name="updDepartmentId" lay-verify="required" lay-filter="updDepartmentId" lay-search="" id="updDepartmentId">
                                         </select>
                                     </div>
                                 </div>
@@ -187,7 +189,7 @@
                                 <div class="layui-inline">
                                     <label class="layui-form-label" style="width: 115px;"><samp>*</samp>岗位:</label>
                                     <div class="layui-input-inline">
-                                        <select name="postId" lay-verify="required" lay-filter="postId" lay-search="" id="postId">
+                                        <select name="updPostId" lay-verify="required" lay-filter="updPostId" lay-search="" id="updPostId">
                                         </select>
                                     </div>
                                 </div>

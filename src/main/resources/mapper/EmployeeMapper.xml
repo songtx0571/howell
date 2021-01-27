@@ -3,47 +3,51 @@
 <mapper namespace="com.howei.mapper.EmployeeMapper" >
 
     <select id="getLoginEmployee" resultType="com.howei.pojo.Employee" parameterType="java.lang.String">
-        select * from employee where id=#{id}
+        select * from employee e join users  u on e.id=u.employeeId where e.id=#{id}
     </select>
 
     <update id="homeUpdEmployee" parameterType="com.howei.pojo.Employee" useGeneratedKeys="true" keyProperty="id">
-        update employee
+        update employee e join users u on u.employeeId =e.id
         <trim prefix="set" suffixOverrides=",">
+            <if test="email!=null and email!=''">
+                u.email=#{email},
+            </if>
+
             <if test="name!=null and name!=''">
-                name=#{name},
+                e.name=#{name},
             </if>
             <if test="card!=null">
-                card=#{card},
+                e.card=#{card},
             </if>
             <if test="phone!=null and phone!=''">
-                phone=#{phone},
+                e.phone=#{phone},
             </if>
             <if test="idNumber!=null and idNumber!=''">
-                idNumber=#{idNumber},
+                e.idNumber=#{idNumber},
             </if>
             <if test="closhe!=null">
-                closhe=#{closhe},
+                e.closhe=#{closhe},
             </if>
             <if test="hat!=null and hat!=''">
-                hat=#{hat},
+                e.hat=#{hat},
             </if>
             <if test="education!=null and education!=''">
-                education=#{education},
+                e.education=#{education},
             </if>
             <if test="emergencyTel!=null and emergencyTel!=''">
-                emergencyTel=#{emergencyTel},
+                e.emergencyTel=#{emergencyTel},
             </if>
             <if test="emergency!=null and emergency!=''">
-                emergency=#{emergency},
+                e.emergency=#{emergency},
             </if>
             <if test="bank!=null and bank!=''">
-                bank=#{bank},
+                e.bank=#{bank},
             </if>
             <if test="address!=null and address!=''">
-                address=#{address},
+                e.address=#{address},
             </if>
         </trim>
-        where id=#{id}
+        where e.id=#{id}
     </update>
 
     <select id="getEmployeeMap" parameterType="java.util.HashMap" resultType="com.howei.pojo.Employee">

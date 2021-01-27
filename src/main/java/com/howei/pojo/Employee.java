@@ -29,6 +29,15 @@ public class Employee {
     private String created;
     private int createdBy;
     private String sign;//个性签名
+    private String email;//邮箱
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
 
     //虚字段
     private String sexName;
