@@ -241,8 +241,8 @@ function  noticeClickFS() {
             ,id: 'demoInfo'
             ,cols: [[ //表头
                 {field: 'created', title: '时间', align:'center', sort: true, width: 150}
-                ,{field: 'title', title: '标题', align:'center',width: 200}
-                ,{field: 'content', title: '内容', align:'center'}
+                ,{field: 'title', title: '标题',width: 200}
+                ,{field: 'content', title: '内容'}
                 ,{field: 'createdByName', title: '创建人', align:'center', width: 100}
                 ,{field: 'filedir', title: '地址', align:'center', hide: 'false'}
                 ,{field: 'informTypeName', title: '类别', hide: 'false', align:'center'}
@@ -376,12 +376,12 @@ function  noticeClickSD(isactive) {
             ,id: 'demoInfo'
             ,cols: [[ //表头
                 {field: 'created', title: '时间', align:'center', sort: true, width: 150}
-                ,{field: 'title', title: '标题', align:'center',width: 200}
-                ,{field: 'content', title: '内容', align:'center'}
+                ,{field: 'title', title: '标题',width: 200}
+                ,{field: 'content', title: '内容'}
                 ,{field: 'createdByName', title: '创建人', align:'center', width: 100}
                 ,{field: 'filedir', title: '地址', align:'center', hide: 'false'}
                 ,{field: 'informTypeName', title: '类别', hide: 'false', align:'center'}
-                ,{fixed: '', title:'操作', toolbar: '#barDemoSD', width:100, align:'center'}
+                ,{fixed: '', title:'操作', toolbar: '#barDemoFS', width:300, align:'center'}
             ]]
             ,parseData: function(res) {
             }
