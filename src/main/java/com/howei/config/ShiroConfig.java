@@ -90,7 +90,13 @@ public class ShiroConfig {
         sessionManager.setGlobalSessionTimeout(14400000); //4小时
         sessionManager.setDeleteInvalidSessions(true);
         sessionManager.setSessionDAO(redisSessionDao);
+        //是否开启定时调度器进行检测过期session 默认为true
         sessionManager.setSessionValidationSchedulerEnabled(true);
+        //设置session失效的扫描时间, 清理用户直接关闭浏览器造成的孤立会话 默认为 1个小时
+        //设置该属性 就不需要设置 ExecutorServiceSessionValidationScheduler 底层也是默认自动调用ExecutorServiceSessionValidationScheduler
+        //设置为 1分钟 用来测试
+        sessionManager.setSessionValidationInterval(60000);
+        //是否开启删除无效的session对象  默认为true
         sessionManager.setDeleteInvalidSessions(true);
         sessionManager.setSessionIdCookie(getSessionIdCookie());
         sessionManager.setSessionIdCookie(new SimpleCookie("sessionUser"));
