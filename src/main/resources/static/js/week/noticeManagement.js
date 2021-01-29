@@ -381,7 +381,7 @@ function  noticeClickSD(isactive) {
                 ,{field: 'createdByName', title: '创建人', align:'center', width: 100}
                 ,{field: 'filedir', title: '地址', align:'center', hide: 'false'}
                 ,{field: 'informTypeName', title: '类别', hide: 'false', align:'center'}
-                ,{fixed: '', title:'操作', toolbar: '#barDemoFS', width:300, align:'center'}
+                ,{fixed: '', title:'操作', toolbar: '#barDemoSD', width:300, align:'center'}
             ]]
             ,parseData: function(res) {
             }
