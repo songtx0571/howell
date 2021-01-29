@@ -329,7 +329,8 @@ public class InformController {
         String page = request.getParameter("page");
         String limit = request.getParameter("limit");
         Users users = this.getSecuityUtils();
-        System.out.println("users:::::" + users);
+        return JSON.toJSONString(users.toString());
+        /*System.out.println("users:::::" + users);
         Integer companyId = null;
         Integer userId = null;
 
@@ -367,7 +368,7 @@ public class InformController {
         if (list != null) {
             res.setCount(total.size());
         }
-        return JSON.toJSONString(res);
+        return JSON.toJSONString(res);*/
     }
 
     /**
