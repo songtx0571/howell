@@ -6,6 +6,7 @@ import org.apache.shiro.spring.LifecycleBeanPostProcessor;
 import org.apache.shiro.spring.web.ShiroFilterFactoryBean;
 import org.apache.shiro.web.filter.authc.AnonymousFilter;
 import org.apache.shiro.web.mgt.DefaultWebSecurityManager;
+import org.apache.shiro.web.servlet.Cookie;
 import org.apache.shiro.web.servlet.SimpleCookie;
 import org.apache.shiro.web.session.mgt.DefaultWebSessionManager;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -87,7 +88,10 @@ public class ShiroConfig {
     @Bean(name="sessionManager")
     public DefaultWebSessionManager defaultWebSessionManager(RedisSessionDao redisSessionDao) {
         DefaultWebSessionManager sessionManager = new DefaultWebSessionManager();
-        sessionManager.setGlobalSessionTimeout(14400000); //4小时
+        Cookie cookie=sessionManager.getSessionIdCookie();
+        cookie.setName("sessionId");
+        sessionManager.setGlobalSessionTimeout(5000);
+        //sessionManager.setGlobalSessionTimeout(14400000); //4小时
         sessionManager.setSessionDAO(redisSessionDao);
         //是否开启定时调度器进行检测过期session 默认为true
         sessionManager.setSessionValidationSchedulerEnabled(true);
@@ -98,8 +102,7 @@ public class ShiroConfig {
         //sessionManager.setSessionValidationInterval(60000);
         //是否开启删除无效的session对象  默认为true
         sessionManager.setDeleteInvalidSessions(true);
-        sessionManager.setSessionIdCookie(getSessionIdCookie());
-        sessionManager.setSessionIdCookie(new SimpleCookie("sessionUser"));
+        sessionManager.setSessionIdCookie(new SimpleCookie("sessionId"));
         return sessionManager;
     }
 
@@ -141,14 +144,13 @@ public class ShiroConfig {
         return new LifecycleBeanPostProcessor();
     }
 
-
     /**
      * 配置LogoutFilter
      * @return
      */
     public ShiroLogoutFilter shiroLogoutFilter(){
         ShiroLogoutFilter shiroLogoutFilter = new ShiroLogoutFilter();
-        //配置登出后重定向的地址，等出后配置跳转到登录接口
+        //配置登出后重定向的地址，登出后配置跳转到登录接口
         shiroLogoutFilter.setRedirectUrl("/");
         return shiroLogoutFilter;
     }
