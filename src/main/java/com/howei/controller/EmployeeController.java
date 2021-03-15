@@ -36,7 +36,10 @@ public class EmployeeController {
             employee=employeeService.getLoginEmployee(employeeId);
         }else{
             Subject sub=SecurityUtils.getSubject();
+
+            System.out.println("users::"+sub);
             Users users=(Users)sub.getPrincipal();
+            System.out.println("users::"+users);
             if(users!=null){
                 employeeId=String.valueOf(users.getEmployeeId());
                 employee=employeeService.getLoginEmployee(employeeId);

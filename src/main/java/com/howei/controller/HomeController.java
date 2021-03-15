@@ -217,6 +217,7 @@ public class HomeController {
             }
         }
         Session session = subject.getSession();
+        session.setTimeout(1440000L);
         Users user = userService.loginUserNumber(username, password);
         session.setAttribute(SESSION_USER, user);
         mode.setViewName("home");
@@ -240,6 +241,7 @@ public class HomeController {
         }
         map.put("parent", 0);
         List<Menu> rootMenuList = menuService.getMenuTree(map);
+        System.out.println("rootMenuList::"+rootMenuList);
         Iterator<Menu> iterator = rootMenuList.iterator();
         while (iterator.hasNext()) {
             Menu menu = iterator.next();
@@ -247,11 +249,13 @@ public class HomeController {
                 iterator.remove();
             }
         }
+
         List<MenuTree> resultList = new ArrayList<>();
         for (Menu menu : rootMenuList) {
             Integer id = menu.getId();
             map.put("parent", id);
             List<Menu> menuList = menuService.getMenuTree(map);
+            System.out.println("menuList::"+menuList);
             if (menuList != null && menuList.size() > 0) {
                 iterator = menuList.iterator();
                 while (iterator.hasNext()) {

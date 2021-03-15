@@ -4,6 +4,21 @@ package com.howei.pojo;
  * 系统菜单
  */
 public class Menu {
+    @Override
+    public String toString() {
+        return "Menu{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", code=" + code +
+                ", type='" + type + '\'' +
+                ", parent=" + parent +
+                ", active='" + active + '\'' +
+                ", created='" + created + '\'' +
+                ", createdBy=" + createdBy +
+                ", url='" + url + '\'' +
+                '}';
+    }
+
     private int id;
     private String name;//菜单名称
     private int code;//设置优先显示

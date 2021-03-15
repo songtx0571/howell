@@ -2,7 +2,9 @@ package com.howei.config;
 
 import com.howei.service.EmployeeService;
 import com.howei.service.GroupService;
+import com.howei.service.OperationRecordService;
 import com.howei.util.WebSocket;
+import com.howei.util.WebSocketOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Component;
@@ -22,13 +24,19 @@ public class WebSocketConfig {
         return new ServerEndpointExporter();
     }
 
+
     @Autowired
-    public void setEmployeeService(EmployeeService employeeService){
-        WebSocket.employeeService=employeeService;
+    public void setEmployeeService(EmployeeService employeeService) {
+        WebSocket.employeeService = employeeService;
     }
 
     @Autowired
-    public void setGroupService(GroupService groupService){
-        WebSocket.groupService=groupService;
+    public void setGroupService(GroupService groupService) {
+        WebSocket.groupService = groupService;
+    }
+
+    @Autowired
+    public void setOperationRecordService(OperationRecordService orService) {
+        WebSocketOperation.orService = orService;
     }
 }
