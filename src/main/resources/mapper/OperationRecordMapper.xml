@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.howei.mapper.OperationRecordMapper">
+    <resultMap id="baseReaultMap" type="com.howei.pojo.OperationRecord">
+        <result column="id" property="id"></result>
+        <result column="send_id" property="sendId"></result>
+        <result column="send_name" property="sendName"></result>
+        <result column="receive_id" property="receiveId"></result>
+        <result column="verb" property="verb"></result>
+        <result column="content" property="content"></result>
+        <result column="type" property="type"></result>
+        <result column="remark" property="remark"></result>
+        <result column="create_time" property="createTime"></result>
+        <result column="isRead" property="isRead"></result>
+        <result column="long_time" property="longTime"></result>
+    </resultMap>
+    <insert id="insert" parameterType="com.howei.pojo.OperationRecord">
+        insert into
+        operation_record(send_id,receive_id,verb,content,type,remark,create_time,long_time,send_name)
+        value
+         (#{record.sendId},#{record.receiveId},#{record.verb},#{record.content},#{record.type},#{record.remark},#{record.createTime},#{record.longTime},#{record.sendName})
+    </insert>
+    <update id="updateIsReadById">
+
+        update operation_record set is_read=1 where id=#{id}
+    </update>
+    <delete id="deleteByChildrenId">
+        delete from opeartion_record_relation  where children_id =""
+
+    </delete>
+
+    <select id="getByRecordByReceiveId" resultMap="baseReaultMap">
+        select * from operation_record where receive_id=#{receiveId}
+        <if test="isRead!=null">
+            and is_read=#{isRead}
+        </if>
+
+
+    </select>
+    <select id="getByExample" resultType="com.howei.pojo.OperationRecord">
+        select * from operation_record where 1=1
+            and send_id=#{record.sendId}
+            and receive_id=#{record.receiveId}
+            and long_time=#{record.longTime}
+
+    </select>
+    <select id="getMaxId" resultType="java.lang.Integer">
+        select max(id) from operation_record
+    </select>
+    <select id="getReceiveUserIdsByAuthorityName" resultType="java.lang.Integer">
+SELECT
+	e.id
+FROM
+	employee e
+JOIN users u ON u.employeeId = e.id
+JOIN user_role ur ON ur.userId = u.id
+JOIN role r ON r.id = ur.roleId
+JOIN role_authority ra ON ra.roleId = r.id
+JOIN authority a ON a.id = ra.authorityId
+WHERE
+	a.`name` =#{type}
+
+
+    </select>
+</mapper>

@@ -2,13 +2,13 @@ var path = "";
 $(function () {
     var data = $("#dataHidden").val();
     // 个人信息
-    if (data == "info"){
+    if (data == "info") {
         $.ajax({
-            type:'POST',
+            type: 'POST',
             dataType: "json",//数据格式
-            url:path + "/employee/getLoginEmployee",
+            url: path + "/employee/getLoginEmployee",
             // data:{"userId": userId},
-            success:function(data){
+            success: function (data) {
                 $("#employeeId").val(data.id);
                 $("#uUserName").val(data.userNumber);
                 $("#uName").val(data.name);
@@ -25,7 +25,7 @@ $(function () {
                 $("#uAddress").val(data.address);
             }
         });
-        layui.use('layer', function() { //独立版的layer无需执行这一句
+        layui.use('layer', function () { //独立版的layer无需执行这一句
             var $ = layui.jquery, layer = layui.layer; //独立版的layer无需执行这一句
             layer.open({
                 type: 1
@@ -43,7 +43,7 @@ $(function () {
     if (data == "pwd") {
         $("#pwd1").val("");
         $("#pwd2").val("");
-        layui.use('layer', function() { //独立版的layer无需执行这一句
+        layui.use('layer', function () { //独立版的layer无需执行这一句
             var $ = layui.jquery, layer = layui.layer; //独立版的layer无需执行这一句
             layer.open({
                 type: 1
@@ -58,6 +58,7 @@ $(function () {
         });
     }
 });
+
 //修改个人信息
 function updateInfo() {
     var employee = {};
@@ -77,50 +78,59 @@ function updateInfo() {
     employee.address = $("#uAddress").val();
     console.log(employee);
     $.ajax({
-        url:path + "/employee/homeUpdEmployee",
+        url: path + "/employee/homeUpdEmployee",
         dataType: "json",//数据格式
         type: "post",//请求方式
         data: JSON.stringify(employee),
         contentType: "application/json; charset=utf-8",
-        success:function(data){
+        success: function (data) {
             layer.alert("修改成功")
         }
     });
+
+    $.ajax({
+        url: path + "/operation/send",
+        dataType: "json",//数据格式
+        type: "post",//请求方式
+        data: {
+            sendId: $("#employeeId").val(),
+            verb: "修改",
+            content: "名字为某某",
+            type: "howell",
+            remark: "修改成功",
+            createTime:"createTime",
+            employeeName:"employeeName"
+        },
+        success: function (data) {
+            console.log("前端发送消息")
+        }
+    });
+
 }
+
 //修改密码
 function updatePwd() {
     var pwd1 = $("#pwd1").val();
     var pwd2 = $("#pwd2").val();
     if (pwd1 != pwd2) {
-        $(".tips").css("display","contents");
+        $(".tips").css("display", "contents");
         return;
-    } else{
-        $(".tips").css("display","none");
+    } else {
+        $(".tips").css("display", "none");
     }
     $.ajax({
-        type:'GET',
+        type: 'GET',
         dataType: "json",//数据格式
-        url:path + "/user/updPassword",
-        data:{"password": pwd2},
+        url: path + "/user/updPassword",
+        data: {"password": pwd2},
         crossDomain: true,
         xhrFields: {withCredentials: true},
-        success:function(data){
+        success: function (data) {
             layer.alert("修改成功");
         }
     });
 }
-/*//密码重置
-function reset() {
-    $.ajax({
-        type:'POST',
-        dataType: "json",//数据格式
-        url:path + "/user/updPassword",
-        data:{"password": ""},
-        success:function(data){
-            layer.alert("密码重置成功");
-        }
-    });
-}*/
+
 //取消
 function cancel() {
     layer.closeAll();

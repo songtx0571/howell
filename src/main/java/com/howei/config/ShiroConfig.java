@@ -32,11 +32,13 @@ public class ShiroConfig {
 
     @Value("${shiro.jessionid}")
     private String jessionId;
+    @Value("${shiro.conf.sessionTimeout}")
+    private Integer maxAge;
 
     //将验证方式加入容器
     @Bean
-    @DependsOn(value="lifecycleBeanPostProcessor")
-    public LoginRealm loginRealm(){
+    @DependsOn(value = "lifecycleBeanPostProcessor")
+    public LoginRealm loginRealm() {
         LoginRealm userRealm = new LoginRealm();
         //userRealm.setCredentialsMatcher(credentialsMatcher());
         return userRealm;
@@ -44,6 +46,7 @@ public class ShiroConfig {
 
     /**
      * FilterRegistrationBean
+     *
      * @return
      */
     @Bean
@@ -57,15 +60,15 @@ public class ShiroConfig {
     }
 
     /**
-     * @see ShiroFilterFactoryBean
      * @return
+     * @see ShiroFilterFactoryBean
      */
     @Bean(name = "shiroFilter")
-    public ShiroFilterFactoryBean shiroFilter(@Qualifier("securityManager") DefaultWebSecurityManager securityManager){
+    public ShiroFilterFactoryBean shiroFilter(@Qualifier("securityManager") DefaultWebSecurityManager securityManager) {
         ShiroFilterFactoryBean bean = new MShiroFilterFactoryBean(); //指向自定义过滤器，自定义过滤器对js/css等忽略
         bean.setSecurityManager(securityManager);
         bean.setLoginUrl(masterLoginUrl);
-        Map<String, Filter>filters = new LinkedHashMap<>();
+        Map<String, Filter> filters = new LinkedHashMap<>();
         filters.put("anon", new AnonymousFilter());
         bean.setFilters(filters);
         //shiro配置过滤规则少量的话可以用hashMap,数量多了要用LinkedHashMap,保证有序，原因未知
@@ -79,31 +82,38 @@ public class ShiroConfig {
 
 
     @Bean
-    public RedisSessionDao getRedisSessionDao(){
+    public RedisSessionDao getRedisSessionDao() {
         return new RedisSessionDao();
     }
+
     /**
-     * @see DefaultWebSessionManager
      * @return
+     * @see DefaultWebSessionManager
      */
-    @Bean(name="sessionManager")
+    @Bean(name = "sessionManager")
     public DefaultWebSessionManager defaultWebSessionManager(RedisSessionDao redisSessionDao) {
         DefaultWebSessionManager sessionManager = new DefaultWebSessionManager();
         sessionManager.setGlobalSessionTimeout(900000); //15分钟
         sessionManager.setDeleteInvalidSessions(true);
         sessionManager.setSessionDAO(redisSessionDao);
         sessionManager.setSessionValidationSchedulerEnabled(true);
+        //设置session失效的扫描时间, 清理用户直接关闭浏览器造成的孤立会话 默认为 1个小时
+        //设置该属性 就不需要设置 ExecutorServiceSessionValidationScheduler 底层也是默认自动调用ExecutorServiceSessionValidationScheduler
+        //设置为 1分钟 用来测试
+        sessionManager.setSessionValidationInterval(14400000);
+        //是否开启删除无效的session对象  默认为true
         sessionManager.setDeleteInvalidSessions(true);
         sessionManager.setSessionIdCookie(getSessionIdCookie());
         sessionManager.setSessionIdCookie(new SimpleCookie("sessionUser"));
+        sessionManager.setSessionIdUrlRewritingEnabled(false);
         return sessionManager;
     }
 
     /**
-     * @see org.apache.shiro.mgt.SecurityManager
      * @return
+     * @see org.apache.shiro.mgt.SecurityManager
      */
-    @Bean(name="securityManager")
+    @Bean(name = "securityManager")
     public DefaultWebSecurityManager securityManager(LoginRealm userRealm, RedisSessionDao redisSessionDao) {
         DefaultWebSecurityManager manager = new DefaultWebSecurityManager();
         manager.setRealm(userRealm);
@@ -113,21 +123,43 @@ public class ShiroConfig {
 
     /**
      * 给shiro的sessionId默认的JSSESSIONID名字改掉
+     *
      * @return
      */
-    @Bean(name="sessionIdCookie")
-    public SimpleCookie getSessionIdCookie(){
+    @Bean(name = "sessionIdCookie")
+    public SimpleCookie getSessionIdCookie() {
         SimpleCookie simpleCookie = new SimpleCookie(jessionId);
+        simpleCookie.setPath("/");
+        simpleCookie.setHttpOnly(true);
+        simpleCookie.setMaxAge(maxAge);
         return simpleCookie;
+    }
+
+    @Bean(name = "credentialsMatcher")
+    public CredentialsMatcher credentialsMatcher() {
+        return new RetryLimitHashedCredentialsMatcher();
     }
 
     /**
      * 该类如果不设置为static，@Value注解就无效，原因未知
+     *
      * @return
      */
     @Bean
     public static LifecycleBeanPostProcessor lifecycleBeanPostProcessor() {
         return new LifecycleBeanPostProcessor();
+    }
+
+    /**
+     * 配置LogoutFilter
+     *
+     * @return
+     */
+    public ShiroLogoutFilter shiroLogoutFilter() {
+        ShiroLogoutFilter shiroLogoutFilter = new ShiroLogoutFilter();
+        //配置登出后重定向的地址，等出后配置跳转到登录接口
+        shiroLogoutFilter.setRedirectUrl("/");
+        return shiroLogoutFilter;
     }
 
 }
