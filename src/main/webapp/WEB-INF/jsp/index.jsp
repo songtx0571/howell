@@ -36,7 +36,7 @@
         <iframe id="iframe1" name="iframe1" style="display:none;"></iframe>
     </div>
     <div class="notice" id="notice">
-        <ul id="noticeUl">
+        <ul id="noticeUl" style="">
         </ul>
     </div>
 </div>

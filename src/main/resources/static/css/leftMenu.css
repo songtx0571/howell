@@ -46,3 +46,6 @@ li{
 .layui-nav-child:hover + .layui-nav-item>a{
     color: #000 !important;
 }
+body::-webkit-scrollbar{
+    display: none;
+}

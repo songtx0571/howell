@@ -23,6 +23,12 @@
                 </td>
             </tr>
             <tr>
+                <td style="text-align: right;">更新标题：</td>
+                <td>
+                    <textarea rows='3' cols="20" id="title"></textarea>
+                </td>
+            </tr>
+            <tr>
                 <td style="text-align: right;">更新日期：</td>
                 <td>
                     <input type="hidden" id="cycleDataHidden">

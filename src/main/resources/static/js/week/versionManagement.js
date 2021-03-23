@@ -32,10 +32,14 @@ function showTimeLine() {
             var li = "";
             data = data.data;
             for (var i = 0; i < data.length; i ++) {
+                if (data[i].content == null) {
+                    data[i].content = "";
+                }
                 li += '<li class="layui-timeline-item"><i class="layui-icon layui-timeline-axis"></i>' +
                     '<div class="layui-timeline-content layui-text">' +
                     '<h3 class="layui-timeline-title">'+data[i].releaseDate+'</h3>' +
-                    '<p>'+data[i].content+'</p></div></li>';
+                    '<p style="font-size:16px;font-weight:600;">'+data[i].title+'</p>' +
+                    '<ul>'+data[i].content+'</ul></div></li>';
             }
             timeline.html(li);
         }
@@ -43,6 +47,10 @@ function showTimeLine() {
 }
 //打开添加页面
 function showAddVersion() {
+    $("#test4").val("");
+    $("#cycleDataHidden").val("");
+    $("#title").val("");
+    $("#content").val("");
     layui.use('layer', function() { //独立版的layer无需执行这一句
         var $ = layui.jquery, layer = layui.layer; //独立版的layer无需执行这一句
         layer.open({
@@ -60,11 +68,20 @@ function showAddVersion() {
 //确定添加
 function addVersionBtn() {
     var releaseDate = $("#cycleDataHidden").val();
+    var title = $("#title").val();
     var content = $("#content").val();
+    if (releaseDate == "") {
+        layer.alert("更新时间不能为空！");
+        return;
+    }
+    if (title == "") {
+        layer.alert("更新标题不能为空！");
+        return;
+    }
     $.ajax({
         type: "post",
         url: path+'/sysVersion/add',
-        data: {releaseDate: releaseDate, content: content},
+        data: {releaseDate: releaseDate, content: content,title: title},
         dataType: "json",
         success: function (data) {
             layer.closeAll();

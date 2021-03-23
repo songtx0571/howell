@@ -18,7 +18,7 @@
         <li class="comprehensive">
             <a href="#"><i class="fa fa-wrench" style="font-size: 1.8rem;"></i></a>
             <ul class="erji">
-                <li><a href="#"><i class="fa fa-object-group"></i>&nbsp;&nbsp;动态区域</a></li>
+                <li><a href="#" onclick="dynamicRegion()"><i class="fa fa-object-group"></i>&nbsp;&nbsp;动态区域</a></li>
                 <shiro:hasPermission name="通知管理">
                     <li><a href="#" onclick="noticeManagement()"><i class="fa fa-volume-up"></i>&nbsp;&nbsp;通知管理</a></li>
                 </shiro:hasPermission>
@@ -66,4 +66,3 @@
 <script type="text/javascript" src="js/week/home.js"></script>
 </body>
 </html>
-

@@ -297,10 +297,8 @@ function fullUl() {
 
 function setMessageInnerHTML(data) {
     console.log(data)
-
     var noticeUl = document.getElementById("noticeUl");
     data = eval('(' + data + ')');
-
     console.log("data", data)
     var li = noticeUl.innerHTML;
     li += "<li  id='" + data.id + "' onclick='clickRead(this)'>" +
@@ -339,10 +337,14 @@ function scroll(dom, time) {
 function rollStart() {
     var dom = document.getElementById("noticeUl");
     var firstDom = dom.firstElementChild;
-    firstDom.style.marginTop = "0px";
-    dom.appendChild(firstDom);
-    var firstDom = dom.firstElementChild;
-    firstDom.style.marginTop = "-40px";
+    if (!firstDom) {
+        return;
+    } else {
+        firstDom.style.marginTop = "0px";
+        dom.appendChild(firstDom);
+        var firstDom = dom.firstElementChild;
+        firstDom.style.marginTop = "-40px";
+    }
 }
 
 //点击事件
@@ -351,7 +353,7 @@ function clickRead(a) {
     setTimeout(function () {
         a.remove();
     }, 1000);
-console.log("a::",a.id);
+    console.log("a::",a.id);
     //步骤一:创建异步对象
     var ajax = new XMLHttpRequest();
     //步骤二:设置请求的url参数,参数一是请求的类型,参数二是请求的url,可以带参数,动态的传递参数starName到服务端
@@ -365,5 +367,4 @@ console.log("a::",a.id);
             console.log("标记已读"+a.id)
         }
     };
-
 }
