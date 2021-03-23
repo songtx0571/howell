@@ -58,7 +58,6 @@
         });
     });
 
-
     window.onload=function(){
         var websocket = null;
         var username = "";
@@ -273,7 +272,6 @@
         });
 
     }
-
 </script>
 </body>
 </html>

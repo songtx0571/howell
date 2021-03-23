@@ -83,7 +83,9 @@
                     <td colspan="2" style="color: red;text-align: center;">两次密码输入不相同</td>
                 </tr>
                 <tr>
-                    <td colspan="2" style="text-align: center"><button type="button" class="layui-btn" onclick="updatePwd()">确定</button>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<button type="button" class="layui-btn" onclick="reset()">密码重置</button>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<button type="button" class="layui-btn" onclick="cancel()">取消</button></td>
+                    <td colspan="2" style="text-align: center"><button type="button" class="layui-btn" onclick="updatePwd()">确定</button>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                        <%--<button type="button" class="layui-btn" onclick="reset()">密码重置</button>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;--%>
+                        <button type="button" class="layui-btn" onclick="cancel()">取消</button></td>
                 </tr>
             </table>
         </div>

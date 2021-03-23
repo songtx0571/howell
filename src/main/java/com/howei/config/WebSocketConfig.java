@@ -27,8 +27,4 @@ public class WebSocketConfig {
         WebSocket.employeeService=employeeService;
     }
 
-    @Autowired
-    public void setGroupService(GroupService groupService){
-        WebSocket.groupService=groupService;
-    }
 }

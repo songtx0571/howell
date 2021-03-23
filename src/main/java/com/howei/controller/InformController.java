@@ -329,8 +329,6 @@ public class InformController {
         String page = request.getParameter("page");
         String limit = request.getParameter("limit");
         Users users = this.getSecuityUtils();
-        return JSON.toJSONString(users.toString());
-        /*System.out.println("users:::::" + users);
         Integer companyId = null;
         Integer userId = null;
 
@@ -368,7 +366,7 @@ public class InformController {
         if (list != null) {
             res.setCount(total.size());
         }
-        return JSON.toJSONString(res);*/
+        return JSON.toJSONString(res);
     }
 
     /**
@@ -515,12 +513,14 @@ public class InformController {
         String id = request.getParameter("id");
         Inform inf = informService.getInformById(id);
         String path = inf.getFiledir();
+        path=path.replace("\\\\", "/");
         String fileNames[] = path.split("/");
         String fileName = (fileNames[fileNames.length - 1]);
         //要改成Linux下的绝对路径
         URL url = new URL("file://" + path);//设置下载本地文件的时候需要加file:// 否则报错
         URLConnection uc = url.openConnection();
-        response.setContentType("application/octet-stream");//设置文件类型
+        //response.setContentType("application/octet-stream");//设置文件类型
+        response.setContentType("application/pdf");//设置文件类型
         response.setHeader("content-disposition", "attachment;filename=" + URLEncoder.encode(fileName, "UTF-8"));
         response.setHeader("Content-Length", String.valueOf(uc.getContentLength()));
         //设置不会打开文件

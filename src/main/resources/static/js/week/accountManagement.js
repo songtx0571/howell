@@ -41,7 +41,7 @@ $(function () {
                     ,{field: 'departName', title: '部门',align:'center', sort: true}
                     ,{field: 'postName', title: '岗位',align:'center', sort: true}
                     ,{field: 'roleName', title: '角色', width: 260,align:'center', sort: true}
-                    ,{fixed: '', title:'操作', toolbar: '#barDemo11', width:70,align:'center'}
+                    ,{fixed: '', title:'操作', toolbar: '#barDemo11', width:140,align:'center'}
                 ]]
                 , parseData: function(res) { }
                 ,done: function(res, curr, count) {}
@@ -78,6 +78,16 @@ $(function () {
                         ,yes: function(){}
                     });
                     showUpdate();
+                } else if (obj.event === 'reset') {
+                    $.ajax({
+                        type:'POST',
+                        dataType: "json",//数据格式
+                        url:path + "/user/updPassword",
+                        data:{"password": "123456","userNumber" : data.userNumber},
+                        success:function(data){
+                            layer.alert("密码重置成功");
+                        }
+                    });
                 }
             });
         });
@@ -126,7 +136,7 @@ function showUserTable(page,companyId) {
                 ,{field: 'departName', title: '部门',align:'center', sort: true}
                 ,{field: 'postName', title: '岗位',align:'center', sort: true}
                 ,{field: 'roleName', title: '角色', width: 260,align:'center', sort: true}
-                ,{fixed: '', title:'操作', toolbar: '#barDemo11', width:70,align:'center'}
+                ,{fixed: '', title:'操作', toolbar: '#barDemo11', width:140,align:'center'}
             ]]
             , parseData: function(res) { }
             ,done: function(res, curr, count) {}
@@ -163,6 +173,16 @@ function showUserTable(page,companyId) {
                     ,yes: function(){}
                 });
                 showUpdate();
+            } else if (obj.event === 'reset') {
+                $.ajax({
+                    type:'POST',
+                    dataType: "json",//数据格式
+                    url:path + "/user/updPassword",
+                    data:{"password": "123456","userNumber" : data.userNumber},
+                    success:function(data){
+                        layer.alert("密码重置成功");
+                    }
+                });
             }
         });
     });

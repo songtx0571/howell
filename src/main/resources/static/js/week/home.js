@@ -59,3 +59,7 @@ function message() {
 function messageManagement() {
     $iframeRight.attr("src", "messageManagement");
 }
+//版本号
+function version() {
+    $iframeRight.attr("src", "versionManagement");
+}

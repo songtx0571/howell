@@ -126,7 +126,7 @@
         left join employee e2 on e2.id=cr.sendToId
         <where>
             <if test="type=='friend'">
-                and type=1 and (sendId=#{sendId} and sendToId=#{sendId}) or (sendId=#{sendToId} and sendToId=#{sendToId})
+                and type=1 and (sendId=#{sendId} and sendToId=#{sendToId}) or (sendId=#{sendToId} and sendToId=#{sendId})
             </if>
             <if test="type=='group'">
                 and type=2 and sendToId=#{sendToId}

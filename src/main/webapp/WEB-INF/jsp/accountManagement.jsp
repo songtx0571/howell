@@ -231,6 +231,7 @@
     <shiro:hasPermission name='修改账户信息'>
     <script type="text/html" id="barDemo11">
             <a class="layui-btn layui-btn-xs" lay-event="edit" id="showUpdataUser">编辑</a>
+            <a class="layui-btn layui-btn-xs" lay-event="reset">重置密码</a>
     </script>
     </shiro:hasPermission>
 </body>

@@ -1,6 +1,6 @@
 var path = "";
 $(document).ready(function () {
-    for(var i=23;i<27;i++){
+    for(var i=23;i<28;i++){
         showContent(i);
     }
     layui.use('element', function(){
@@ -66,6 +66,8 @@ function jump(project,url) {
         src = "http://localhost:8084" + url;
     } else if (project == "26"){//exam
         src = "http://localhost:8083" + url;
+    } else if (project == "27"){//defect
+        src = "http://localhost:8085" + url;
     }
     var $iframeRight = parent.$('.iframeRight');
     $iframeRight.attr("src",src);

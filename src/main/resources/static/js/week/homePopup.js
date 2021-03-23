@@ -109,7 +109,7 @@ function updatePwd() {
         }
     });
 }
-//密码重置
+/*//密码重置
 function reset() {
     $.ajax({
         type:'POST',
@@ -120,7 +120,7 @@ function reset() {
             layer.alert("密码重置成功");
         }
     });
-}
+}*/
 //取消
 function cancel() {
     layer.closeAll();

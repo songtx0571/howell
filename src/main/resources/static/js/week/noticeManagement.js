@@ -257,11 +257,12 @@ function  noticeClickFS() {
         table.on('tool(testFS)', function(obj){ //注：tool 是工具条事件名，test 是 table 原始容器的属性 lay-filter="对应的值"
             var data = obj.data; //获得当前行数据
             // 将data转为字符串
-            var jStr = "{ ";
+            /*var jStr = "{ ";
             for(var item in data){
                 jStr += "'"+item+"':'"+data[item]+"',";
             }
-            jStr += " }";
+            jStr += " }";*/
+            var jStr =JSON.stringify(data);
             var layEvent = obj.event; //获得 lay-event 对应的值（也可以是表头的 event 参数对应的值）
             if (obj.event === 'edit') {// 编辑
                 index=layer.open({
@@ -392,11 +393,12 @@ function  noticeClickSD(isactive) {
         table.on('tool(testSD)', function(obj){ //注：tool 是工具条事件名，test 是 table 原始容器的属性 lay-filter="对应的值"
             var data = obj.data; //获得当前行数据
             // 将data转为字符串
-            var jStr = "{ ";
+            /*var jStr = "{ ";
             for(var item in data){
                 jStr += "'"+item+"':'"+data[item]+"',";
             }
-            jStr += " }";
+            jStr += " }";*/
+            var jStr =JSON.stringify(data);
             var layEvent = obj.event; //获得 lay-event 对应的值（也可以是表头的 event 参数对应的值）
             if (obj.event === "detailSD") {// 查看
                 index=layer.open({
@@ -526,12 +528,11 @@ function addUser() {
 // 下载按钮
 function downLoad() {
     var data = $("#detailData").text().substring(0);
+    console.log(data);
     // 将字符串转换为json
-    function strToJson(str){
-        var json = eval('(' + str + ')');
-        data = json;
-    }
-    strToJson(data);
+    var json="(" + data + ")";
+    data = eval(json);
+    console.log(data);
     if (data.filedir != null & data.filedir != '') {
         var dir = data.filedir;
         var index1 = dir.slice(dir.lastIndexOf(".")+1) ;
