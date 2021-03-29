@@ -89,7 +89,7 @@
                     </tr>
                     <tr>
                         <td style="text-align: right">
-                            <button type="button" class="layui-btn" onclick="addDevelop()">确定</button>&nbsp;&nbsp;&nbsp;
+                            <button type="button" class="layui-btn" onclick="addDevelop()">保存</button>&nbsp;&nbsp;&nbsp;
                         </td>
                         <td style="text-align: left">
                             &nbsp;&nbsp;&nbsp;<button type="button" class="layui-btn" onclick="cancel()">取消</button>

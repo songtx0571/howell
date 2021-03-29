@@ -104,7 +104,6 @@ public class ShiroConfig {
         sessionManager.setDeleteInvalidSessions(true);
         sessionManager.setSessionIdCookie(getSessionIdCookie());
         sessionManager.setSessionIdCookie(new SimpleCookie("sessionUser"));
-        sessionManager.setSessionIdUrlRewritingEnabled(false);
         return sessionManager;
     }
 

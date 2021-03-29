@@ -24,8 +24,7 @@ public class OperationController {
     private Sender sender;
     @Autowired
     private OperationRecordService orService;
-    @Autowired
-    private EmployeeService employeeService;
+
 
 
     @PostMapping("/send")
@@ -74,6 +73,24 @@ public class OperationController {
         }
     }
 
+    @GetMapping("/all")
+    @ResponseBody
+    public Result all(){
+        Result result=new Result();
+        Subject subject = SecurityUtils.getSubject();
+        Users users = (Users) subject.getPrincipal();
+        if(users==null){
+            result.setMsg("用户失效,请重新登录");
+            return result;
+        }
+        int employeeId = users.getEmployeeId();
+        List<OperationRecord> list = orService.getByReceiveIdAndIsRead(employeeId, null);
+        result.setMsg("成功");
+        result.setData(list);
+        result.setCode(0);
+        result.setCount(list.size());
+        return result;
+    }
 
 
 }
