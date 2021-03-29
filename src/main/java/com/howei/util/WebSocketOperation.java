@@ -122,7 +122,7 @@ public class WebSocketOperation {
                 Integer count = orService.insert(record);
                 Integer nowId =orService.getMaxId();
                 record.setId(nowId);
-                System.out.println("record2:::" + record);
+                //System.out.println("record2:::" + record);
                 // 当前已登录的人
                 if (livingSessions.get(String.valueOf(userId)) != null) {
                     //当前user已登录，发送消息

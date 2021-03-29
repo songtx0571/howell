@@ -38,7 +38,8 @@ function showTimeLine() {
                 li += '<li class="layui-timeline-item"><i class="layui-icon layui-timeline-axis"></i>' +
                     '<div class="layui-timeline-content layui-text">' +
                     '<h3 class="layui-timeline-title">'+data[i].releaseDate+'</h3>' +
-                    '<p style="font-size:16px;font-weight:600;">'+data[i].title+'</p><ul>'+data[i].content+'</ul></div></li>';
+                    '<p style="font-size:16px;font-weight:600;">'+data[i].title+'</p>' +
+                    '<ul>'+data[i].content+'</ul></div></li>';
             }
             timeline.html(li);
         }

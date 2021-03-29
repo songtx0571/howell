@@ -11,7 +11,7 @@
         <result column="type" property="type"></result>
         <result column="remark" property="remark"></result>
         <result column="create_time" property="createTime"></result>
-        <result column="isRead" property="isRead"></result>
+        <result column="is_read" property="isRead"></result>
         <result column="long_time" property="longTime"></result>
     </resultMap>
     <insert id="insert" parameterType="com.howei.pojo.OperationRecord">
@@ -34,7 +34,7 @@
         <if test="isRead!=null">
             and is_read=#{isRead}
         </if>
-
+        ORDER BY is_read asc,create_time desc
 
     </select>
     <select id="getByExample" resultType="com.howei.pojo.OperationRecord">

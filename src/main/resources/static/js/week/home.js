@@ -63,3 +63,7 @@ function messageManagement() {
 function version() {
     $iframeRight.attr("src", "versionManagement");
 }
+//动态区域
+function dynamicRegion() {
+    $iframeRight.attr("src", "dynamicRegion");
+}

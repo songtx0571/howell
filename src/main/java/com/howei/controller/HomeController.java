@@ -133,6 +133,15 @@ public class HomeController {
         return "versionManagement";
     }
 
+    /**
+     *
+     * @return  动态区域管理
+     */
+    @GetMapping("/dynamicRegion")
+    public String toOperationPaget() {
+        return "dynamicRegion";
+    }
+
     @RequestMapping("/")
     public String index(HttpSession session) {
         if (session.getAttribute("userId") != null) {
@@ -247,6 +256,9 @@ public class HomeController {
         } else if (rootMenuId != null && rootMenuId.equals("26")) {//Exam项目
             map.put("template", "5");
         } else if (rootMenuId != null && rootMenuId.equals("27")) {//defect项目
+            map.put("template", "6");
+        }
+        else if (rootMenuId != null && rootMenuId.equals("27")) {//Exam项目
             map.put("template", "6");
         }
         map.put("parent", 0);

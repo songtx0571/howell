@@ -37,7 +37,7 @@
     </div>
 
     <div class="notice" id="notice">
-        <ul id="noticeUl">
+        <ul id="noticeUl" style="">
         </ul>
     </div>
 </div>

@@ -215,10 +215,10 @@ function showAuthorityList() {
         //监听工具条
         table.on('tool(test4)', function(obj){ //注：tool 是工具条事件名，test 是 table 原始容器的属性 lay-filter="对应的值"
             var data = obj.data; //获得当前行数据
-            //修改值
-            $("#updAuthorityRole").val(data.roleName);
-            updRoleId = data.id;
-            if (obj.event === 'edit1') {// 修改权限
+                //修改值
+                $("#updAuthorityRole").val(data.roleName);
+                updRoleId = data.id;
+                if (obj.event === 'edit1') {// 修改权限
                 showUpdAuthority();
                 layui.use('layer', function() { //独立版的layer无需执行这一句
                     var $ = layui.jquery, layer = layui.layer; //独立版的layer无需执行这一句
