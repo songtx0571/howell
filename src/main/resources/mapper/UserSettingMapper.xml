@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.howei.mapper.UserSettingMapper">
+    <resultMap id="baseResultMap" type="com.howei.pojo.UserSetting">
+        <id column="id" property="id"></id>
+        <result column="employee_id" property="employeeId"></result>
+        <result column="rolling_time" property="rollingTime"></result>
+        <result column="howei_level" property="howeiLevel"></result>
+        <result column="guide_level" property="guideLevel"></result>
+        <result column="ai_level" property="aiLevel"></result>
+        <result column="wa_level" property="waLevel"></result>
+        <result column="exam_level" property="examLevel"></result>
+        <result column="defect_level" property="defectLevel"></result>
+        <result column="update_time" property="updateTime"></result>
+    </resultMap>
+    <insert id="insert">
+       insert into
+        user_setting(employee_id,rolling_time,howei_level,guide_level,ai_level,wa_level,exam_level,defect_level,update_time)
+        values
+        (#{record.employeeId},#{record.rollingTime},#{record.howeiLevel},#{record.guideLevel},#{record.aiLevel},#{record.waLevel},#{record.examLevel},#{record.defectLevel},#{record.updateTime})
+
+    </insert>
+    <update id="updateById">
+        update user_setting
+        set
+        update_time =#{record.updateTime}
+        <if test="record.rollingTime">  ,rolling_time=#{record.rollingTime} </if>
+        <if test="record.howeiLevel"> , howei_level=#{record.howeiLevel} </if>
+        <if test="record.guideLevel">,guide_level=#{record.guideLevel}</if>
+        <if test="record.aiLevel">,ai_level=#{record.aiLevel}</if>
+        <if test="record.waLevel">,wa_level=#{record.waLevel}</if>
+        <if test="record.examLevel">,exam_level=#{record.examLevel}</if>
+        <if test="record.defectLevel">,defect_level=#{record.defectLevel}</if>
+        where
+        id=#{record.id}
+
+    </update>
+    <select id="getByEmployeeId" resultMap="baseResultMap">
+        select * from user_setting where employee_id = #{employeeId}
+    </select>
+</mapper>

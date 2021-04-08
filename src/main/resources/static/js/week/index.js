@@ -1,4 +1,11 @@
 var username = "";
+var timer = "";
+var index = 0;
+let colorLevel = "";
+var liList = [];
+var index = 0;
+var recordCount = 0;
+var totalRecordCount=6;
 window.onload = function () {
     //步骤一:创建异步对象
     var ajax = new XMLHttpRequest();
@@ -27,7 +34,7 @@ function showTable() {
         var table = layui.table;
         table.render({
             elem: '#demo'
-            , height: '300'
+            , height: '150'
             , url: '/inform/getInformList?isactive=2' //数据接口  2收到   1发送
             , cols: [[ //表头
                 {field: 'created', title: '时间', align: 'center', sort: true, width: 150}
@@ -53,7 +60,6 @@ function layIM() {
         layim.config({
             //初始化接口
             init: {
-                // url: 'http://192.168.1.89:8080/message/LayIMInit'
                 url: 'message/LayIMInit'
                 , data: {}
             }
@@ -273,8 +279,17 @@ function fullUl() {
 
         //连接成功建立的回调方法
         websocket.onopen = function (event) {
-            console.log("webSocket option 连接成功")
-            //setMessageInnerHTML();
+            console.log("webSocket option 连接成功");
+            var ajax = new XMLHttpRequest();
+            ajax.open('get', '/setting/get');
+            ajax.send();
+            ajax.onreadystatechange = function () {
+                if (ajax.readyState == 4 && ajax.status == 200) {
+                    colorLevel = ajax.response;
+                    colorLevel = eval("(" + colorLevel + ")").data;
+                }
+            };
+
         };
 
         //接收到消息的回调方法，此处添加处理接收消息方法，当前是将接收到的信息显示在网页上
@@ -296,32 +311,148 @@ function fullUl() {
 }
 
 function setMessageInnerHTML(data) {
-    console.log(data)
-    var noticeUl = document.getElementById("noticeUl");
     data = eval('(' + data + ')');
-    console.log("data", data)
-    var li = noticeUl.innerHTML;
-    li += "<li  id='" + data.id + "' onclick='clickRead(this)'>" +
-        "<span>" + data.createTime + "&nbsp;&nbsp;</span>" +
-        "<span>" + data.sendId + "&nbsp;&nbsp;</span>" +
-        "<span>" + data.sendName + "&nbsp;&nbsp;</span>" +
-        "<span>" + data.verb + "&nbsp;&nbsp;</span>" +
-        "<span>" + data.content + "&nbsp;&nbsp;</span>" +
-        "<span>" + data.remark + "&nbsp;&nbsp;</span>" +
-        "</li>";
-    noticeUl.innerHTML = li;
+    console.log( typeof data)
+    if (data != undefined && data.length >= 1) {
+        liList = data;
+    } else {
+        liList.push(data)
+    }
 
+}
+
+//等级颜色
+function levelColor(lever) {
+    if (lever == '0') {
+        return "#000";
+    } else if (lever == '1') {
+        return "#cc00ff";
+    } else if (lever == '2') {
+        return "#0008ff";
+    } else if (lever == '3') {
+        return "#62ff00";
+    } else if (lever == '4') {
+        return "#ff8100";
+    } else if (lever == '5') {
+        return "#f00";
+    }
+}
+
+//打开自定义页面
+function showCustomDiv() {
+    layui.use('layer', function () { //独立版的layer无需执行这一句
+        var $ = layui.jquery, layer = layui.layer; //独立版的layer无需执行这一句
+        index = layer.open({
+            type: 1
+            , id: 'customColor' //防止重复弹出
+            , content: $(".customColor")
+            , btnAlign: 'c' //按钮居中
+            , shade: 0.4 //不显示遮罩
+            , area: ['100%', '100%']
+            , yes: function () {
+            }
+        });
+    });
+    //级别
+    levelFun();
+    var ajax = new XMLHttpRequest();
+    ajax.open('get', '/setting/get');
+    ajax.send();
+    ajax.onreadystatechange = function () {
+        if (ajax.readyState == 4 && ajax.status == 200) {
+            var data = ajax.response;
+            data = eval("(" + data + ")").data;
+            $("#idHidden").val(data.id)
+            $("#guideHidden").val(data.guideLevel);
+            $("#AIHidden").val(data.aiLevel);
+            $("#defectHidden").val(data.defectLevel);
+            $("#examHidden").val(data.examLevel);
+            $("#howellHidden").val(data.howeiLevel);
+            $("#waHidden").val(data.waLevel);
+            $("#timeHidden").val(data.rollingTime);
+            layui.use('form', function () {
+                var form = layui.form;
+                $("#selGuide").val(data.guideLevel);
+                $("#selAI").val(data.aiLevel);
+                $("#selDefect").val(data.defectLevel);
+                $("#selExam").val(data.examLevel);
+                $("#selHowell").val(data.howeiLevel);
+                $("#selWa").val(data.waLevel);
+                $("#selTime").val(data.rollingTime);
+                form.render('select');
+                form.render(); //更新全部
+            });
+        }
+    };
+}
+
+//级别
+function levelFun() {
+    layui.use(['form'], function () {
+        var form = layui.form;
+        form.on('select(selGuide)', function (data) {
+            $("#guideHidden").val(data.value);
+            console.log(data.value);
+        });
+        form.on('select(selDefect)', function (data) {
+            $("#defectHidden").val(data.value);
+            console.log(data.value)
+        });
+        form.on('select(selExam)', function (data) {
+            $("#examHidden").val(data.value);
+            console.log(data.value)
+        });
+        form.on('select(selAI)', function (data) {
+            $("#AIHidden").val(data.value);
+            console.log(data.value)
+        });
+        form.on('select(selWa)', function (data) {
+            $("#waHidden").val(data.value);
+            console.log(data.value)
+        });
+        form.on('select(selHowell)', function (data) {
+            $("#howellHidden").val(data.value);
+            console.log(data.value)
+        });
+        form.on('select(selTime)', function (data) {
+            $("#timeHidden").val(data.value);
+            console.log(data.value)
+        });
+    });
+}
+
+// 确定自定义
+function customOk() {
+    var userSetting = {};
+    userSetting.rollingTime = $("#timeHidden").val();
+    if (userSetting.rollingTime == "" || userSetting.rollingTime == null) {
+        userSetting.rollingTime = "10000";
+    }
+    userSetting.id = $("#idHidden").val();
+    userSetting.guideLevel = $("#guideHidden").val();
+    userSetting.defectLevel = $("#defectHidden").val();
+    userSetting.howeiLevel = $("#howellHidden").val();
+    userSetting.examLevel = $("#examHidden").val();
+    userSetting.waLevel = $("#waHidden").val();
+    userSetting.aiLevel = $("#AIHidden").val();
+    var ajax = new XMLHttpRequest();
+    ajax.open('post', '/setting/save');
+    ajax.setRequestHeader("Content-Type", "application/json;charset=utf-8");
+    ajax.send(JSON.stringify(userSetting));
+    ajax.onreadystatechange = function () {
+        if (ajax.readyState == 4 && ajax.status == 200) {
+            clearInterval(timer);
+            timer = setInterval(rollStart, userSetting.rollingTime);
+            layer.close(index);
+            location.replace(location.href);
+        }
+    };
 }
 
 //滚动事件
 function scroll(dom, time) {
-    layui.use(['form'], function () {
-        var form = layui.form;
-        form.on('select(selTime)', function (data) {
-            time = data.value * 1000;
-        });
-    });
-    var timer = setInterval(rollStart, time);
+
+    timer = setInterval(rollStart, time);
     dom = document.getElementById(dom);
     //鼠标移入
     dom.onmouseover = function () {
@@ -335,16 +466,36 @@ function scroll(dom, time) {
 
 //定时事件
 function rollStart() {
-    var dom = document.getElementById("noticeUl");
-    var firstDom = dom.firstElementChild;
-    if (!firstDom) {
-        return;
-    } else {
-        firstDom.style.marginTop = "0px";
-        dom.appendChild(firstDom);
-        var firstDom = dom.firstElementChild;
-        firstDom.style.marginTop = "-40px";
+
+    if(totalRecordCount>liList.length && index==liList.length){
+    }else{
+        var dom = document.getElementById("noticeUl");
+        index = index % liList.length;
+        data = liList[index];
+        dom.innerHTML += "<li id='" + data.id + "' style='color: " + levelColor(colorLevel[data.type + "Level"]) + "' onclick='clickRead(this)'>" +
+            "<span>" + data.createTime + "&nbsp;&nbsp;</span>" +
+            "<span>" + data.sendName + "&nbsp;&nbsp;</span>" +
+            "<span>" + data.verb + "&nbsp;&nbsp;</span>" +
+            "<span>" + data.content + "&nbsp;&nbsp;</span>" +
+            "<span>" + data.remark + "&nbsp;&nbsp;</span>" +
+            "</li>";
+        index = index + 1;
+        if (recordCount >= totalRecordCount ) {
+            clearInterval(timer);
+            timer = setInterval(rollStart, colorLevel["rollingTime"]);
+            var firstNode = dom.firstElementChild;
+            firstNode.parentElement.removeChild(firstNode);
+        }else {
+            clearInterval(timer);
+            timer = setInterval(rollStart,3000);
+            recordCount = recordCount + 1;
+        }
     }
+
+
+
+
+
 }
 
 //点击事件
@@ -353,18 +504,23 @@ function clickRead(a) {
     setTimeout(function () {
         a.remove();
     }, 1000);
-    console.log("a::",a.id);
     //步骤一:创建异步对象
     var ajax = new XMLHttpRequest();
     //步骤二:设置请求的url参数,参数一是请求的类型,参数二是请求的url,可以带参数,动态的传递参数starName到服务端
-    ajax.open('get', '/operation/isRead/'+a.id);
+    ajax.open('get', '/operation/isRead/' + a.id);
     //步骤三:发送请求
     ajax.send();
     //步骤四:注册事件 onreadystatechange 状态改变就会调用
     ajax.onreadystatechange = function () {
         if (ajax.readyState == 4 && ajax.status == 200) {
             //步骤五 如果能够进到这个判断 说明 数据 完美的回来了,并且请求的页面是存在的
-            console.log("标记已读"+a.id)
+            recordCount = recordCount - 1;
+            
         }
     };
+}
+
+//取消
+function cancel() {
+    layer.close(index);
 }

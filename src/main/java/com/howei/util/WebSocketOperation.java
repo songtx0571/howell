@@ -49,8 +49,6 @@ public class WebSocketOperation {
         // 判断当前登陆人是否有未读的消息  有则发送
 
 
-        System.out.println("service:" + orService);
-
         List<OperationRecord> list = new ArrayList<>();
         try {
             list = orService.getByReceiveIdAndIsRead(userId, 0);
@@ -59,10 +57,7 @@ public class WebSocketOperation {
         }
 
         if (list != null && list.size() > 0) {
-            for (OperationRecord record : list) {
-                System.out.println("record::" + record);
-                sendMessage(session, record.toString());
-            }
+            sendMessage(session, list.toString());
         }
 
     }
@@ -112,9 +107,10 @@ public class WebSocketOperation {
         // 将json字符串转为message类
         OperationRecord record = JSONObject.parseObject(message, OperationRecord.class);
         String type = record.getType();
-        if (type != null && !"".equals(type.trim())) {
+        Integer sendId = record.getSendId();
 
-            List<Integer> userList = orService.getReceiveUserIdsByAuthorityName("显示"+type+"项目记录");
+        if (type != null && !"".equals(type.trim()) && sendId != null && sendId != 0) {
+            List<Integer> userList = orService.getReceiveUserIdsByAuthorityNameAndSendId("显示"+type+"项目记录", sendId);
             // 遍历需要发送到的人
             for (Integer userId : userList) {
                 record.setReceiveId(userId);

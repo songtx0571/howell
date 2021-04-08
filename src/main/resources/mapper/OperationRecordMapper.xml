@@ -13,19 +13,23 @@
         <result column="create_time" property="createTime"></result>
         <result column="is_read" property="isRead"></result>
         <result column="long_time" property="longTime"></result>
+        <result column="confirm_time" property="confirmTime"></result>
     </resultMap>
     <insert id="insert" parameterType="com.howei.pojo.OperationRecord">
         insert into
-        operation_record(send_id,receive_id,verb,content,type,remark,create_time,long_time,send_name)
+        operation_record(send_id,receive_id,verb,content,type,remark,create_time,long_time,send_name,confirm_time)
         value
-         (#{record.sendId},#{record.receiveId},#{record.verb},#{record.content},#{record.type},#{record.remark},#{record.createTime},#{record.longTime},#{record.sendName})
+         (#{record.sendId},#{record.receiveId},#{record.verb},#{record.content},#{record.type},#{record.remark},#{record.createTime},#{record.longTime},#{record.sendName},#{record.confirmTime})
     </insert>
     <update id="updateIsReadById">
 
         update operation_record set is_read=1 where id=#{id}
     </update>
+    <update id="updateIsReadByConfirmTime">
+        update operation_record set is_read=1 where confirm_time  like #{confirmTime}
+    </update>
     <delete id="deleteByChildrenId">
-        delete from opeartion_record_relation  where children_id =""
+        delete from opeartion_record_relation  where children_id =#{employeeId}
 
     </delete>
 
@@ -61,5 +65,63 @@ WHERE
 	a.`name` =#{type}
 
 
+    </select>
+    <select id="getReceiveUserIdsByAuthorityNameAndSendId" resultType="java.lang.Integer">
+    SELECT
+       distinct e1.id employeeId
+    FROM
+        employee e1
+    JOIN users u ON u.employeeId = e1.id
+    JOIN user_role ur ON ur.userId = u.id
+    JOIN role r ON r.id = ur.roleId
+    JOIN role_authority ra ON ra.roleId = r.id
+    JOIN authority a ON a.id = ra.authorityId
+    WHERE
+        a.`name` = #{type}
+    AND (
+        e1.id IN (
+            SELECT
+                e.id employeeId
+            FROM
+                employee e
+            JOIN users u ON u.employeeId = e.id
+            JOIN user_role ur ON ur.userId = u.id
+            JOIN role r ON r.id = ur.roleId
+            JOIN role_authority ra ON ra.roleId = r.id
+            JOIN authority a ON a.id = ra.authorityId
+            WHERE
+                a.`name` = "显示所有部门记录"
+        )
+        OR u.departmentId  =(
+
+
+				SELECT
+					u.departmentId
+				FROM
+					users u
+				JOIN employee e ON e.id = u.employeeId
+				WHERE
+					e.id = #{sendId}
+					)
+    )
+    ORDER BY
+        e1.id ASC
+
+    </select>
+    <select id="getUserSettingByEmployeeId" resultType="java.util.Map">
+        select * from user_setting where employee_id=#{employeeId}
+    </select>
+    <select id="getByMap" resultMap="baseReaultMap">
+
+        select * from operation_record
+        where
+        receive_id=#{map.receiveId}
+        <if test="map.isRead !=null">
+            and is_read=#{map.isRead}
+        </if>
+        ORDER BY is_read asc,create_time desc
+        <if test="map.startRow!=null and map.limit!=null">
+            LIMIT #{map.startRow},#{map.limit}
+        </if>
     </select>
 </mapper>

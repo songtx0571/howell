@@ -23,4 +23,12 @@ public interface OperationRecordMapper {
     int deleteByChildrenId(@Param("employeeId") int employeeId);
 
     List<Integer> getReceiveUserIdsByAuthorityName(@Param("type") String type);
+
+    List<Integer> getReceiveUserIdsByAuthorityNameAndSendId(@Param("type") String type, @Param("sendId") Integer sendId);
+
+    int updateIsReadByConfirmTime(@Param("confirmTime") String confirmTime);
+
+    Map<String, Object> getUserSettingByEmployeeId(@Param("employeeId") Integer employeeId);
+
+    List<OperationRecord> getByMap(@Param("map") Map<String, Object> map);
 }

@@ -2,6 +2,7 @@ package com.howei;
 
 import com.howei.pojo.Group;
 import com.howei.service.GroupService;
+import com.howei.service.OperationRecordService;
 import com.howei.util.Page;
 import com.howei.util.Result;
 import org.junit.jupiter.api.DisplayName;
@@ -48,5 +49,14 @@ public class HoweiApplicationTest {
         result.setData(list);
         result.setCount(total.size());
         return result;
+    }
+    @Autowired
+    private OperationRecordService orService;
+    @Test
+    public void testOrService(){
+        Map<String, Object> userSettingByEmployeeId = orService.getUserSettingByEmployeeId(366);
+        System.out.println(userSettingByEmployeeId);
+        Object exam_level = userSettingByEmployeeId.get("exam_level");
+        System.out.println(exam_level);
     }
 }
