@@ -9,9 +9,19 @@
         <result column="createdBy" property="createdBy"></result>
         <result column="isactive" property="isactive"></result>
         <result column="remark" property="remark"></result>
+        <collection property="PostGrade" resultMap="postGradeMap"></collection>
     </resultMap>
 
-    <select id="getPostList" resultType="com.howei.pojo.Post" parameterType="java.lang.String">
+    <resultMap id="postGradeMap" type="com.howei.pojo.PostGrade">
+        <result column="postId" property="postId" />
+        <result column="created" property="created" />
+        <result column="gradeName" property="gradeName" />
+        <result column="PostGradeWage" property="PostGradeWage" />
+        <result column="companyId" property="companyId" />
+        <result column="month" property="month" />
+    </resultMap>
+
+    <select id="getPostList" resultMap="postMap" parameterType="java.lang.String">
       select * from post where companyId=#{companyId}
     </select>
 

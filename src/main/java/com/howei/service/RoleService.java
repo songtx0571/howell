@@ -27,9 +27,9 @@ public interface RoleService {
 
     List<Authority> getRoleAuthoritys(String roleId);
 
-    void delRoleAuthoritys(String roleId);
+    void delRoleAuthoritys(Integer roleId,Integer[] authorityIds);
 
-    int addRoleAuthority(RoleAuthority roleAuthority);
+    int addRoleAuthority(List<RoleAuthority> roleAuthorityList);
 
     List<LayuiTree> getURLList(String parentId);
 

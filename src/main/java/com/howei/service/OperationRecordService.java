@@ -20,5 +20,5 @@ public interface OperationRecordService {
 
     int deleteByChildrenId(int employeeId);
 
-    List<Integer> getReceiveUserIdsByAuthorityName(String type);
+    List<Integer> getReceiveUserIdsByAuthorityName(String type,Integer id);
 }

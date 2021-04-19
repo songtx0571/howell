@@ -22,5 +22,5 @@ public interface OperationRecordMapper {
 
     int deleteByChildrenId(@Param("employeeId") int employeeId);
 
-    List<Integer> getReceiveUserIdsByAuthorityName(@Param("type") String type);
+    List<Integer> getReceiveUserIdsByAuthorityName(@Param("type") String type,@Param("id") Integer id);
 }

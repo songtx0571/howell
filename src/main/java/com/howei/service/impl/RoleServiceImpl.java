@@ -87,13 +87,13 @@ public class RoleServiceImpl implements RoleService {
     }
 
     @Override
-    public void delRoleAuthoritys(String roleId) {
-        roleMapper.delRoleAuthoritys(roleId);
+    public void delRoleAuthoritys(Integer roleId,Integer[] authorityIds) {
+        roleMapper.delRoleAuthoritys(roleId,authorityIds);
     }
 
     @Override
-    public int addRoleAuthority(RoleAuthority roleAuthority) {
-        return roleMapper.addRoleAuthority(roleAuthority);
+    public int addRoleAuthority(List<RoleAuthority> roleAuthorityList) {
+        return roleMapper.addRoleAuthority(roleAuthorityList);
     }
 
     @Override

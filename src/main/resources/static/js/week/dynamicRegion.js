@@ -58,7 +58,6 @@ function showTable(keyword,userSelectId) {
             if (obj.event === 'daile') {
                 $.ajax({
                     url:path + "/operation/isRead/"+ data.id,
-                    dataType: "json",//数据格式
                     type: "get",//请求方式
                     success:function(data){
 

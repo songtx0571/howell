@@ -30,9 +30,9 @@ public interface RoleMapper {
 
     List<Authority> getRoleAuthoritys(@Param("roleId") String roleId);
 
-    void delRoleAuthoritys(@Param("roleId") String roleId);
+    void delRoleAuthoritys(@Param("roleId") Integer roleId,@Param("authorityIds") Integer[] authorityIds);
 
-    int addRoleAuthority(RoleAuthority roleAuthority);
+    int addRoleAuthority(@Param("list") List<RoleAuthority> list);
 
     List<LayuiTree> getURLList(@Param("roleId") String parentId);
 

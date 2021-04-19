@@ -19,17 +19,15 @@
         <form class="layui-form" action="" style="margin-bottom: 10px;text-align: center;" target="iframe1">
             <div class="layui-inline">
                 <div class="layui-input-inline">
-                    <input type="text" name="title" lay-verify="title"  placeholder="内容" class="layui-input">
-                </div>
-                <div class="layui-input-inline">
-                    <button class="layui-btn">确认</button>
-                </div>
-                <div class="layui-input-inline">
                     <select name="modules" lay-verify="required" lay-filter="selTime" lay-search="" id="selTime">
-                        <option value="3">3秒</option>
-                        <option value="5">5秒</option>
-                        <option value="8">8秒</option>
+                        <option value="10">10秒</option>
+                        <option value="15">15秒</option>
+                        <option value="20">20秒</option>
                     </select>
+                </div>
+                <div style="float: left;margin-right: 30px;">
+                    背景色：<div id="test2" style="margin-right: 30px;"></div>
+                    字体颜色：<div id="test3"></div>
                 </div>
             </div>
         </form>

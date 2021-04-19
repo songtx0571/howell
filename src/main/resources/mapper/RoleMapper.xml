@@ -81,12 +81,20 @@
         where ra.roleId=#{roleId}
     </select>
 
-    <delete id="delRoleAuthoritys" parameterType="java.lang.String">
-        delete from role_authority where roleId=#{roleId}
+    <delete id="delRoleAuthoritys">
+        delete from role_authority where roleId=#{roleId} and authorityId in
+        <trim suffixOverrides=",">
+            <foreach collection="authorityIds" item="authorityId" open="(" separator="," close=")">
+                #{authorityId}
+            </foreach>
+        </trim>
     </delete>
 
-    <insert id="addRoleAuthority" parameterType="com.howei.pojo.Authority" keyProperty="id" useGeneratedKeys="true">
-        insert into role_authority(roleId,authorityId,created,createdBy) value(#{roleId},#{authorityId},#{created},#{createdBy})
+    <insert id="addRoleAuthority">
+        insert into role_authority(roleId,authorityId,created,createdBy) values
+        <foreach collection="list" item="authorith" separator=",">
+            (#{authorith.roleId},#{authorith.authorityId},#{authorith.created},#{authorith.createdBy})
+        </foreach>
     </insert>
 
     <select id="getURLList" resultMap="layuiTreeMap" parameterType="java.lang.String">

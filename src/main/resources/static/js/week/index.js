@@ -1,4 +1,5 @@
 var username = "";
+var timer = "";
 window.onload = function () {
     //步骤一:创建异步对象
     var ajax = new XMLHttpRequest();
@@ -12,13 +13,15 @@ window.onload = function () {
             //步骤五 如果能够进到这个判断 说明 数据 完美的回来了,并且请求的页面是存在的
             username = ajax.responseText;
             fullUl();
-            scroll("noticeUl", 3000);//(ul)
+            scroll("noticeUl", 10000);//(ul)
             //layIM
             layIM();
         }
     };
     //通知表格
     showTable();
+    //颜色选择
+    colorFun();
 };
 
 //通知表格显示
@@ -27,7 +30,7 @@ function showTable() {
         var table = layui.table;
         table.render({
             elem: '#demo'
-            , height: '300'
+            , height: '150'
             , url: '/inform/getInformList?isactive=2' //数据接口  2收到   1发送
             , cols: [[ //表头
                 {field: 'created', title: '时间', align: 'center', sort: true, width: 150}
@@ -38,6 +41,29 @@ function showTable() {
                 , {field: 'informTypeName', title: '类别', hide: 'false', align: 'center'}
             ]]
             , done: function (res, curr, count) {
+            }
+        });
+    });
+}
+
+//颜色选择
+function colorFun() {
+    layui.use('colorpicker', function() {
+        var $ = layui.$
+            , colorpicker = layui.colorpicker;
+        //初始色值
+        colorpicker.render({
+            elem: '#test2'
+            , color: '#fff' //设置默认色
+            , done: function (color) {
+                $("#noticeUl").css("background", color);
+            }
+        });
+        colorpicker.render({
+            elem: '#test3'
+            , color: '#000' //设置默认色
+            , done: function (color) {
+                $("#noticeUl").css("color", color);
             }
         });
     });
@@ -303,7 +329,6 @@ function setMessageInnerHTML(data) {
     var li = noticeUl.innerHTML;
     li += "<li  id='" + data.id + "' onclick='clickRead(this)'>" +
         "<span>" + data.createTime + "&nbsp;&nbsp;</span>" +
-        "<span>" + data.sendId + "&nbsp;&nbsp;</span>" +
         "<span>" + data.sendName + "&nbsp;&nbsp;</span>" +
         "<span>" + data.verb + "&nbsp;&nbsp;</span>" +
         "<span>" + data.content + "&nbsp;&nbsp;</span>" +

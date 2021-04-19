@@ -1,5 +1,7 @@
 package com.howei.pojo;
 
+import java.util.List;
+
 /**
  * 岗位
  */
@@ -11,6 +13,7 @@ public class Post {
     private int createdBy;
     private int isactive;
     private String remark;//备注
+    private List<PostGrade> PostGrade;//岗位等级列表
 
     public int getId() {
         return id;
@@ -66,5 +69,13 @@ public class Post {
 
     public void setRemark(String remark) {
         this.remark = remark;
+    }
+
+    public List<com.howei.pojo.PostGrade> getPostGrade() {
+        return PostGrade;
+    }
+
+    public void setPostGrade(List<com.howei.pojo.PostGrade> postGrade) {
+        PostGrade = postGrade;
     }
 }

@@ -40,7 +40,7 @@
             </shiro:hasPermission>
             <shiro:hasPermission name='缺陷管理系统'>
                 <li class="layui-nav-item first27">
-                    <a href="javascript:;" class="left27"  onclick="showDown(27)"><i style="font-size: 1.4rem;margin-left: -25px;" class="fa fa-file-text"></i>&nbsp;&nbsp;Defect系统</a>
+                    <a href="javascript:;" class="left27"  onclick="showDown(27)"><i style="font-size: 1.4rem;margin-left: -25px;" class="fa fa-file-text"></i>&nbsp;&nbsp;缺陷管理系统</a>
                     <dl class="layui-nav-child erji27"></dl>
                 </li>
             </shiro:hasPermission>

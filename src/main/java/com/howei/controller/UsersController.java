@@ -550,7 +550,6 @@ public class UsersController {
     public String updPassword(HttpServletRequest request,HttpSession session){
         String password=request.getParameter("password");
         String userId=request.getParameter("userId");
-        System.out.println(request.getSession().getId());
 
         Subject subject=SecurityUtils.getSubject();
         Users user=(Users)subject.getPrincipal();

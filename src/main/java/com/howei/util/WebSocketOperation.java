@@ -48,19 +48,15 @@ public class WebSocketOperation {
         livingSessions.put(userId.toString(), session);
         // 判断当前登陆人是否有未读的消息  有则发送
 
-
-        System.out.println("service:" + orService);
-
         List<OperationRecord> list = new ArrayList<>();
         try {
             list = orService.getByReceiveIdAndIsRead(userId, 0);
         } catch (Exception e) {
-            System.out.println(e.getMessage());
+
         }
 
         if (list != null && list.size() > 0) {
             for (OperationRecord record : list) {
-                System.out.println("record::" + record);
                 sendMessage(session, record.toString());
             }
         }
@@ -114,7 +110,7 @@ public class WebSocketOperation {
         String type = record.getType();
         if (type != null && !"".equals(type.trim())) {
 
-            List<Integer> userList = orService.getReceiveUserIdsByAuthorityName("显示"+type+"项目记录");
+            List<Integer> userList = orService.getReceiveUserIdsByAuthorityName("显示"+type+"项目记录",record.getSendId());
             // 遍历需要发送到的人
             for (Integer userId : userList) {
                 record.setReceiveId(userId);
@@ -122,7 +118,6 @@ public class WebSocketOperation {
                 Integer count = orService.insert(record);
                 Integer nowId =orService.getMaxId();
                 record.setId(nowId);
-                //System.out.println("record2:::" + record);
                 // 当前已登录的人
                 if (livingSessions.get(String.valueOf(userId)) != null) {
                     //当前user已登录，发送消息

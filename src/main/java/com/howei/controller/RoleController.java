@@ -112,7 +112,6 @@ public class RoleController {
     @RequestMapping(value = "/addRole",method = {RequestMethod.POST})
     @ResponseBody
     String addRole(@RequestBody Role role){
-        System.out.println(role.getRoleName());
         int count=roleService.addRole(role);
         String result="";
         if(count>0){
@@ -261,43 +260,88 @@ public class RoleController {
 
     /**
      * 为角色分配权限
-     * @param request
      * @return
      */
     @RequestMapping(value = "/distributeRoleAuthority")
     @ResponseBody
-    public String distributeRoleAuthority(HttpServletRequest request){
-        String roleId=request.getParameter("roleId");
-        String authoritys=request.getParameter("authoritys");
+    public String distributeRoleAuthority(@RequestParam("roleId") Integer roleId,@RequestParam("authoritys")String authoritys){
+        System.out.println("权限开始: "+DateFormat.getYMDHMS(new Date()));
         Subject subject=SecurityUtils.getSubject();
         Users user=(Users)subject.getPrincipal();
-
-        JSONArray authorityArr=null;
-        if(authoritys!=null){
-            authorityArr=JSON.parseArray(authoritys);
+        if(user==null){
+            return JSON.toJSONString(Type.noUser);//用户信息过期
         }
-        if(roleId!=null&&!roleId.equals("")){
-            roleService.delRoleAuthoritys(roleId);
-        }else{
-            return JSON.toJSONString(Type.CANCEL);//页面错误
+        if(roleId==null||roleId==-1){
+            return JSON.toJSONString(Type.ERROR);//信息传递错误
         }
-        RoleAuthority roleAuthority=new RoleAuthority();
-        roleAuthority.setRoleId(Integer.parseInt(roleId));
-        roleAuthority.setCreated(DateFormat.getYMDHMS(new Date()));
-        if(user!=null){
+        //根据roleId获取权限集合
+        List<Authority> authorityPojo=roleService.getAuthIdByRoleId(roleId.toString());
+        List<Integer> authorityBe=new ArrayList<>();
+        for(Authority authority1:authorityPojo){
+            authorityBe.add(authority1.getId());
+        }
+        //将前台传入权限信息转换为List
+        JSONArray authorityArr=JSON.parseArray(authoritys);
+        List<Integer> authorityAf=authorityArr.toJavaList(Integer.class);
+        //将List转换为Set集合
+        Set<Integer> set1=new HashSet<>(authorityAf);
+        Set<Integer> set2=new HashSet<>(authorityBe);
+        //获取像个集合不同的元素
+        Set<Integer> result1=compare1(set1, set2);
+        //获取两个集合新增的元素: 新增的权限
+        Set<Integer> result2=compare2(set1,result1);
+        //获取两个集合删减的元素: 删减的权限
+        Set<Integer> result3=compare3(set2,result1);
+        List delList=new ArrayList(result3);
+        List addList=new ArrayList(result2);
+        //删除权限
+        Integer[] authorityIds=new Integer[delList.size()];
+        for (int i=0;i<delList.size();i++){
+            Integer authorityId=(Integer)delList.get(i);
+            authorityIds[i]=authorityId;
+        }
+        if(delList!=null&&delList.size()>0){
+            roleService.delRoleAuthoritys(roleId,authorityIds);
+        }
+        //新增权限
+        List<RoleAuthority> listRoleAuthority=new ArrayList<>();
+        for (int i = 0; i < addList.size(); i++) {
+            RoleAuthority roleAuthority=new RoleAuthority();
+            roleAuthority.setRoleId(Integer.parseInt(roleId.toString()));
+            roleAuthority.setCreated(DateFormat.getYMDHMS(new Date()));
             roleAuthority.setCreatedBy(user.getId());
-        }else{
-            roleAuthority.setCreatedBy(12);
-            //return JSON.toJSONString(Type.INVALID);//登录失效
+            Integer authorityId = (Integer) addList.get(i);
+            roleAuthority.setAuthorityId(authorityId);
+            listRoleAuthority.add(roleAuthority);
         }
-        if(authorityArr.size()>0){
-            for(int i=0;i<authorityArr.size();i++){
-                Integer authorityId=(Integer)authorityArr.get(i);
-                roleAuthority.setAuthorityId(authorityId);
-                roleService.addRoleAuthority(roleAuthority);
-            }
+        if(listRoleAuthority!=null&&listRoleAuthority.size()>0){
+            roleService.addRoleAuthority(listRoleAuthority);
         }
+        System.out.println("权限结束: "+DateFormat.getYMDHMS(new Date()));
         return JSON.toJSONString(Type.SUCCESS);
+    }
+
+    public static Set<Integer> compare1(Set<Integer> set1,Set<Integer> set2) {
+        Set<Integer> set3 = new HashSet<>(set2);
+        Set<Integer> set4 = new HashSet<>(set1);
+        set3.addAll(set4);
+        set4.retainAll(set2);
+        set3.removeAll(set4);
+        return set3;
+    }
+
+    //set3与set1比较，获取交集：即新增的权限
+    public static Set<Integer> compare2(Set<Integer> set1,Set<Integer> set2){
+        Set<Integer> set3 = new HashSet<>(set2);
+        set3.retainAll(set1);
+        return set3;
+    }
+
+    //set3与set2比较，获取交集：即删减的权限
+    public static Set<Integer> compare3(Set<Integer> set2,Set<Integer> set1) {
+        Set<Integer> set3 = new HashSet<>(set1);
+        set3.retainAll(set2);
+        return set3;
     }
 
     /**

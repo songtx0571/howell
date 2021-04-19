@@ -50,8 +50,8 @@ public class OperationRecordServiceImpl implements OperationRecordService {
     }
 
     @Override
-    public List<Integer> getReceiveUserIdsByAuthorityName(String type) {
-        return orMapper.getReceiveUserIdsByAuthorityName(type);
+    public List<Integer> getReceiveUserIdsByAuthorityName(String type,Integer id) {
+        return orMapper.getReceiveUserIdsByAuthorityName(type,id);
     }
 
 }

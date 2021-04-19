@@ -549,7 +549,6 @@ public class InformController {
         Map<String, Object> mapResult;
         if (informId != null) {
             List<Map> mapList = userService.selSeen(informId);
-            System.out.println("mapList:::" + mapList);
             for (Map map1 : mapList) {
                 Integer rdStatus = (Integer) map1.get("rdStatus");
                 Integer userId = (Integer) map1.get("userId");

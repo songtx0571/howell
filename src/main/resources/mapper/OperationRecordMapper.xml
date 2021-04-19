@@ -47,8 +47,7 @@
     <select id="getMaxId" resultType="java.lang.Integer">
         select max(id) from operation_record
     </select>
-    <select id="getReceiveUserIdsByAuthorityName" resultType="java.lang.Integer">
-SELECT
+<!--SELECT
 	e.id
 FROM
 	employee e
@@ -58,8 +57,44 @@ JOIN role r ON r.id = ur.roleId
 JOIN role_authority ra ON ra.roleId = r.id
 JOIN authority a ON a.id = ra.authorityId
 WHERE
-	a.`name` =#{type}
-
-
+	a.`name` =#{type}-->
+    <select id="getReceiveUserIdsByAuthorityName" resultType="java.lang.Integer">
+SELECT
+       distinct e1.id employeeId ,e1.`name`
+    FROM
+        employee e1
+    JOIN users u ON u.employeeId = e1.id
+    JOIN user_role ur ON ur.userId = u.id
+    JOIN role r ON r.id = ur.roleId
+    JOIN role_authority ra ON ra.roleId = r.id
+    JOIN authority a ON a.id = ra.authorityId
+    WHERE
+        a.`name` = #{type}
+    AND (
+        e1.id IN (
+            SELECT
+                e.id employeeId
+            FROM
+                employee e
+            JOIN users u ON u.employeeId = e.id
+            JOIN user_role ur ON ur.userId = u.id
+            JOIN role r ON r.id = ur.roleId
+            JOIN role_authority ra ON ra.roleId = r.id
+            JOIN authority a ON a.id = ra.authorityId
+            WHERE
+                a.`name` = "显示所有部门记录"
+        )
+        OR u.departmentId  =(
+    SELECT
+     u.departmentId
+    FROM
+     users u
+    JOIN employee e ON e.id = u.employeeId
+    WHERE
+     e.id = #{id}
+     )
+    )
+    ORDER BY
+        e1.id ASC
     </select>
 </mapper>
