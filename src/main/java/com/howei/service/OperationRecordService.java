@@ -20,5 +20,11 @@ public interface OperationRecordService {
 
     int deleteByChildrenId(int employeeId);
 
-    List<Integer> getReceiveUserIdsByAuthorityName(String type,Integer id);
+    List<Integer> getReceiveUserIdsByAuthorityNameAndSendId(String type, Integer sendId);
+
+    int updateIsReadByConfirmTime(String confirmTime);
+
+    Map<String, Object> getUserSettingByEmployeeId(Integer employeeId);
+
+    List<OperationRecord> getByMap(Map<String, Object> map);
 }

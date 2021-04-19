@@ -50,8 +50,24 @@ public class OperationRecordServiceImpl implements OperationRecordService {
     }
 
     @Override
-    public List<Integer> getReceiveUserIdsByAuthorityName(String type,Integer id) {
-        return orMapper.getReceiveUserIdsByAuthorityName(type,id);
+    public List<Integer> getReceiveUserIdsByAuthorityNameAndSendId(String type, Integer sendId) {
+
+        return orMapper.getReceiveUserIdsByAuthorityNameAndSendId( type,  sendId);
+    }
+
+    @Override
+    public int updateIsReadByConfirmTime(String confirmTime) {
+        return orMapper.updateIsReadByConfirmTime(confirmTime);
+    }
+
+    @Override
+    public Map<String, Object> getUserSettingByEmployeeId(Integer employeeId) {
+        return orMapper.getUserSettingByEmployeeId(employeeId);
+    }
+
+    @Override
+    public List<OperationRecord> getByMap(Map<String, Object> map) {
+        return orMapper.getByMap(map);
     }
 
 }

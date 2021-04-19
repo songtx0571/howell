@@ -56,9 +56,7 @@ public class WebSocketOperation {
         }
 
         if (list != null && list.size() > 0) {
-            for (OperationRecord record : list) {
-                sendMessage(session, record.toString());
-            }
+            sendMessage(session, list.toString());
         }
 
     }
@@ -108,9 +106,10 @@ public class WebSocketOperation {
         // 将json字符串转为message类
         OperationRecord record = JSONObject.parseObject(message, OperationRecord.class);
         String type = record.getType();
-        if (type != null && !"".equals(type.trim())) {
+        Integer sendId = record.getSendId();
 
-            List<Integer> userList = orService.getReceiveUserIdsByAuthorityName("显示"+type+"项目记录",record.getSendId());
+        if (type != null && !"".equals(type.trim()) && sendId != null && sendId != 0) {
+            List<Integer> userList = orService.getReceiveUserIdsByAuthorityNameAndSendId("显示"+type+"项目记录", sendId);
             // 遍历需要发送到的人
             for (Integer userId : userList) {
                 record.setReceiveId(userId);

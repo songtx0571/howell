@@ -1,7 +1,7 @@
 .layui-layim-tool .layui-icon, .layui-layim-search .layui-icon{
     font-size: 30px;
 }
-#layui-layer1{
+.layui-layim {
     height: 450px !important;
 }
 #layui-layer1 .layui-layim-main .layui-layim-info{
@@ -50,4 +50,22 @@
 }
 body::-webkit-scrollbar{
     display: none;
+}
+.customColor{
+    width: 100%;
+    height: 100%;
+    display: none;
+    padding: 10px 10px;
+    box-sizing: border-box;
+}
+.customColor table{
+    width: 650px;
+    margin: 10px auto;
+}
+.customColor table tr{
+    line-height: 70px;
+}
+.warp .customColor .layui-layer-page{
+    width: 100%;
+    height: 100%;
 }

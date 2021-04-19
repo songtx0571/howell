@@ -19,10 +19,9 @@ public class OperationRecord {
     private Integer isRead;
     private String longTime;
 
-
-    //添加字段
     private String sendName;
 
+    private String confirmTime;
     @Override
     public String toString() {
         return "{" +
@@ -39,7 +38,13 @@ public class OperationRecord {
                 ",\"longTime\":\'" + longTime + '\'' +
                 '}';
     }
+    public String getConfirmTime() {
+        return confirmTime;
+    }
 
+    public void setConfirmTime(String confirmTime) {
+        this.confirmTime = confirmTime;
+    }
     public String getLongTime() {
         return longTime;
     }

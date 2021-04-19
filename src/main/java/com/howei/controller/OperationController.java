@@ -5,6 +5,7 @@ import com.howei.pojo.OperationRecord;
 import com.howei.pojo.Users;
 import com.howei.service.EmployeeService;
 import com.howei.service.OperationRecordService;
+import com.howei.util.DateFormat;
 import com.howei.util.Result;
 import com.howei.util.WebSocketOperation;
 import org.apache.shiro.SecurityUtils;
@@ -14,6 +15,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 import java.text.SimpleDateFormat;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -38,6 +40,9 @@ public class OperationController {
 
         Subject subject = SecurityUtils.getSubject();
         Users users = (Users) subject.getPrincipal();
+        if(users==null){
+            return "FALSE,用户失效";
+        }
         int sendId = users.getEmployeeId();
         String userName = users.getUserName();
         Long timeMillis = System.currentTimeMillis();
@@ -74,7 +79,10 @@ public class OperationController {
 
     @GetMapping("/all")
     @ResponseBody
-    public Result all(){
+    public Result all(
+            @RequestParam(required = false) Integer page,
+            @RequestParam(required = false) Integer limit
+    ){
         Result result=new Result();
         Subject subject = SecurityUtils.getSubject();
         Users users = (Users) subject.getPrincipal();
@@ -83,9 +91,16 @@ public class OperationController {
             return result;
         }
         int employeeId = users.getEmployeeId();
-        List<OperationRecord> list = orService.getByReceiveIdAndIsRead(employeeId, null);
+        Map<String ,Object> map=new HashMap<>();
+        map.put("receiveId",employeeId);
+        List<OperationRecord> list = orService.getByMap(map);
+        if(page!=null&&limit!=null){
+            map.put("startRow",page*limit);
+            map.put("limit",limit);
+        }
+        List<OperationRecord> list1 = orService.getByMap(map);
         result.setMsg("成功");
-        result.setData(list);
+        result.setData(list1);
         result.setCode(0);
         result.setCount(list.size());
         return result;
