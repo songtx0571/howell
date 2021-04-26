@@ -118,9 +118,8 @@ function layIM() {
         // 监听layim建立就绪
         layim.on('ready', function (res) {
             // 服务端WebSocket的访问路径（3.2、配置WebSocket处理器与拦截器）。（注意：路径前缀务必添加websocket的“ws://”）
-
-            var action = 'ws://localhost:8080/socket/' + username;
-
+            //var action = 'ws://localhost:8080/socket/' + username;
+            var action = 'ws://www.howellop.com:80/socket/' + username;
             // 初始化Socket
             if ('WebSocket' in window) {
                 websocket = new WebSocket(action);
@@ -291,7 +290,8 @@ function fullUl() {
         //判断当前浏览器是否支持WebSocket
         if ('WebSocket' in window) {
             // 连接服务端
-            websocket = new WebSocket("ws://localhost:8080/operation/" + username);
+            //var action = 'ws://localhost:8080/socket/' + username;
+            var action = 'ws://www.howellop.com:80/socket/' + username;
         } else {
             alert('当前浏览器 不支持WebSocket')
         }

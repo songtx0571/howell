@@ -42,7 +42,7 @@ public class SystemController {
         return result;
     }
 
-    @PostMapping("/add")
+    @PostMapping("/sysVersion/add")
     public String addSysVersion(String releaseDate, String content,String title) {
         SysVersion sysVersion = new SysVersion();
         sysVersion.setReleaseDate(releaseDate);
