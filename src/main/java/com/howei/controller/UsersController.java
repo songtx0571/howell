@@ -256,13 +256,6 @@ public class UsersController {
         }
         Users user=new Users();
         Employee employee=new Employee();
-        if(companyId!=null&&!companyId.equals("")){
-            user.setCompanyId(Integer.parseInt(companyId));
-        }else{
-            if(users!=null){
-                user.setCompanyId(users.getCompanyId());
-            }
-        }
         if(userNumber!=null&&!userNumber.equals("")){
             user.setUserNumber(userNumber);
             employee.setUserNumber(userNumber);
@@ -270,6 +263,13 @@ public class UsersController {
         List<Users> list=userService.getUserByParam(user);
         if(list!=null&&list.size()>0){
             return JSON.toJSONString("haveNumber");
+        }
+        if(companyId!=null&&!companyId.equals("")){
+            user.setCompanyId(Integer.parseInt(companyId));
+        }else{
+            if(users!=null){
+                user.setCompanyId(users.getCompanyId());
+            }
         }
         if(departmentId!=null&&!departmentId.equals("")){
             user.setDepartmentId(Integer.parseInt(departmentId));
@@ -397,9 +397,6 @@ public class UsersController {
     public String searchUsersList(HttpServletRequest request){
         String companyId=request.getParameter("companyId");
         String search=request.getParameter("search");
-        String page=request.getParameter("page");
-        String pageSize=request.getParameter("limit");
-        int rows=Page.getOffSet(page,pageSize);
 
         Map map=new HashMap();
         if(companyId!=null&&!companyId.equals("")){
@@ -408,9 +405,6 @@ public class UsersController {
         if(search!=null&&!search.equals("")){
             map.put("search",search);
         }
-        List<Users> total=userService.searchUsersList(map);
-        map.put("page",rows);
-        map.put("pageSize",pageSize);
         List<Users> list=userService.searchUsersList(map);
         if(list!=null){
             for (Users user:list) {
@@ -430,7 +424,7 @@ public class UsersController {
         }
         Result result=new Result();
         result.setCode(0);
-        result.setCount(total.size());
+        result.setCount(list.size());
         result.setData(list);
         return JSON.toJSONString(result);
     }

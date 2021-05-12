@@ -1,13 +1,14 @@
 package com.howei.controller;
 
+import com.alibaba.fastjson.JSONObject;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.howei.config.redis.MyRedisManager;
 import com.howei.realm.LoginRealm;
 import com.howei.util.MD5;
 import com.howei.util.MenuTree;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authc.UsernamePasswordToken;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
-import org.apache.shiro.session.Session;
 import org.apache.shiro.subject.PrincipalCollection;
 import org.apache.shiro.subject.Subject;
 import org.springframework.stereotype.Controller;
@@ -25,6 +26,7 @@ import org.springframework.web.servlet.ModelAndView;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
+import java.io.Serializable;
 import java.io.UnsupportedEncodingException;
 import java.security.NoSuchAlgorithmException;
 import java.util.*;
@@ -182,12 +184,10 @@ public class HomeController {
 
     /**
      * 登录页面
-     *
-     * @param request
      * @return
      */
     @GetMapping(value = "/loginPage")
-    public ModelAndView loginPage(HttpServletRequest request) {
+    public ModelAndView loginPage() {
         ModelAndView modelAndView = new ModelAndView();
         modelAndView.setViewName("login");
         return modelAndView;
@@ -211,11 +211,13 @@ public class HomeController {
         } catch (UnsupportedEncodingException e) {
             e.printStackTrace();
         }
-        UsernamePasswordToken upt = new UsernamePasswordToken(username, password);
+
+        //储存用户名与密码
+        UsernamePasswordToken token = new UsernamePasswordToken(username, password);
         Subject subject = SecurityUtils.getSubject();
         ModelAndView mode = new ModelAndView();
         try {
-            subject.login(upt);
+            subject.login(token);
         } catch (Exception e) {
             e.printStackTrace();
             if ("no_user".equals(e.getMessage())) {
@@ -232,13 +234,46 @@ public class HomeController {
                 return mode;
             }
         }
-        //SecurityUtils.getSubject().getSession().setTimeout(50000);
-        Session session = subject.getSession();
-        session.setTimeout(1440000L);
         Users user = userService.loginUserNumber(username, password);
-        session.setAttribute(SESSION_USER, user);
+        //token
+        Serializable id = subject.getSession().getId();
+        //将token放入redis
+        MyRedisManager manager = MyRedisManager.getRedisSingleton();
+        manager.setHost("localhost");
+        manager.setPort(6379);
+        manager.setTimeout(1800);
+        manager.setPassword("12345");
+        manager.init();
+        manager.set(id.toString(),user.getId().toString(),60*30);//半小时
+        //防止同一个账号同时登录
+        manager.set(user.getId().toString(), id.toString(),60*30);
+        //用户信息
+        manager.set(user.getId().toString(), JSONObject.toJSONString(user),60*30);
+        long timeout = SecurityUtils.getSubject().getSession().getTimeout();
+        System.out.println("设置前:"+timeout+"毫秒");
+       // SecurityUtils.getSubject().getSession().setTimeout(10000);
+        timeout = SecurityUtils.getSubject().getSession().getTimeout();
+        System.out.println("设置后:"+timeout+"毫秒");
         mode.setViewName("home");
         return mode;
+    }
+
+    /**
+     * 获取当前登录人信息
+     * @return
+     */
+    @RequestMapping("/getLoginUserInfo")
+    public Map getLoginUserInfo(){
+        Subject subject=SecurityUtils.getSubject();
+        Users users=(Users) subject.getPrincipal();
+        Map<String,Object> map=new HashMap<>();
+        if(users!=null){
+            map.put("id",users.getEmployeeId());
+            map.put("userName",users.getUserName());
+            map.put("userNumber",users.getUserNumber());
+            map.put("departmentId",users.getDepartmentId());
+        }
+        return map;
     }
 
     @RequestMapping("/getMenuTree")

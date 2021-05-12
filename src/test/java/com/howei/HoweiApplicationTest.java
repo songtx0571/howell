@@ -11,6 +11,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import redis.clients.jedis.Jedis;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.*;
@@ -28,7 +29,7 @@ public class HoweiApplicationTest {
      * 获取群组列表
      * @return
      */
-    @Test
+    //@Test
     @DisplayName("测试组合断言")
     public Result getGroupList(HttpServletRequest request){
         String page=request.getParameter("page");
@@ -53,7 +54,7 @@ public class HoweiApplicationTest {
     /**
      * 模拟修改权限
      */
-    @Test
+    //@Test
     public void test1(){
         Integer nums1[] = {100, 1, 2, 5, 7, -1};
         Integer nums2[] = {1, -1, 2, 4, 12, 3, -12};

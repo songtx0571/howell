@@ -162,12 +162,6 @@
         </dependency>
 
         <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-devtools</artifactId>
-            <optional>true</optional>
-        </dependency>
-
-        <dependency>
             <groupId>com.belerweb</groupId>
             <artifactId>pinyin4j</artifactId>
             <version>2.5.0</version>
@@ -197,13 +191,6 @@
             <version>1.3.2</version>
         </dependency>
 
-        <!-- shiro整合cas单点 -->
-        <dependency>
-            <groupId>org.apache.shiro</groupId>
-            <artifactId>shiro-cas</artifactId>
-            <version>1.3.2</version>
-        </dependency>
-
         <dependency>
             <groupId>org.apache.shiro</groupId>
             <artifactId>shiro-ehcache</artifactId>
@@ -220,6 +207,29 @@
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-data-redis</artifactId>
+        </dependency>
+
+        <!-- 配置使用redis启动器 -->
+        <dependency>
+            <groupId>org.crazycake</groupId>
+            <artifactId>shiro-redis</artifactId>
+            <version>2.4.2.1-RELEASE</version>
+            <exclusions>
+                <exclusion>
+                    <artifactId>shiro-core</artifactId>
+                    <groupId>org.apache.shiro</groupId>
+                </exclusion>
+                <exclusion>
+                    <artifactId>jedis</artifactId>
+                    <groupId>redis.clients</groupId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+
+        <dependency>
+            <groupId>redis.clients</groupId>
+            <artifactId>jedis</artifactId>
+            <version>2.9.0</version>
         </dependency>
 
         <!-- websocket -->

@@ -61,14 +61,8 @@ public class RoleController {
             if(list!=null&&list.size()>0){
                 return JSON.toJSONString(list);
             }
-        }else{
-            List<Map<String,String>> list=companyService.getDepartmentMap(1);
-            if(list!=null&&list.size()>0){
-                return JSON.toJSONString(list);
-            }
-            JSON.toJSONString(Type.INVALID);//登录过期
         }
-        return JSON.toJSONString(Type.CANCEL);
+        return JSON.toJSONString(Type.INVALID);//登录过期
     }
 
     /**

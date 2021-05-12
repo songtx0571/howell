@@ -1,15 +1,23 @@
 package com.howei.config;
 
+import com.howei.config.redis.LoginInterceptor;
+import com.howei.config.redis.MyRedisManager;
+import com.howei.config.redis.RedisSessionDao;
+import com.howei.config.redis.ShiroFormAuthenticationFilter;
 import com.howei.realm.LoginRealm;
-import org.apache.shiro.authc.credential.CredentialsMatcher;
-import org.apache.shiro.cache.ehcache.EhCacheManager;
+import org.apache.shiro.session.mgt.eis.MemorySessionDAO;
+import org.apache.shiro.session.mgt.eis.SessionDAO;
 import org.apache.shiro.spring.LifecycleBeanPostProcessor;
+import org.apache.shiro.spring.security.interceptor.AuthorizationAttributeSourceAdvisor;
 import org.apache.shiro.spring.web.ShiroFilterFactoryBean;
 import org.apache.shiro.web.filter.authc.AnonymousFilter;
 import org.apache.shiro.web.mgt.DefaultWebSecurityManager;
-import org.apache.shiro.web.servlet.Cookie;
 import org.apache.shiro.web.servlet.SimpleCookie;
 import org.apache.shiro.web.session.mgt.DefaultWebSessionManager;
+import org.crazycake.shiro.RedisCacheManager;
+import org.crazycake.shiro.RedisManager;
+import org.crazycake.shiro.RedisSessionDAO;
+import org.springframework.aop.framework.autoproxy.DefaultAdvisorAutoProxyCreator;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
@@ -20,9 +28,7 @@ import org.springframework.web.filter.DelegatingFilterProxy;
 
 import javax.servlet.DispatcherType;
 import javax.servlet.Filter;
-import java.util.HashMap;
-import java.util.LinkedHashMap;
-import java.util.Map;
+import java.util.*;
 
 @Configuration
 public class ShiroConfig {
@@ -32,23 +38,94 @@ public class ShiroConfig {
 
     @Value("${shiro.jessionid}")
     private String jessionId;
-    @Value("${shiro.conf.sessionTimeout}")
-    private Integer maxAge;
+    //取redis连接配置
+    @Value("${spring.redis.host}")
+    private String host;
+    @Value("${spring.redis.port}")
+    private int port;
+    @Value("${spring.redis.password}")
+    private String password;
+    @Value("${spring.redis.timeout}")
+    private int timeout;
+    @Value("${spring.redis.isRedisCache}")
+    private int isRedisCache;
 
     //将验证方式加入容器
-    @Bean
+    @Bean("loginRealm")
     @DependsOn(value = "lifecycleBeanPostProcessor")
-    public LoginRealm loginRealm() {
-        LoginRealm userRealm = new LoginRealm();
-        //userRealm.setCredentialsMatcher(credentialsMatcher());
-        return userRealm;
+    LoginRealm loginRealm() {
+        LoginRealm loginRealm = new LoginRealm();
+        return loginRealm;
     }
 
     /**
-     * FilterRegistrationBean
+     * 配置shiro redisManager
      *
      * @return
      */
+    @Bean("redisManager")
+    public RedisManager redisManager() {
+        RedisManager redisManager = new RedisManager();
+        redisManager.setHost(host);
+        redisManager.setPort(port);
+        redisManager.setPassword(password);
+        redisManager.setExpire(1800);// 配置过期时间
+        return redisManager;
+    }
+
+    /*@Bean
+    public LoginInterceptor loginInterceptor(){
+        return  new LoginInterceptor();
+    }*/
+
+    @Bean
+    SessionDAO sessionDAO(@Qualifier("redisManager")RedisManager redisManager) {
+        if (1 == isRedisCache) {
+            RedisSessionDAO redisSessionDAO = new RedisSessionDAO();
+            redisSessionDAO.setRedisManager(redisManager);
+            return redisSessionDAO;
+        } else {
+            MemorySessionDAO sessionDAO = new MemorySessionDAO();
+            return sessionDAO;
+        }
+    }
+
+    @Bean(name = "sessionManager")
+    public DefaultWebSessionManager sessionManager(SessionDAO sessionDAO) {
+        DefaultWebSessionManager sessionManager = new DefaultWebSessionManager();
+        sessionManager.setDeleteInvalidSessions(true);
+        sessionManager.setSessionDAO(sessionDAO);
+        //去掉shiro登录时url里的JSESSIONID
+        sessionManager.setSessionIdUrlRewritingEnabled(false);
+        sessionManager.setSessionValidationSchedulerEnabled(true);
+        sessionManager.setSessionValidationInterval(14400000);
+        //是否开启删除无效的session对象  默认为true
+        sessionManager.setDeleteInvalidSessions(true);
+        sessionManager.setSessionIdCookie(new SimpleCookie("sessionUser"));
+        return sessionManager;
+    }
+
+    /**
+     * cacheManager 缓存 redis实现
+     *
+     * @return
+     */
+    @Bean("redisCacheManager")
+    public RedisCacheManager redisCacheManager(@Qualifier("redisManager") RedisManager redisManager) {
+        RedisCacheManager redisCacheManager = new RedisCacheManager();
+        redisCacheManager.setRedisManager(redisManager);
+        return redisCacheManager;
+    }
+
+    @Bean(name = "securityManager")
+    public DefaultWebSecurityManager securityManager(@Qualifier("loginRealm") LoginRealm loginRealm,@Qualifier("sessionManager")DefaultWebSessionManager sessionManager,@Qualifier("redisCacheManager") RedisCacheManager redisCacheManager) {
+        DefaultWebSecurityManager manager = new DefaultWebSecurityManager();
+        manager.setRealm(loginRealm);
+        manager.setCacheManager(redisCacheManager);
+        manager.setSessionManager(sessionManager);
+        return manager;
+    }
+
     @Bean
     public FilterRegistrationBean filterRegistrationBean() {
         FilterRegistrationBean filterRegistration = new FilterRegistrationBean();
@@ -59,84 +136,48 @@ public class ShiroConfig {
         return filterRegistration;
     }
 
-    /**
-     * @return
-     * @see ShiroFilterFactoryBean
-     */
     @Bean(name = "shiroFilter")
-    public ShiroFilterFactoryBean shiroFilter(@Qualifier("securityManager") DefaultWebSecurityManager securityManager) {
+    protected ShiroFilterFactoryBean shiroFilter(@Qualifier("securityManager") DefaultWebSecurityManager securityManager) {
         ShiroFilterFactoryBean bean = new MShiroFilterFactoryBean(); //指向自定义过滤器，自定义过滤器对js/css等忽略
         bean.setSecurityManager(securityManager);
         bean.setLoginUrl(masterLoginUrl);
         Map<String, Filter> filters = new LinkedHashMap<>();
         filters.put("anon", new AnonymousFilter());
         bean.setFilters(filters);
-        //shiro配置过滤规则少量的话可以用hashMap,数量多了要用LinkedHashMap,保证有序，原因未知
         Map<String,String> map1=new HashMap<>();
         map1.put("/logout","logout");
-        //首页
         bean.setSuccessUrl("/home");
         bean.setFilterChainDefinitionMap(map1);
+        //自定义过滤类
+        ShiroFormAuthenticationFilter shiroFormAuthenticationFilter = new ShiroFormAuthenticationFilter();
+        Map<String,Filter> filterMap = new HashMap<>();
+        filterMap.put("user",shiroFormAuthenticationFilter);
+        bean.setFilters(filterMap);
         return bean;
     }
 
-
+    /**
+     *  开启Shiro的注解(如@RequiresRoles,@RequiresPermissions),需借助SpringAOP扫描使用Shiro注解的类,并在必要时进行安全逻辑验证
+     * 配置以下两个bean(DefaultAdvisorAutoProxyCreator和AuthorizationAttributeSourceAdvisor)即可实现此功能
+     * @return
+     */
     @Bean
-    public RedisSessionDao getRedisSessionDao() {
-        return new RedisSessionDao();
+    public DefaultAdvisorAutoProxyCreator advisorAutoProxyCreator(){
+        DefaultAdvisorAutoProxyCreator advisorAutoProxyCreator = new DefaultAdvisorAutoProxyCreator();
+        advisorAutoProxyCreator.setProxyTargetClass(true);
+        return advisorAutoProxyCreator;
     }
 
     /**
-     * @return
-     * @see DefaultWebSessionManager
-     */
-    @Bean(name = "sessionManager")
-    public DefaultWebSessionManager defaultWebSessionManager(RedisSessionDao redisSessionDao) {
-        DefaultWebSessionManager sessionManager = new DefaultWebSessionManager();
-        sessionManager.setGlobalSessionTimeout(900000); //15分钟
-        sessionManager.setDeleteInvalidSessions(true);
-        sessionManager.setSessionDAO(redisSessionDao);
-        sessionManager.setSessionValidationSchedulerEnabled(true);
-        //设置session失效的扫描时间, 清理用户直接关闭浏览器造成的孤立会话 默认为 1个小时
-        //设置该属性 就不需要设置 ExecutorServiceSessionValidationScheduler 底层也是默认自动调用ExecutorServiceSessionValidationScheduler
-        //设置为 1分钟 用来测试
-        sessionManager.setSessionValidationInterval(14400000);
-        //是否开启删除无效的session对象  默认为true
-        sessionManager.setDeleteInvalidSessions(true);
-        sessionManager.setSessionIdCookie(getSessionIdCookie());
-        sessionManager.setSessionIdCookie(new SimpleCookie("sessionUser"));
-        return sessionManager;
-    }
-
-    /**
-     * @return
-     * @see org.apache.shiro.mgt.SecurityManager
-     */
-    @Bean(name = "securityManager")
-    public DefaultWebSecurityManager securityManager(LoginRealm userRealm, RedisSessionDao redisSessionDao) {
-        DefaultWebSecurityManager manager = new DefaultWebSecurityManager();
-        manager.setRealm(userRealm);
-        manager.setSessionManager(defaultWebSessionManager(redisSessionDao));
-        return manager;
-    }
-
-    /**
-     * 给shiro的sessionId默认的JSSESSIONID名字改掉
-     *
+     * 开启aop注解支持
+     * @param securityManager
      * @return
      */
-    @Bean(name = "sessionIdCookie")
-    public SimpleCookie getSessionIdCookie() {
-        SimpleCookie simpleCookie = new SimpleCookie(jessionId);
-        simpleCookie.setPath("/");
-        simpleCookie.setHttpOnly(true);
-        simpleCookie.setMaxAge(maxAge);
-        return simpleCookie;
-    }
-
-    @Bean(name = "credentialsMatcher")
-    public CredentialsMatcher credentialsMatcher() {
-        return new RetryLimitHashedCredentialsMatcher();
+    @Bean
+    public AuthorizationAttributeSourceAdvisor authorizationAttributeSourceAdvisor(org.apache.shiro.mgt.SecurityManager securityManager) {
+        AuthorizationAttributeSourceAdvisor authorizationAttributeSourceAdvisor = new AuthorizationAttributeSourceAdvisor();
+        authorizationAttributeSourceAdvisor.setSecurityManager(securityManager);
+        return authorizationAttributeSourceAdvisor;
     }
 
     /**
@@ -144,21 +185,9 @@ public class ShiroConfig {
      *
      * @return
      */
-    @Bean
+    @Bean("lifecycleBeanPostProcessor")
     public static LifecycleBeanPostProcessor lifecycleBeanPostProcessor() {
         return new LifecycleBeanPostProcessor();
-    }
-
-    /**
-     * 配置LogoutFilter
-     *
-     * @return
-     */
-    public ShiroLogoutFilter shiroLogoutFilter() {
-        ShiroLogoutFilter shiroLogoutFilter = new ShiroLogoutFilter();
-        //配置登出后重定向的地址，等出后配置跳转到登录接口
-        shiroLogoutFilter.setRedirectUrl("/");
-        return shiroLogoutFilter;
     }
 
 }
