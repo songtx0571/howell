@@ -107,15 +107,16 @@ public class WebSocketOperation {
         OperationRecord record = JSONObject.parseObject(message, OperationRecord.class);
         String type = record.getType();
         Integer sendId = record.getSendId();
+        Integer departmentId = record.getDepartmentId();
 
-        if (type != null && !"".equals(type.trim()) && sendId != null && sendId != 0) {
-            List<Integer> userList = orService.getReceiveUserIdsByAuthorityNameAndSendId("显示"+type+"项目记录", sendId);
-            // 遍历需要发送到的人
+        List<Integer> userList = orService.getReceiveUserIdsByParams("显示" + type + "项目记录", sendId, departmentId);
+        // 遍历需要发送到的人
+        if(userList!=null&&userList.size()>0){
             for (Integer userId : userList) {
                 record.setReceiveId(userId);
                 //插入
                 Integer count = orService.insert(record);
-                Integer nowId =orService.getMaxId();
+                Integer nowId = orService.getMaxId();
                 record.setId(nowId);
                 // 当前已登录的人
                 if (livingSessions.get(String.valueOf(userId)) != null) {
@@ -123,8 +124,9 @@ public class WebSocketOperation {
                     sendMessage(livingSessions.get(String.valueOf(userId)), record.toString());
                 }
             }
-
         }
+
+
 
     }
 

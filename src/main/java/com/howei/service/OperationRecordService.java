@@ -20,7 +20,7 @@ public interface OperationRecordService {
 
     int deleteByChildrenId(int employeeId);
 
-    List<Integer> getReceiveUserIdsByAuthorityNameAndSendId(String type, Integer sendId);
+    List<Integer> getReceiveUserIdsByParams(String type, Integer sendId,Integer departmentId);
 
     int updateIsReadByConfirmTime(String confirmTime);
 

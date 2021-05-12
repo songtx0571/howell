@@ -17,9 +17,9 @@
     </resultMap>
     <insert id="insert" parameterType="com.howei.pojo.OperationRecord">
         insert into
-        operation_record(send_id,receive_id,verb,content,type,remark,create_time,long_time,send_name,confirm_time)
+        operation_record(send_id,receive_id,verb,content,type,remark,create_time,long_time,send_name,confirm_time,department_id,url)
         value
-         (#{record.sendId},#{record.receiveId},#{record.verb},#{record.content},#{record.type},#{record.remark},#{record.createTime},#{record.longTime},#{record.sendName},#{record.confirmTime})
+         (#{record.sendId},#{record.receiveId},#{record.verb},#{record.content},#{record.type},#{record.remark},#{record.createTime},#{record.longTime},#{record.sendName},#{record.confirmTime},#{record.departmentId},#{record.url})
     </insert>
     <update id="updateIsReadById">
 
@@ -101,8 +101,26 @@ SELECT
     ORDER BY
         e1.id ASC
     </select>
-    <select id="getReceiveUserIdsByAuthorityNameAndSendId" resultType="java.lang.Integer">
-    SELECT
+    <select id="getUserSettingByEmployeeId" resultType="java.util.Map">
+        select * from user_setting where employee_id=#{employeeId}
+    </select>
+    <select id="getByMap" resultMap="baseReaultMap">
+
+        select * from operation_record
+        where
+        receive_id=#{map.receiveId}
+        <if test="map.isRead !=null">
+            and is_read=#{map.isRead}
+        </if>
+        ORDER BY is_read asc,create_time desc
+        <if test="map.startRow!=null and map.limit!=null">
+            LIMIT #{map.startRow},#{map.limit}
+        </if>
+    </select>
+    <select id="getReceiveUserIdsByParams" resultType="java.lang.Integer">
+
+
+         SELECT
        distinct e1.id employeeId
     FROM
         employee e1
@@ -127,36 +145,25 @@ SELECT
             WHERE
                 a.`name` = "显示所有部门记录"
         )
-        OR u.departmentId  =(
 
+        <if test="sendId!=null">
+            OR u.departmentId  =(
+                SELECT
+                u.departmentId
+                FROM
+                users u
+                JOIN employee e ON e.id = u.employeeId
+                WHERE
+                e.id = #{sendId}
+            )
+        </if>
+        <if test="departmentId!=null">
+            OR u.departmentId=#{departmentId}
+        </if>
 
-				SELECT
-					u.departmentId
-				FROM
-					users u
-				JOIN employee e ON e.id = u.employeeId
-				WHERE
-					e.id = #{sendId}
-					)
     )
     ORDER BY
         e1.id ASC
 
-    </select>
-    <select id="getUserSettingByEmployeeId" resultType="java.util.Map">
-        select * from user_setting where employee_id=#{employeeId}
-    </select>
-    <select id="getByMap" resultMap="baseReaultMap">
-
-        select * from operation_record
-        where
-        receive_id=#{map.receiveId}
-        <if test="map.isRead !=null">
-            and is_read=#{map.isRead}
-        </if>
-        ORDER BY is_read asc,create_time desc
-        <if test="map.startRow!=null and map.limit!=null">
-            LIMIT #{map.startRow},#{map.limit}
-        </if>
     </select>
 </mapper>

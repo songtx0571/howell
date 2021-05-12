@@ -22,6 +22,8 @@ public class OperationRecord {
     private String sendName;
 
     private String confirmTime;
+    private Integer departmentId;
+    private String url;
     @Override
     public String toString() {
         return "{" +
@@ -36,8 +38,28 @@ public class OperationRecord {
                 ",\"sendName\":\'" + sendName + '\'' +
                 ",\"isRead\":\'" + isRead + '\'' +
                 ",\"longTime\":\'" + longTime + '\'' +
+                ",\"confirmTime\":\'" + confirmTime + '\'' +
+                ",\"departmentId\":\'" + departmentId + '\'' +
+                ",\"url\":\'" + url + '\'' +
                 '}';
     }
+
+    public String getUrl() {
+        return url;
+    }
+
+    public void setUrl(String url) {
+        this.url = url;
+    }
+
+    public Integer getDepartmentId() {
+        return departmentId;
+    }
+
+    public void setDepartmentId(Integer departmentId) {
+        this.departmentId = departmentId;
+    }
+
     public String getConfirmTime() {
         return confirmTime;
     }

@@ -49,10 +49,11 @@ public class OperationRecordServiceImpl implements OperationRecordService {
         return orMapper.deleteByChildrenId(employeeId);
     }
 
-    @Override
-    public List<Integer> getReceiveUserIdsByAuthorityNameAndSendId(String type, Integer sendId) {
 
-        return orMapper.getReceiveUserIdsByAuthorityNameAndSendId( type,  sendId);
+    @Override
+    public List<Integer> getReceiveUserIdsByParams(String type, Integer sendId, Integer departmentId) {
+
+        return orMapper.getReceiveUserIdsByParams( type,  sendId,departmentId);
     }
 
     @Override

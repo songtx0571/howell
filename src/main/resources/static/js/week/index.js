@@ -1,9 +1,8 @@
 var username = "";
 var timer = "";
-var layerPage = 0;
+var index = 0;
 let colorLevel = "";
 var liList = [];
-var index = 0;
 var recordCount = 0;
 var totalRecordCount=6;
 window.onload = function () {
@@ -18,8 +17,9 @@ window.onload = function () {
         if (ajax.readyState == 4 && ajax.status == 200) {
             //步骤五 如果能够进到这个判断 说明 数据 完美的回来了,并且请求的页面是存在的
             username = ajax.responseText;
+            getUserSetting();
             fullUl();
-            scroll("noticeUl", 10000);//(ul)
+            scroll("noticeUl", 3000);//(ul)
             //layIM
             layIM();
         }
@@ -30,6 +30,17 @@ window.onload = function () {
     colorFun();
 };
 
+function  getUserSetting(){
+    var ajax = new XMLHttpRequest();
+    ajax.open('get', '/setting/get');
+    ajax.send();
+    ajax.onreadystatechange = function () {
+        if (ajax.readyState == 4 && ajax.status == 200) {
+            colorLevel = ajax.response;
+            colorLevel = eval("(" + colorLevel + ")").data;
+        }
+    };
+}
 //通知表格显示
 function showTable() {
     layui.use(['table'], function () {
@@ -118,8 +129,9 @@ function layIM() {
         // 监听layim建立就绪
         layim.on('ready', function (res) {
             // 服务端WebSocket的访问路径（3.2、配置WebSocket处理器与拦截器）。（注意：路径前缀务必添加websocket的“ws://”）
-            //var action = 'ws://localhost:8080/socket/' + username;
-            var action = 'ws://www.howellop.com:80/socket/' + username;
+
+            var action = 'ws://localhost:8080/socket/' + username;
+
             // 初始化Socket
             if ('WebSocket' in window) {
                 websocket = new WebSocket(action);
@@ -290,8 +302,7 @@ function fullUl() {
         //判断当前浏览器是否支持WebSocket
         if ('WebSocket' in window) {
             // 连接服务端
-            //var action = 'ws://localhost:8080/socket/' + username;
-            var action = 'ws://www.howellop.com:80/socket/' + username;
+            websocket = new WebSocket("ws://localhost:8080/operation/" + username);
         } else {
             alert('当前浏览器 不支持WebSocket')
         }
@@ -305,16 +316,6 @@ function fullUl() {
         //连接成功建立的回调方法
         websocket.onopen = function (event) {
             console.log("webSocket option 连接成功");
-            var ajax = new XMLHttpRequest();
-            ajax.open('get', '/setting/get');
-            ajax.send();
-            ajax.onreadystatechange = function () {
-                if (ajax.readyState == 4 && ajax.status == 200) {
-                    colorLevel = ajax.response;
-                    colorLevel = eval("(" + colorLevel + ")").data;
-                }
-            };
-
         };
 
         //接收到消息的回调方法，此处添加处理接收消息方法，当前是将接收到的信息显示在网页上
@@ -337,11 +338,36 @@ function fullUl() {
 
 function setMessageInnerHTML(data) {
     data = eval('(' + data + ')');
+    console.log( typeof data)
     if (data != undefined && data.length >= 1) {
         liList = data;
     } else {
         liList.push(data)
     }
+    if(recordCount==0||liList.length>0){
+        var dom = document.getElementById("noticeUl");
+       var html="";
+       let n= liList.length<totalRecordCount?liList.length:totalRecordCount;
+       for (var i=0;i<n;i++){
+           index = index % liList.length;
+           data = liList[index];
+           let url1="http://localhost:8080/versionManagement";
+           html+= "<li id='" + data.id + "' style='color: " + levelColor(colorLevel[data.type + "Level"]) + "' myurl='"+url1+"' onclick='clickRead(this)'>" +
+               "<span>" + data.createTime + "&nbsp;&nbsp;</span>" +
+               "<span>" + data.sendName + "&nbsp;&nbsp;</span>" +
+               "<span>" + data.verb + "&nbsp;&nbsp;</span>" +
+               "<span>" + data.content + "&nbsp;&nbsp;</span>" +
+               "<span>" + data.remark + "&nbsp;&nbsp;</span>" +
+               "</a>";
+           recordCount = recordCount + 1;
+           index=index+1;
+       }
+       dom.innerHTML =html;
+
+
+    }
+
+
 }
 
 //等级颜色
@@ -502,7 +528,6 @@ function rollStart() {
             "<span>" + data.content + "&nbsp;&nbsp;</span>" +
             "<span>" + data.remark + "&nbsp;&nbsp;</span>" +
             "</li>";
-        index = index + 1;
         if (recordCount >= totalRecordCount ) {
             clearInterval(timer);
             timer = setInterval(rollStart, colorLevel["rollingTime"]);
@@ -510,9 +535,11 @@ function rollStart() {
             firstNode.parentElement.removeChild(firstNode);
         }else {
             clearInterval(timer);
-            timer = setInterval(rollStart,3000);
+            timer = setInterval(rollStart,colorLevel["rollingTime"]);
             recordCount = recordCount + 1;
         }
+
+        index = index + 1;
     }
 
 

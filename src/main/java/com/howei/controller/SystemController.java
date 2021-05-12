@@ -98,6 +98,7 @@ public class SystemController {
             return result;
         }
         Integer usId = userSetting.getId();
+        userSetting.setEmployeeId(users.getEmployeeId());
         userSetting.setUpdateTime(new Date());
         if(usId==null||usId==0){
             usService.insert(userSetting);
