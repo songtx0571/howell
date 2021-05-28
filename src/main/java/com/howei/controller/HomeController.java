@@ -135,6 +135,12 @@ public class HomeController {
         return "versionManagement";
     }
 
+    // 菜单管理
+    @RequestMapping("/menuManagement")
+    public String toMenuManagement() {
+        return "menuManagement";
+    }
+
     /**
      *
      * @return  动态区域管理
@@ -230,6 +236,7 @@ public class HomeController {
                 return mode;
             } else if ("no_status".equals(e.getMessage())) {
                 mode.addObject("no_status", "账号已过期");
+
                 mode.setViewName("login");
                 return mode;
             }
@@ -251,29 +258,11 @@ public class HomeController {
         manager.set(user.getId().toString(), JSONObject.toJSONString(user),60*30);
         long timeout = SecurityUtils.getSubject().getSession().getTimeout();
         System.out.println("设置前:"+timeout+"毫秒");
-       // SecurityUtils.getSubject().getSession().setTimeout(10000);
+        //SecurityUtils.getSubject().getSession().setTimeout(10000);
         timeout = SecurityUtils.getSubject().getSession().getTimeout();
         System.out.println("设置后:"+timeout+"毫秒");
         mode.setViewName("home");
         return mode;
-    }
-
-    /**
-     * 获取当前登录人信息
-     * @return
-     */
-    @RequestMapping("/getLoginUserInfo")
-    public Map getLoginUserInfo(){
-        Subject subject=SecurityUtils.getSubject();
-        Users users=(Users) subject.getPrincipal();
-        Map<String,Object> map=new HashMap<>();
-        if(users!=null){
-            map.put("id",users.getEmployeeId());
-            map.put("userName",users.getUserName());
-            map.put("userNumber",users.getUserNumber());
-            map.put("departmentId",users.getDepartmentId());
-        }
-        return map;
     }
 
     @RequestMapping("/getMenuTree")
@@ -292,8 +281,7 @@ public class HomeController {
             map.put("template", "5");
         } else if (rootMenuId != null && rootMenuId.equals("27")) {//defect项目
             map.put("template", "6");
-        }
-        else if (rootMenuId != null && rootMenuId.equals("27")) {//Exam项目
+        } else if (rootMenuId != null && rootMenuId.equals("27")) {//Exam项目
             map.put("template", "6");
         }
         map.put("parent", 0);
@@ -306,8 +294,24 @@ public class HomeController {
             }
         }
 
-        List<MenuTree> resultList = new ArrayList<>();
+        List<Menu> resultList = new ArrayList<>();
         for (Menu menu : rootMenuList) {
+            Integer id = menu.getId();
+            map.put("parent", id);
+            List<Menu> menuList = menuService.getMenuTree(map);
+            if (menuList != null && menuList.size() > 0) {
+                iterator = menuList.iterator();
+                while (iterator.hasNext()) {
+                    Menu menu1 = iterator.next();
+                    if (!subject.isPermitted(menu1.getName())) {
+                        iterator.remove();
+                    }
+                }
+                menu.setChildren(getMenuTree(id, menuList));
+                resultList.add(menu);
+            }
+        }
+       /* for (Menu menu : rootMenuList) {
             Integer id = menu.getId();
             map.put("parent", id);
             List<Menu> menuList = menuService.getMenuTree(map);
@@ -322,14 +326,12 @@ public class HomeController {
                 MenuTree menuTree = new MenuTree();
                 menuTree.setId(String.valueOf(menu.getId()));
                 menuTree.setText(menu.getName());
-                menuTree.setState("close");
                 menuTree.setpId(String.valueOf(menu.getParent()));
-                menuTree.setIconCls("icon-bullet-blue");
                 menuTree.setUrl(menu.getUrl());
                 menuTree.setChildren(getMenuTree(id, menuList));
                 resultList.add(menuTree);
             }
-        }
+        }*/
         String json = JSON.toJSONString(resultList);
         return json;
     }
@@ -339,18 +341,11 @@ public class HomeController {
      *
      * @return
      */
-    public List<MenuTree> getMenuTree(Integer id, List<Menu> menuList) {
-        List<MenuTree> list = new ArrayList<>();
+    public List<Menu> getMenuTree(Integer id, List<Menu> menuList) {
+        List<Menu> list = new ArrayList<>();
         for (Menu menu : menuList) {
             if (menu.getParent() == id) {
-                MenuTree menuTree = new MenuTree();
-                menuTree.setId(String.valueOf(menu.getId()));
-                menuTree.setText(menu.getName());
-                menuTree.setState("close");
-                menuTree.setpId(String.valueOf(menu.getParent()));
-                menuTree.setIconCls("icon-bullet-blue");
-                menuTree.setUrl(menu.getUrl());
-                list.add(menuTree);
+                list.add(menu);
             }
         }
         return list;
@@ -365,13 +360,32 @@ public class HomeController {
         return JSON.toJSONString(userId);
     }
 
-    @RequestMapping(value = "/getUserInfo")
+    @RequestMapping(value="/getUserInfo")
     @ResponseBody
-    public String getUserInfo() {
-        Subject subject = SecurityUtils.getSubject();
-        Users users = (Users) subject.getPrincipal();
-        Integer employeeId = users.getEmployeeId();
+    public String getUserInfo(){
+        Subject subject=SecurityUtils.getSubject();
+        Users users=(Users) subject.getPrincipal();
+        Integer employeeId=users.getEmployeeId();
         return JSON.toJSONString(employeeId);
+    }
+
+    /**
+     * 获取当前登录人信息
+     * @return
+     */
+    @RequestMapping("/getLoginUserInfo")
+    @ResponseBody
+    public Map getLoginUserInfo(){
+        Subject subject=SecurityUtils.getSubject();
+        Users users=(Users) subject.getPrincipal();
+        Map<String,Object> map=new HashMap<>();
+        if(users!=null){
+            map.put("id",users.getEmployeeId());
+            map.put("userName",users.getUserName());
+            map.put("userNumber",users.getUserNumber());
+            map.put("departmentId",users.getDepartmentId());
+        }
+        return map;
     }
 
 }

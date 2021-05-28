@@ -1,68 +1,97 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@taglib prefix="shiro" uri="http://shiro.apache.org/tags" %>
-
 <html>
 <head>
-    <link rel="shortcut icon" href="img/favicon.ico" type="image/x-icon" />
-    <title>浩维运行引导管理平台</title>
-    <script type="text/javascript" src="js/jquery.min.js"></script>
-    <link rel="stylesheet" href="js/font/css/font-awesome.css">
-    <link rel="stylesheet" href="css/home.css">
+    <meta charset="utf-8">
+    <title></title>
+    <script src="js/jquery.min.js" type="text/javascript" charset="utf-8"></script>
+    <link rel="stylesheet" href="js/font1/iconfont.css">
+    <link rel="stylesheet" type="text/css" href="css/home.css"/>
+
 </head>
 <body>
-<!--  页面上方区域  -->
-<div class="top">
-    <a href="#"><img src="img/logo.png" alt="" style="margin-top: 5px;width: 50px;float: left;margin-right: 10px;margin-left: 50px;" onclick="showMenu()"></a>
-    <ul class="top_list">
-        <li><a href="#" onclick="message()"><i class="fa fa-envelope-o" style="font-size: 1.8rem;"></i></a></li>
-        <li class="comprehensive">
-            <a href="#"><i class="fa fa-wrench" style="font-size: 1.8rem;"></i></a>
-            <ul class="erji">
-                <li><a href="#" onclick="dynamicRegion()"><i class="fa fa-object-group"></i>&nbsp;&nbsp;动态区域</a></li>
-                <shiro:hasPermission name="通知管理">
-                    <li><a href="#" onclick="noticeManagement()"><i class="fa fa-volume-up"></i>&nbsp;&nbsp;通知管理</a></li>
-                </shiro:hasPermission>
-                <shiro:hasPermission name="部门管理">
-                    <li><a href="#" onclick="departmentManagement()"><i class="fa fa-group"></i>&nbsp;&nbsp;部门管理</a></li>
-                </shiro:hasPermission>
-                <shiro:hasPermission name="角色管理">
-                    <li><a href="#" onclick="roleManagement()"><i class="fa fa-address-card"></i>&nbsp;&nbsp;角色管理</a></li>
-                </shiro:hasPermission>
-                <shiro:hasPermission name="岗位管理">
-                    <li><a href="#" onclick="postManagement()"><i class="fa fa-address-book"></i>&nbsp;&nbsp;岗位管理</a></li>
-                </shiro:hasPermission>
-                <shiro:hasPermission name="账户管理">
-                    <li><a href="#" onclick="accountManagement()"><i class="fa fa-user-circle"></i>&nbsp;&nbsp;账户管理</a></li>
-                </shiro:hasPermission>
-                <shiro:hasPermission name="权限管理">
-                    <li><a href="#" onclick="authorityManagement()"><i class="fa fa-cogs"></i>&nbsp;&nbsp;权限管理</a></li>
-                </shiro:hasPermission>
-                <shiro:hasPermission name="通讯管理">
-                    <li><a href="#" onclick="messageManagement()"><i class="fa fa-cogs"></i>&nbsp;&nbsp;通讯管理</a></li>
-                </shiro:hasPermission>
-            </ul>
-        </li>
-        <li class="personal">
-            <a href="#" id="uesrName"><i class="fa fa-user" style="font-size: 1.8rem;"></i></a>
-            <ul class="erji2">
-                <li><a href="#" onclick="homePopup('info')"><i class="fa fa-user-o"></i>&nbsp;&nbsp;个人信息</a></li>
-                <li><a href="#" onclick="homePopup('pwd')"><i class="fa fa-pencil"></i>&nbsp;&nbsp;修改密码</a></li>
-            </ul>
-        </li>
-        <li><a href="#" onclick="version()"><i class="fa fa-copyright" style="font-size: 1.8rem;font-weight: bolder;"></i></a></li>
-        <li><a href="/logout"><i class="fa fa-sign-in" style="font-size: 1.8rem;"></i></a></li>
-    </ul>
-</div>
-<div class="clear"></div>
-<%-- 页面中间部分 --%>
-<div class="center">
-    <div class="center_left">
-        <iframe src="leftMenu" frameborder="0" class="iframeLeft" scrolling="yes" target="middle"></iframe>
+<div class="warp">
+    <div class="top">
+        <div class="logo">
+            <img src="img/logo.png" onclick="administration('message')">
+            <%--            <span>浩维运行引导管理平台</span>--%>
+        </div>
+        <ul class="top_list1">
+            <li class="top_list1Two0 top_list1Li" onclick="mouseFun(0)">
+                <span class="iconfont icon-fenlei1 iconfont0" style="margin-right: 8px;"></span>工作引导
+                <div class="top_list1_chide0 top_list1_chide">
+                    <div>
+                        <div><strong><span>运行引导</span></strong></div><div><span>模板配置 </span></div>
+                    </div>
+                </div>
+            </li>
+            <li class="top_list1Two1 top_list1Li" onclick="mouseFun(1)">
+                <span class="iconfont icon-jiqiren iconfont1" style="margin-right: 8px;"></span>AI管理
+                <div class="top_list1_chide1 top_list1_chide"></div>
+            </li>
+            <li class="top_list1Two2 top_list1Li" onclick="mouseFun(2)">
+                <span class="iconfont icon-wendang iconfont2" style="margin-right: 8px;"></span>员工管理
+                <div class="top_list1_chide2 top_list1_chide"></div>
+            </li>
+            <li class="top_list1Two3 top_list1Li" onclick="mouseFun(3)">
+                <span class="iconfont icon-kaoshi1 iconfont3" style="margin-right: 8px;"></span>考试管理
+                <div class="top_list1_chide3 top_list1_chide"></div>
+            </li>
+        </ul>
+        <ul class="top_list2">
+            <li class="top_list2_setUp" onclick="mouseFun2(1)">
+                <span class="iconfont icon-shezhi" style="margin-right: 8px;"></span>
+                <ul class="top_list2_chide1">
+                    <li><span onclick="administration('dynamicRegion')" style="margin-right: 8px;">动态区域</span></li>
+                    <shiro:hasPermission name="通知管理">
+                        <li><span onclick="administration('noticeManagement')" style="margin-right: 8px;">通知管理</span>
+                        </li>
+                    </shiro:hasPermission>
+                    <shiro:hasPermission name="部门管理">
+                        <li><span onclick="administration('departmentManagement')"
+                                  style="margin-right: 8px;">部门管理</span></li>
+                    </shiro:hasPermission>
+                    <shiro:hasPermission name="角色管理">
+                        <li><span onclick="administration('roleManagement')" style="margin-right: 8px;">角色管理</span></li>
+                    </shiro:hasPermission>
+                    <shiro:hasPermission name="岗位管理">
+                        <li><span onclick="administration('postManagement')" style="margin-right: 8px;">岗位管理</span></li>
+                    </shiro:hasPermission>
+                    <shiro:hasPermission name="账户管理">
+                        <li><span onclick="administration('accountManagement')" style="margin-right: 8px;">账户管理</span>
+                        </li>
+                    </shiro:hasPermission>
+                    <shiro:hasPermission name="权限管理">
+                        <li><span onclick="administration('authorityManagement')" style="margin-right: 8px;">权限管理</span>
+                        </li>
+                    </shiro:hasPermission>
+                    <shiro:hasPermission name="通讯管理">
+                        <li><span onclick="administration('messageManagement')" style="margin-right: 8px;">通讯管理</span>
+                        </li>
+                    </shiro:hasPermission>
+                    <shiro:hasPermission name="通讯管理">
+                        <li><span onclick="administration('menuManagement')" style="margin-right: 8px;">菜单管理</span>
+                        </li>
+                    </shiro:hasPermission>
+                </ul>
+            </li>
+            <li><span class="iconfont icon-xiaoxi" style="margin-right: 8px;"
+                      onclick="administration('message')"></span></li>
+            <li class="top_list2_information" onclick="mouseFun2(2)">
+                <samp id="userName"></samp>
+                <ul class="top_list2_chide2">
+                    <li><span onclick="homePopup('info')">个人信息</span></li>
+                    <li><span href="#" onclick="homePopup('pwd')">修改密码</span></li>
+                    <li><span href="#" onclick="version()">版本号</span></li>
+                    <li><a href="/logout">退出</a></li>
+                </ul>
+            </li>
+        </ul>
     </div>
-    <div class="center_right">
-        <iframe src="index" frameborder="0" class="iframeRight" scrolling="yes" target="middle"></iframe>
+    <div class="content">
+        <iframe src="index" frameborder="0" class="iframeContent" scrolling="yes" target="middle"></iframe>
     </div>
+    <script type="text/javascript" src="js/week/home.js"></script>
 </div>
-<script type="text/javascript" src="js/week/home.js"></script>
 </body>
 </html>

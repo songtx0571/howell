@@ -119,12 +119,7 @@ function showUserTable(page,companyId) {
             elem: '#demo'
             ,height: height
             ,url: path + '/user/getUserList?companyId='+ companyId //数据接口
-            ,page: {
-                curr: page //重新从第 1 页开始
-            }
-            ,limit: 100
             ,id: 'testReload'
-            ,limits: [100, 150]
             ,cols: [[ //表头
                 {field: 'userNumber', title: '编号', width:80,sort:true,align:'center'}
                 ,{field: 'userName', title: '姓名', width:80,align:'center'}

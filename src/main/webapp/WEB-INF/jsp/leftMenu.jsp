@@ -16,7 +16,7 @@
         <ul class="layui-nav layui-nav-tree layui-inline" lay-filter="demo" style="height: 100%;background: #f8f8f8;">
             <shiro:hasPermission name='运行引导管理系统'>
                 <li class="layui-nav-item first23">
-                    <a href="javascript:;"  class="left23" onclick="showDown(23)"><i style="font-size: 1.4rem;margin-left: -25px;" class="fa fa-clipboard"></i>&nbsp;&nbsp;guide系统</a>
+                    <a href="javascript:;"  class="left23" onclick="showDown(23)"><i style="font-size: 1.4rem;margin-left: -25px;" class="fa fa-clipboard"></i>&nbsp;&nbsp;工作引导</a>
                     <dl class="layui-nav-child erji23"></dl>
                 </li>
             </shiro:hasPermission>

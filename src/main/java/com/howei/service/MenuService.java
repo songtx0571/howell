@@ -13,4 +13,16 @@ public interface MenuService {
      * @return 当前级别的菜单
      */
     List<Menu> getMenuTree(Map map);
+
+    List<Map<String, Object>> getMenuMap(Map map);
+
+    Menu findMenu(String name, Integer template);
+
+    int addMenu(Menu menu);
+
+    Menu getMenuById(Integer id);
+
+    List<Menu> getMenuChild(Integer template);
+
+    void updMenu(Menu menu1);
 }

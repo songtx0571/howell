@@ -5,13 +5,12 @@
     <resultMap id="menuMap" type="com.howei.pojo.Menu">
         <result column="id" property="id"></result>
         <result column="name" property="name"></result>
-        <result column="code" property="code"></result>
-        <result column="type" property="type"></result>
         <result column="url" property="url"></result>
         <result column="parent" property="parent"></result>
         <result column="active" property="active"></result>
-        <result column="created" property="created"></result>
-        <result column="createdBy" property="createdBy"></result>
+        <result column="priority" property="priority"></result>
+        <result column="template" property="template"></result>
+        <result column="typeValue" property="typeValue"></result>
     </resultMap>
 
     <select id="getMenuTree" resultType="java.util.HashMap" parameterType="java.util.HashMap" resultMap="menuMap">
@@ -22,7 +21,40 @@
         <if test="template!=null">
             and template=#{template}
         </if>
+        order by priority
+    </select>
+    
+    <select id="getMenuMap" resultType="com.howei.pojo.Menu" parameterType="java.util.HashMap">
+        select * from menu
+         <where>
+             active='true'
+             <if test="template!=null">
+                 and template=#{template}
+             </if>
+             <if test="parent!=null">
+                 and parent=#{parent}
+             </if>
+         </where>
     </select>
 
+    <insert id="addMenu" parameterType="com.howei.pojo.Menu" keyProperty="id" useGeneratedKeys="true">
+        insert into menu(`name`,url,parent,active,template) values (#{name},#{url},#{parent},#{active},#{template})
+    </insert>
+
+    <select id="findMenu" resultType="com.howei.pojo.Menu">
+        select * from menu where `name`=#{name} and template=#{template}
+    </select>
+
+    <select id="getMenuById" resultType="com.howei.pojo.Menu" parameterType="Integer">
+        select * from menu where id=#{id}
+    </select>
+
+    <select id="getMenuChild" resultType="com.howei.pojo.Menu">
+        select * from menu where template=#{template} and parent=0
+    </select>
+
+    <update id="updMenu" parameterType="com.howei.pojo.Menu" keyProperty="id" useGeneratedKeys="true">
+        update menu set priority=#{priority} where id=#{id}
+    </update>
 
 </mapper>

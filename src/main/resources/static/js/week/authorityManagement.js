@@ -331,6 +331,9 @@ function backDatd(data, fun) {
     } else if(data == 'CANCEL'){
         layer.closeAll();
         alert("页面发生错误");
+    }  else if(data == 'noUser'){
+        layer.closeAll();
+        alert("当前用户过期");
     } else {
         layer.closeAll();
         alert("登录信息失效")

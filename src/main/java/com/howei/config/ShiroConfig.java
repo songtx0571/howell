@@ -69,7 +69,7 @@ public class ShiroConfig {
         redisManager.setHost(host);
         redisManager.setPort(port);
         redisManager.setPassword(password);
-        redisManager.setExpire(1800);// 配置过期时间
+        redisManager.setExpire(8*60*60);// 配置过期时间
         return redisManager;
     }
 
@@ -99,6 +99,7 @@ public class ShiroConfig {
         sessionManager.setSessionIdUrlRewritingEnabled(false);
         sessionManager.setSessionValidationSchedulerEnabled(true);
         sessionManager.setSessionValidationInterval(14400000);
+        sessionManager.setGlobalSessionTimeout(14400000);
         //是否开启删除无效的session对象  默认为true
         sessionManager.setDeleteInvalidSessions(true);
         sessionManager.setSessionIdCookie(new SimpleCookie("sessionUser"));

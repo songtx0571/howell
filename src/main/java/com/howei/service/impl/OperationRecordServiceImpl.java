@@ -19,7 +19,7 @@ public class OperationRecordServiceImpl implements OperationRecordService {
 
     @Override
     public Integer insert(OperationRecord record) {
-       return  orMapper.insert(record);
+        return  orMapper.insert(record);
     }
 
     @Override
