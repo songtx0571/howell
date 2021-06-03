@@ -12,6 +12,7 @@
 <div class="warp">
     <div class="top">
         <form class="layui-form" action="" style="float: left;">
+            <input type="hidden" id="menuListHidden">
             <input type="hidden" id="menuListTemplate">
             <div class="layui-form-item">
                 <div class="layui-inline">

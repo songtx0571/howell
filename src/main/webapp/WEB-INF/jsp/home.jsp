@@ -3,11 +3,12 @@
 <html>
 <head>
     <meta charset="utf-8">
-    <title></title>
+    <title>浩维管理平台</title>
     <script src="js/jquery.min.js" type="text/javascript" charset="utf-8"></script>
     <link rel="stylesheet" href="js/font1/iconfont.css">
     <link rel="stylesheet" type="text/css" href="css/home.css"/>
 
+    <link rel="icon" href="img/logo.png" type="image/x-icon" />
 </head>
 <body>
 <div class="warp">
@@ -42,48 +43,47 @@
             <li class="top_list2_setUp" onclick="mouseFun2(1)">
                 <span class="iconfont icon-shezhi" style="margin-right: 8px;"></span>
                 <ul class="top_list2_chide1">
-                    <li><span onclick="administration('dynamicRegion')" style="margin-right: 8px;">动态区域</span></li>
+                    <li onclick="administration('dynamicRegion')"><span style="margin-right: 8px;">动态区域</span></li>
                     <shiro:hasPermission name="通知管理">
-                        <li><span onclick="administration('noticeManagement')" style="margin-right: 8px;">通知管理</span>
+                        <li onclick="administration('noticeManagement')"><span style="margin-right: 8px;">通知管理</span>
                         </li>
                     </shiro:hasPermission>
                     <shiro:hasPermission name="部门管理">
-                        <li><span onclick="administration('departmentManagement')"
+                        <li onclick="administration('departmentManagement')"><span
                                   style="margin-right: 8px;">部门管理</span></li>
                     </shiro:hasPermission>
                     <shiro:hasPermission name="角色管理">
-                        <li><span onclick="administration('roleManagement')" style="margin-right: 8px;">角色管理</span></li>
+                        <li onclick="administration('roleManagement')"><span style="margin-right: 8px;">角色管理</span></li>
                     </shiro:hasPermission>
                     <shiro:hasPermission name="岗位管理">
-                        <li><span onclick="administration('postManagement')" style="margin-right: 8px;">岗位管理</span></li>
+                        <li onclick="administration('postManagement')"><span style="margin-right: 8px;">岗位管理</span></li>
                     </shiro:hasPermission>
                     <shiro:hasPermission name="账户管理">
-                        <li><span onclick="administration('accountManagement')" style="margin-right: 8px;">账户管理</span>
+                        <li onclick="administration('accountManagement')"><span style="margin-right: 8px;">账户管理</span>
                         </li>
                     </shiro:hasPermission>
                     <shiro:hasPermission name="权限管理">
-                        <li><span onclick="administration('authorityManagement')" style="margin-right: 8px;">权限管理</span>
+                        <li onclick="administration('authorityManagement')><span" style="margin-right: 8px;">权限管理</span>
                         </li>
                     </shiro:hasPermission>
                     <shiro:hasPermission name="通讯管理">
-                        <li><span onclick="administration('messageManagement')" style="margin-right: 8px;">通讯管理</span>
+                        <li onclick="administration('messageManagement')"><span style="margin-right: 8px;">通讯管理</span>
                         </li>
                     </shiro:hasPermission>
                     <shiro:hasPermission name="通讯管理">
-                        <li><span onclick="administration('menuManagement')" style="margin-right: 8px;">菜单管理</span>
+                        <li onclick="administration('menuManagement')"><span style="margin-right: 8px;">菜单管理</span>
                         </li>
                     </shiro:hasPermission>
                 </ul>
             </li>
-            <li><span class="iconfont icon-xiaoxi" style="margin-right: 8px;"
-                      onclick="administration('message')"></span></li>
+            <li onclick="administration('message')"><span class="iconfont icon-xiaoxi" style="margin-right: 8px;"></span></li>
             <li class="top_list2_information" onclick="mouseFun2(2)">
                 <samp id="userName"></samp>
                 <ul class="top_list2_chide2">
-                    <li><span onclick="homePopup('info')">个人信息</span></li>
-                    <li><span href="#" onclick="homePopup('pwd')">修改密码</span></li>
-                    <li><span href="#" onclick="version()">版本号</span></li>
-                    <li><a href="/logout">退出</a></li>
+                    <li onclick="homePopup('info')"><span>个人信息</span></li>
+                    <li onclick="homePopup('pwd')"><span href="#">修改密码</span></li>
+                    <li onclick="version()"><span href="#">版本号</span></li>
+                    <li><a href="/logout" style="display: inline-block;width: 100%;height: 100%;">退出</a></li>
                 </ul>
             </li>
         </ul>

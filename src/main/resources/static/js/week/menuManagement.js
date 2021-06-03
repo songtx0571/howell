@@ -88,17 +88,18 @@ function showTable(template) {
             var data = obj.data;
             if (obj.event == "edit") {//修改
                 showMenu(data.id, "")
-            } else if (obj.event == "up") {//修改
+            } else if (obj.event == "up") {//上移
                 $.ajax({
                     "type": 'put',
                     "url": path + "/menu/updPriority",
-                    data: {id: Number(data.id),template: Number($("#menuListTemplate").val())},
+                    data: {id: Number(data.id), template: Number($("#menuListTemplate").val())},
                     dataType: "json",
                     "success": function (data) {
-                        if ($("#menuListHidden").val().length  <= 0) {
-                            $("#menuListHidden").val(1)
+                        if ($("#menuListHidden").val() == "") {
+                            showTable(23);
+                        } else {
+                            showTable(Number($("#menuListHidden").val()));
                         }
-                        showTable(23)
                     }
                 });
             }

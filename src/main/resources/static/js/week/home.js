@@ -135,6 +135,11 @@ function jump(project, url) {
     }
     var $iframeRight = $('.iframeContent');
     $iframeRight.attr("src", src);
+
+
+    /*var src = "http://test.howellop.com" + url;
+    var $iframeRight = $('.iframeContent');
+    $iframeRight.attr("src", src);*/
 }
 
 var $iframeRight1 = $(".iframeContent");

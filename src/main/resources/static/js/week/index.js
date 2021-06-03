@@ -1,15 +1,15 @@
-var username = "";
-var timer = "";
-let colorLevel = "";
+var username = "";//当前登陆人
+var timer = "";//定时器
+let colorLevel = "";//用户设置的颜色等级
 var liList = [];
 var index = 0;
 var recordCount = 0;
 var totalRecordCount = 6;
 
-var date = new Date();
-var month = date.getMonth() + 1;
-var day = date.getDate();
-var week = date.getDay();
+var date = new Date();//当天时间
+var month = date.getMonth() + 1;//月
+var day = date.getDate();//日
+var week = date.getDay();//周
 if (month < 10) {
     month = "0" + month;
 }
@@ -17,40 +17,179 @@ if (day < 10) {
     day = "0" + day;
 }
 
-window.onload = function () {
-    //步骤一:创建异步对象
-    var ajax = new XMLHttpRequest();
-    //步骤二:设置请求的url参数,参数一是请求的类型,参数二是请求的url,可以带参数,动态的传递参数starName到服务端
-    ajax.open('get', '/getUserInfo');
-    //步骤三:发送请求
-    ajax.send();
-    //步骤四:注册事件 onreadystatechange 状态改变就会调用
-    ajax.onreadystatechange = function () {
-        if (ajax.readyState == 4 && ajax.status == 200) {
-            //步骤五 如果能够进到这个判断 说明 数据 完美的回来了,并且请求的页面是存在的
-            username = ajax.responseText;
+var pieJson = "";//拼接
+
+$(function (){
+    $.ajax({
+        type: 'get',
+        url: "/getUserInfo",
+        data: {},
+        dataType: "json",
+        success: function (data) {
+            username = data;
             getUserSetting();
             fullUl();
         }
-    };
+    })
+
     //颜色选择
     colorFun();
+    //拼接
+    pinjie();
+})
 
-
+//拼接
+function pinjie() {
+    $.ajax({
+        type: 'get',
+        url: "/getIndexData",
+        data: {},
+        async: false, // 同步
+        dataType: "json",
+        success: function (data) {
+            data1 = data.data;
+            for (var z = 0; z < data1.length; z ++) {
+                data = data1[z];
+                var div = "<div class=\"warp1\"><div class=\"title\"><i class=\"title_quote\"></i><span class=\"title_name\">"+data.departmentName+"</span></div><div class=\"clear\"></div>" +
+                    "<div class=\"weatherBox\"><p><span class=\"iconfont icon-dizhi\" style=\"margin-right: 11px;color: #0000FF;\"></span><span class=\"weather_address weather_address1\">"+data.cityName+"</span></p><p class=\"weather_toDay\"></p><div class=\"weather_carousel weather_carousel1\"></div><div class=\"clear\"></div></div><div class=\"functionDivDown\"><ul>";
+                pieJson = data.staticsData;
+                for (let i = 0; i < data.staticsData.length; i++) {
+                    div += "<li><p><span class=\"iconfont icon-triangle-right\" style=\"margin-right: 8px;color: #0000FF;\"></span><span class=\"functionUp_title\">"+data.staticsData[i].name+"</span></p><div id='main"+z+""+i+"' style=\"width: 64px;height:64px;margin: 10px auto 0;\"></div></li>";
+                }
+                div += "</ul></div><div class=\"clear\"></div><div class=\"functionDivUp\"><p><span class=\"iconfont icon-peoples\" style=\"margin-right: 11px;color: #0000FF;\"></span><span class=\"functionUp_title\">运行人员名单</span></p><i class=\"functionUp_line\"></i><ul class=\"functionUp_person functionUp_person0\">"
+                for (var i = 0; i < data.departmentYXData.length; i++) {
+                    div += "<li>" + data.departmentYXData[i] + "</li>"
+                }
+                div += "</ul></div><div class=\"overhaulBox\"><p><span class=\"iconfont icon-peoples\" style=\"margin-right: 11px;color: #0000FF;\"></span><span class=\"overhaul_title\">检修人员名单</span></p><i class=\"overhaul_line\"></i><ul class=\"overhaul_person overhaul_person0\">"
+                for (var i = 0; i < data.departmentJXData.length; i++) {
+                    div += "<li><span>" + data.departmentJXData[i].name + "</span><span class=\"layui-badge li_badge\">" + data.departmentJXData[i].taskNum + "</span></li>"
+                }
+                div += "</ul></div><div class=\"clear\"></div></div>";
+                var pinjie = $(".pinjie");
+                pinjie.append(div);
+                for (let j = 1; j < 5; j++) {
+                    fullWeather(data.cityCode, j);
+                }
+                for (let i = 0; i < data.staticsData.length; i++) {
+                    pieChart('main',i,data.staticsData[i].name,z);
+                }
+            }
+        }
+    });
     var arr = ["日", "一", "二", "三", "四", "五", "六"];
     week = arr[week];
-    var weather_toDay = document.getElementsByClassName("weather_toDay");
-    for(var j = 0; j < weather_toDay.length; j ++) {
-        weather_toDay[j].innerHTML = month + "月" + day + "日&nbsp;周" + week;
-    }
-
-    for (var i = 1; i < 6; i++) {
-        fullWeather('101210101', i);
-        weather_pointLi(i)
-    }
-    drawCircleFun();
+    var weather_toDay = $(".weather_toDay");
+    weather_toDay.html(month + "月" + day + "日&nbsp;周" + week);
 }
 
+//饼状图
+function pieChart(id,i,name,z) {
+    id = id+z+i;
+    var dom = document.getElementById(id);
+    var data = pieJson[i].data;
+    if (data == "") {
+        dom.innerHTML = "<p style=\"line-height: 60px;color: red;\">无数据</p>";
+    } else {
+        // 基于准备好的dom，初始化echarts实例\n" +
+        var myChart = echarts.init(dom);
+        // 指定图表的配置项和数据\n" +
+        var option = {
+            tooltip: {
+                trigger: 'item'
+            },
+            series: [
+                {
+                    name: name,
+                    type: 'pie',
+                    radius: ['60%', '90%'],
+                    avoidLabelOverlap: false,
+                    itemStyle: {
+                        borderRadius: 0,
+                        borderColor: '#fff',
+                        borderWidth: 1
+                    },
+                    label: {
+                        show: false,
+                        position: 'center'
+                    },
+                    emphasis: {
+                        label: {
+                            show: true,
+                            fontSize: '14',
+                            fontWeight: 'bold'
+                        }
+                    },
+                    labelLine: {
+                        show: false
+                    },
+                    data: data
+                }
+            ]
+        };
+        option && myChart.setOption(option);
+    }
+}
+
+//填充天气
+function fullWeather(citykey, num) {
+    var ajax = new XMLHttpRequest();
+    ajax.open('get', 'http://wthrcdn.etouch.cn/weather_mini?citykey=' + citykey);
+    ajax.send();
+    ajax.onreadystatechange = function () {
+        if (ajax.readyState == 4 && ajax.status == 200) {
+            var data = ajax.response
+            data = JSON.parse(data)
+            var json = data.data.forecast;
+            json[0].fengli = json[0].fengli.replace(/[^0-9]/ig, "");
+            json[0].date = json[0].date.replace('星期', '周');
+            json[0].high = json[0].high.substr(3, 2)
+            json[0].low = json[0].low.substr(3, 4)
+            var div = "";
+            div += '<div class="left"><p class="left_toDay">' + json[0].date +
+                '</p><p class="left_font"><span class="iconfont icon-' + replaceWeather(json[0].type) +
+                '" style="margin-right: 11px;"></span></p><p class="left_type">' + json[0].type +
+                '</p><p class="left_temperature">' + json[0].high + '/' + json[0].low +
+                '</p><p class="left_fengxiang">' + json[0].fengxiang + '' + json[0].fengli +
+                '级</p></div>';
+            for (var i = 1; i < json.length; i++) {
+                json[i].fengli = json[i].fengli.replace(/[^0-9]/ig, "");
+                json[i].date = json[i].date.replace('星期', '周')
+                json[i].high = json[i].high.substr(3, 2)
+                json[i].low = json[i].low.substr(3, 4)
+                div += '<div class="left right"><p class="left_toDay">' + json[i].date +
+                    '</p><p class="left_font"><span class="iconfont icon-' + replaceWeather(json[i]
+                        .type) + '" style="margin-right: 11px;"></span></p><p class="left_type">' + json[
+                        i]
+                        .type + '</p><p class="left_temperature">' + json[i].high + '/' + json[i].low +
+                    '</p><p class="left_fengxiang">' + json[i].fengxiang + '' + json[i].fengli +
+                    '级</p></div>';
+            }
+            var weather_carousel = $(".weather_carousel" + num);
+            weather_carousel.html(div);
+        }
+    };
+}
+
+//替换天气图标
+function replaceWeather(type) {
+    var icon = "";
+    if (type == "阴") {
+        icon = "yintian";
+    } else if (type == "多云") {
+        icon = "duoyun";
+    } else if (type == "中雨") {
+        icon = "zhongyu";
+    } else if (type == "大雨") {
+        icon = "dayu";
+    } else if (type == "晴") {
+        icon = "taiyang";
+    } else if (type == "小雨") {
+        icon = "xiaoyu";
+    }
+    return icon;
+}
+
+//获取用户设置
 function getUserSetting() {
     var ajax = new XMLHttpRequest();
     ajax.open('get', '/setting/get');
@@ -62,7 +201,6 @@ function getUserSetting() {
         }
     };
 }
-
 //颜色选择
 function colorFun() {
     layui.use('colorpicker', function () {
@@ -85,7 +223,6 @@ function colorFun() {
         });
     });
 }
-
 
 //填充
 function fullUl() {
@@ -252,309 +389,4 @@ function clickRead(a) {
 
         }
     };
-}
-
-
-//切换按钮
-function weatherSwitch(type) {
-    document.getElementsByClassName('weather_select'+type)[0].style.display = "revert";
-    console.log(document.getElementsByClassName('weather_select'+type)[0])
-}
-
-//切换地点查询天气
-function weather_sel(type, val) {
-    fullWeather(val, type);
-    // $(".weather_select" + type).css("display", "none");
-    //得到当前选中的文本值
-    var options = $(".weather_select" + type + " option:selected"); //获取当前选择项.
-    options.text(); //获取当前选择项的文本.
-    $(".weather_address" + type).html(options.text());
-}
-//鼠标悬停切换天气
-function weather_pointLi(num) {
-    var weather_pointLi = document.getElementsByClassName("weather_point"+num)[0].getElementsByTagName("li");
-    for (let i = 0; i < weather_pointLi.length; i ++) {
-        weather_pointLi[i].onclick = function () {
-            weather_pointLi[0].style.background = "";
-            weather_pointLi[1].style.background = "";
-            weather_pointLi[2].style.background = "";
-            this.style.background = "rgb(0, 86, 255)";
-            var weather_carousel = document.getElementsByClassName("weather_carousel"+num)[0].getElementsByTagName("div");
-            if (i == 0) {
-                weather_carousel[0].style.display = "block";
-                weather_carousel[1].style.display = "block";
-                weather_carousel[2].style.display = "none";
-                weather_carousel[3].style.display = "none";
-                weather_carousel[4].style.display = "none";
-            }else if (i == 1) {
-                weather_carousel[4].style.display = "none";
-                weather_carousel[0].style.display = "none";
-                weather_carousel[1].style.display = "none";
-                weather_carousel[2].style.display = "block";
-                weather_carousel[3].style.display = "block";
-            } else if (i == 2) {
-                weather_carousel[0].style.display = "none";
-                weather_carousel[1].style.display = "none";
-                weather_carousel[2].style.display = "none";
-                weather_carousel[3].style.display = "none";
-                weather_carousel[4].style.display = "block";
-            }
-        }
-    }
-}
-//填充天气
-function fullWeather(citykey, num) {
-    var ajax = new XMLHttpRequest();
-    ajax.open('get', 'http://wthrcdn.etouch.cn/weather_mini?citykey='+citykey);
-    ajax.send();
-    ajax.onreadystatechange = function () {
-        if (ajax.readyState == 4 && ajax.status == 200) {
-            var data = ajax.response
-            data = JSON.parse(data)
-            var json = data.data.forecast;
-            json[0].fengli = json[0].fengli.replace(/[^0-9]/ig, "");
-            json[0].date = json[0].date.replace('星期', '周');
-            json[0].high = json[0].high.substr(3, 2)
-            json[0].low = json[0].low.substr(3, 4)
-            var div = "";
-            div += '<div class="left"><p class="left_toDay">' + json[0].date +
-                '</p><p class="left_font"><span class="iconfont icon-' + replaceWeather(json[0].type) +
-                '" style="margin-right: 11px;"></span></p><p class="left_type">' + json[0].type +
-                '</p><p class="left_temperature">' + json[0].high + '/' + json[0].low +
-                '</p><p class="left_fengxiang">' + json[0].fengxiang + '' + json[0].fengli +
-                '级</p></div>';
-            for (var i = 1; i < json.length; i++) {
-                json[i].fengli = json[i].fengli.replace(/[^0-9]/ig, "");
-                json[i].date = json[i].date.replace('星期', '周')
-                json[i].high = json[i].high.substr(3, 2)
-                json[i].low = json[i].low.substr(3, 4)
-                div += '<div class="left right"><p class="left_toDay">' + json[i].date +
-                    '</p><p class="left_font"><span class="iconfont icon-' + replaceWeather(json[i]
-                        .type) + '" style="margin-right: 11px;"></span></p><p class="left_type">' + json[
-                        i]
-                        .type + '</p><p class="left_temperature">' + json[i].high + '/' + json[i].low +
-                    '</p><p class="left_fengxiang">' + json[i].fengxiang + '' + json[i].fengli +
-                    '级</p></div>';
-            }
-            var weather_carousel = document.getElementsByClassName("weather_carousel"+num)[0];
-            weather_carousel.innerHTML = div;
-        }
-    };
-}
-
-//替换天气图标
-function replaceWeather(type) {
-    var icon = "";
-    if (type == "阴") {
-        icon = "yintian";
-    } else if (type == "多云") {
-        icon = "duoyun";
-    } else if (type == "中雨") {
-        icon = "zhongyu";
-    } else if (type == "大雨") {
-        icon = "dayu";
-    } else if (type == "晴") {
-        icon = "taiyang";
-    } else if (type == "小雨") {
-        icon = "xiaoyu";
-    }
-    return icon;
-}
-
-//绘制百分比
-function drawCircle(_options, id) {
-    var options = _options || {}; //获取或定义options对象;
-    options.angle = options.angle || 1; //定义默认角度1为360度(角度范围 0-1);
-    options.color = options.color || '#fff'; //定义默认颜色（包括字体和边框颜色）;
-    options.lineWidth = options.lineWidth || 10; //定义默认圆描边的宽度;
-    options.lineCap = options.lineCap || 'round'; //定义描边的样式，默认为直角边，round 为圆角
-
-    var oBoxOne = document.getElementById(options.id); //获取canvas元素
-    var sCenter = oBoxOne.width / 2; //获取canvas元素的中心点;
-    var ctx = oBoxOne.getContext('2d'); //创建一个context对象
-    var nBegin = Math.PI / 2; //定义起始角度;
-    var nEnd = Math.PI * 2; //定义结束角度;
-
-    ctx.textAlign = 'center'; //定义字体居中;
-    ctx.font = 'normal  400 14px  DINCond-Medium'; //定义字体加粗大小字体样式;
-    ctx.fillStyle = options.color == 'grd' ? grd : options.color; //判断文字填充样式为颜色，还是渐变色;
-    var lineHight = sCenter * 2 * 0.6; //设置文字行高
-    ctx.fillText((options.angle * 100), sCenter, lineHight); //设置填充文字;
-
-    ctx.lineCap = options.lineCap;
-    ctx.strokeStyle = options.color == 'grd' ? grd : options.color;
-    ctx.lineWidth = options.lineWidth;
-
-    ctx.beginPath(); //设置起始路径，这段绘制360度背景;
-    if (id == "one") {
-        ctx.strokeStyle = '#F3F6FB';
-    } else {
-        ctx.strokeStyle = '#F7D643';
-    }
-    ctx.arc(sCenter, sCenter, (sCenter - options.lineWidth), -nBegin, nEnd, false);
-    ctx.stroke();
-
-    var imd = ctx.getImageData(0, 0, 240, 240);
-
-    function draw(current) { //该函数实现角度绘制;
-        ctx.putImageData(imd, 0, 0);
-        ctx.beginPath();
-        ctx.strokeStyle = options.color == 'grd' ? grd : options.color;
-        ctx.arc(sCenter, sCenter, (sCenter - options.lineWidth), -nBegin, (nEnd * current) - nBegin, false);
-        ctx.stroke();
-    }
-
-    var t = 0;
-    var timer = null;
-
-    function loadCanvas(angle) { //该函数循环绘制指定角度，实现加载动画;
-        timer = setInterval(function () {
-            if (t > angle) {
-                draw(options.angle);
-                clearInterval(timer);
-            } else {
-                draw(t);
-                t += 0.02;
-            }
-        }, 20);
-    }
-    loadCanvas(options.angle); //载入百度比角度  0-1 范围;
-    timer = null;
-}
-//百分比
-function drawCircleFun () {
-    drawCircle({
-        id: 'one',
-        color: '#0000ff',
-        angle: 0.37,
-        lineWidth: 8
-    }, 'one');
-
-    drawCircle({
-        id: 'two',
-        angle: 0.45,
-        color: '#FFB000',
-        lineWidth: 8
-    }, 'one');
-
-    drawCircle({
-        id: 'three',
-        angle: 0.86,
-        lineWidth: 8,
-        color: '#0000ff'
-    }, 'two');
-    drawCircle({
-        id: 'four',
-        angle: 0.48,
-        lineWidth: 8,
-        color: '#FF0000'
-    }, 'one');
-
-    drawCircle({
-        id: 'five',
-        color: '#0000ff',
-        angle: 0.77,
-        lineWidth: 8
-    }, 'one');
-
-    drawCircle({
-        id: 'six',
-        angle: 0.75,
-        color: '#FFB000',
-        lineWidth: 8
-    }, 'one');
-
-    drawCircle({
-        id: 'seven',
-        angle: 0.33,
-        lineWidth: 8,
-        color: '#0000ff'
-    }, 'two');
-    drawCircle({
-        id: 'eight',
-        angle: 0.52,
-        lineWidth: 8,
-        color: '#FF0000'
-    }, 'one');
-
-    drawCircle({
-        id: 'nine',
-        color: '#0000ff',
-        angle: 0.17,
-        lineWidth: 8
-    }, 'one');
-
-    drawCircle({
-        id: 'ten',
-        angle: 0.2,
-        color: '#FFB000',
-        lineWidth: 8
-    }, 'one');
-
-    drawCircle({
-        id: 'eleven',
-        angle: 0.88,
-        lineWidth: 8,
-        color: '#0000ff'
-    }, 'two');
-    drawCircle({
-        id: 'twelve',
-        angle: 0.15,
-        lineWidth: 8,
-        color: '#FF0000'
-    }, 'one');
-
-    drawCircle({
-        id: 'thirteen',
-        color: '#0000ff',
-        angle: 0.37,
-        lineWidth: 8
-    }, 'one');
-
-    drawCircle({
-        id: 'fourteen',
-        angle: 0.45,
-        color: '#FFB000',
-        lineWidth: 8
-    }, 'one');
-
-    drawCircle({
-        id: 'fifteen',
-        angle: 0.86,
-        lineWidth: 8,
-        color: '#0000ff'
-    }, 'two');
-    drawCircle({
-        id: 'sixteen',
-        angle: 0.48,
-        lineWidth: 8,
-        color: '#FF0000'
-    }, 'one');
-
-    drawCircle({
-        id: 'seventeen',
-        color: '#0000ff',
-        angle: 0.77,
-        lineWidth: 8
-    }, 'one');
-
-    drawCircle({
-        id: 'eighteen',
-        angle: 0.75,
-        color: '#FFB000',
-        lineWidth: 8
-    }, 'one');
-
-    drawCircle({
-        id: 'nineteen',
-        angle: 0.33,
-        lineWidth: 8,
-        color: '#0000ff'
-    }, 'two');
-    drawCircle({
-        id: 'twenty',
-        angle: 0.52,
-        lineWidth: 8,
-        color: '#FF0000'
-    }, 'one');
 }
