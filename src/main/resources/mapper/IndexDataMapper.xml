@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.howei.mapper.IndexDataMapper">
+
+
+    <resultMap id="maintainRecordMap" type="com.howei.pojo.MaintainRecord">
+        <id column="id" property="id"/>
+        <result column="maintain_id" property="maintainId"/>
+        <result column="maintain_record_no" property="maintainRecordNo"/>
+        <result column="department_id" property="departmentId"/>
+        <result column="employee_id" property="employeeId"/>
+        <result column="work_feedback" property="workFeedback"/>
+        <result column="start_time" property="startTime"/>
+        <result column="end_time" property="endTime"/>
+        <result column="working_hour" property="workingHour"/>
+        <result column="status" property="status"/>
+        <result column="create_time" property="createTime"/>
+        <result column="update_time" property="updateTime"/>
+        <result column="start_time" property="startTime"/>
+
+        <result column="system_name" property="systemName"/>
+        <result column="equipment_name" property="equipmentName"/>
+        <result column="unit_name" property="unitName"/>
+        <result column="work_content" property="workContent"/>
+    </resultMap>
+
+    <select id="getMaintainRecordByMap" resultMap="maintainRecordMap">
+
+        SELECT
+        e.`name` AS system_name,
+        e1.`name` AS equipment_name,
+        u.nuit AS unit_name,
+        m.work_content as work_content,
+        mr.*
+        FROM
+        maintain_record mr
+        JOIN maintain m ON m.id = mr.maintain_id
+        LEFT JOIN equipment e ON e.id = m.system_id
+        LEFT JOIN equipment e1 ON e1.id = m.equipment_id
+        LEFT JOIN unit u ON u.id = m.unit_id
+        WHERE
+        1 = 1
+        <if test="date!=null">
+            and mr.create_time like #{date}
+        </if>
+        <if test="departmentId!=null">and mr.department_id=#{ departmentId}</if>
+        order by mr.end_time desc,mr.create_time desc
+
+
+    </select>
+    <select id="getDefectByMap" parameterType="java.util.HashMap" resultType="com.howei.pojo.Defect">
+        select de.*,DATE_FORMAT(de.created,'%Y-%m-%d') as created,c.name as departmentName,e1.name as sysName,e2.name as
+        equipmentName,ee2.name as claimantName,
+        ee1.name as createdByName,ee3.name as confirmer1Name
+        from defect de
+        left join company c on c.id=de.departmentId
+        left join equipment e1 on e1.id=de.sysId
+        left join equipment e2 on e2.id=de.equipmentId
+        left join employee ee1 on ee1.id=de.createdBy
+        left join employee ee2 on ee2.id=de.claimant
+        left join employee ee3 on ee3.id=de.confirmer1
+        <where>
+            <if test="departmentId!=null">
+                and de.departmentId=#{departmentId}
+            </if>
+            <if test="date!=null">
+                and de.created like #{date}
+            </if>
+        </where>
+        order by de.created desc
+    </select>
+    <select id="getScrDailyByMap" resultType="com.howei.pojo.ScrDaily">
+
+        select * from scrdaily
+        <where>
+            <if test="departmentId!=null">and project_id =#{departmentId}</if>
+            <if test="date!=null">and datetime like #{date}</if>
+        </where>
+
+
+    </select>
+    <select id="getPostPeratorDataMapByMap" resultType="java.util.Map">
+      SELECT p.id AS id,p.userNumber,p.companyId,p.companyName,p.departmentId,p.departmentName,p.userName AS userName,if(p.sex=1,"男","女") sex ,p.frequency AS frequency,pdd.point AS point
+        FROM
+        (
+          SELECT  u.id,u.userName,u.sex,u.userNumber,c.id companyId,c. NAME companyName,c2.id departmentId,c2. NAME departmentName,COUNT(*) AS frequency
+          FROM postPerator p
+          JOIN users u ON u.Id = p.postPeratorId
+          JOIN company c ON c.id = u.companyId
+          JOIN company c2 ON c2.id = u.departmentId
+          WHERE 1 = 1
+          AND p.inspectionEndTime IS NOT NULL
+          AND p.created  BETWEEN  #{startTime}  and #{endTime}
+          GROUP BY p.postPeratorId
+        ) p
+        JOIN (
+          SELECT pd.createdBy AS createdBy,count(pd.postPeratorId) AS point
+          FROM postPerator_data pd
+          WHERE 1 = 1
+          AND pd.measuringTypeData IS NOT NULL
+          AND pd.created BETWEEN    #{startTime}  and #{endTime}
+          GROUP BY pd.createdBy
+        ) pdd ON pdd.createdBy = p.Id
+        <where>
+            <if test="departmentId!=null and empId!='0'">
+                and p.departmentId=#{departmentId}
+            </if>
+        </where>
+
+
+    </select>
+</mapper>

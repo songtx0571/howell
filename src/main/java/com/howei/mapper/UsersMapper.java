@@ -58,4 +58,8 @@ public interface UsersMapper {
     int updPassword(@Param("userId") Integer userId, @Param("password") String password);
 
     List<Users> searchUsersList(Map map);
+
+    Users getUserByEmployeeId(String employeeId);
+
+    Users getUserByUserNumber(String userNumber);
 }

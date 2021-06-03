@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
-<mapper namespace="com.howei.mapper.UsersMapper" >
+<mapper namespace="com.howei.mapper.UsersMapper">
     <resultMap id="userMap" type="com.howei.pojo.Users">
         <result column="id" property="id"></result>
         <result column="userName" property="userName"></result>
@@ -27,10 +27,10 @@
     </resultMap>
 
     <resultMap id="roleMap" type="com.howei.pojo.Role">
-        <result column="rid" property="id" />
-        <result column="roleName" property="roleName" />
-        <result column="description" property="description" />
-        <result column="englishName" property="englishName" />
+        <result column="rid" property="id"/>
+        <result column="roleName" property="roleName"/>
+        <result column="description" property="description"/>
+        <result column="englishName" property="englishName"/>
     </resultMap>
 
     <select id="findUser" resultType="com.howei.pojo.Users" parameterType="java.lang.String" resultMap="userMap">
@@ -54,7 +54,8 @@
     </select>
 
     <select id="getUserList" parameterType="java.util.HashMap" resultMap="userMap">
-        select u.id,u.userNumber,u.userName,IF(u.sex=1,'男','女') as sexName,c.`name` as companyName,c1.`name` as departName,p.`name` as postName,u1.userName as managerName,IF(u.state=0,'离职','在职') as stateName,
+        select u.id,u.userNumber,u.userName,IF(u.sex=1,'男','女') as sexName,c.`name` as companyName,c1.`name` as
+        departName,p.`name` as postName,u1.userName as managerName,IF(u.state=0,'离职','在职') as stateName,
         u.entryDate,u.phone,u.email,u.companyId,u.departmentId,u.postId,u.manager,r.id,r.roleName,r.description,r.englishName
         from users u
         LEFT JOIN users u1 on u1.id=u.manager
@@ -156,11 +157,11 @@
         </if>
     </select>
 
-    <select id="selSeen" parameterType="java.lang.String" resultType="java.util.HashMap" >
+    <select id="selSeen" parameterType="java.lang.String" resultType="java.util.HashMap">
         select distinct userId ,rdStatus from user_inform where informId=#{informId}
     </select>
 
-    <select id="selSeenUser" parameterType="java.lang.String" resultType="java.lang.String" >
+    <select id="selSeenUser" parameterType="java.lang.String" resultType="java.lang.String">
         select userName from users where id=#{userId}
     </select>
 
@@ -176,7 +177,7 @@
         insert into user_role(userId,roleId,created,createdBy) value(#{userId},#{roleId},#{created},#{createdBy})
     </insert>
 
-    <delete id="deleteUserRole" parameterType="int" >
+    <delete id="deleteUserRole" parameterType="int">
         delete from user_role where userId=#{userId}
     </delete>
 
@@ -185,7 +186,7 @@
         left join role r on r.id=ur.roleId
         where ur.userId=#{userId}
     </select>
-    
+
     <select id="getUserRoleList" resultMap="userMap" parameterType="java.util.HashMap">
         select u.*,r.id,r.roleName,r.description,r.englishName from users u
         left join user_role ur on ur.userId=u.id
@@ -208,13 +209,14 @@
             and u.userNumber=#{userNumber}
         </if>
     </select>
-    
+
     <update id="updPassword" useGeneratedKeys="true" keyProperty="id">
         update users set password=#{password} where id=#{userId}
     </update>
-    
+
     <select id="searchUsersList" parameterType="java.util.HashMap" resultMap="userMap">
-        select u.id,u.userNumber,u.userName,IF(u.sex=1,'男','女') as sexName,c.`name` as companyName,c1.`name` as departName,p.`name` as postName,u1.userName as managerName,IF(u.state=0,'离职','在职') as stateName,
+        select u.id,u.userNumber,u.userName,IF(u.sex=1,'男','女') as sexName,c.`name` as companyName,c1.`name` as
+        departName,p.`name` as postName,u1.userName as managerName,IF(u.state=0,'离职','在职') as stateName,
         u.entryDate,u.phone,u.email,u.companyId,u.departmentId,u.postId,u.manager,r.id,r.roleName,r.description,r.englishName
         from users u
         LEFT JOIN users u1 on u1.id=u.manager
@@ -229,9 +231,15 @@
         </if>
         <if test="search!=null and search!=''">
             and (
-              u.userName like concat('%',#{search},'%') OR
-              u.userNumber like concat('%',#{search},'%')
+            u.userName like concat('%',#{search},'%') OR
+            u.userNumber like concat('%',#{search},'%')
             )
         </if>
+    </select>
+    <select id="getUserByEmployeeId" resultType="com.howei.pojo.Users">
+         select * from users where employeeId=#{employeeId}
+    </select>
+    <select id="getUserByUserNumber" resultType="com.howei.pojo.Users">
+        select * from users where userNumber=#{userNumber}
     </select>
 </mapper>

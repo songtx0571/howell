@@ -55,4 +55,8 @@ public interface UserService {
     int updPassword(Integer userId, String password);
 
     List<Users> searchUsersList(Map map);
+
+    Users getUserByEmployeeId(String employeeId);
+
+    Users getUserByUserNumber(String userNumber);
 }

@@ -1,7 +1,10 @@
 package com.howei.util;
 
+import org.apache.poi.ss.usermodel.DateUtil;
+
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
 
 public class DateFormat {
@@ -9,6 +12,7 @@ public class DateFormat {
     /**
      * 获取当前时间
      * yyyy-MM-dd HH:mm:ss
+     *
      * @param date
      * @return
      */
@@ -20,6 +24,7 @@ public class DateFormat {
 
     /**
      * 当前时间加上Hour
+     *
      * @param Hour
      * @return
      */
@@ -35,6 +40,7 @@ public class DateFormat {
 
     /**
      * 指定时间加上Hour
+     *
      * @param Hour
      * @return
      */
@@ -50,6 +56,7 @@ public class DateFormat {
 
     /**
      * 当前时间加上minute
+     *
      * @param minute
      * @return
      */
@@ -65,6 +72,7 @@ public class DateFormat {
 
     /**
      * 比较两个时间大小
+     *
      * @param beginTime
      * @param endTime
      * @return
@@ -86,6 +94,7 @@ public class DateFormat {
 
     /**
      * 获取格式：yyyy-MM-dd
+     *
      * @return
      */
     public static String getYMD() {
@@ -122,6 +131,7 @@ public class DateFormat {
 
     /**
      * 获取当前时间的毫秒数
+     *
      * @return
      */
     public static long getLongTime() {
@@ -145,5 +155,22 @@ public class DateFormat {
             return timeMillis + 168 * 60 * 60 * 1000;
         }
         return null;
+    }
+
+    /**
+     * @param date  日期
+     * @param nDay  日
+     * @param nHour 时间类型  夜班3:0~8,白班1:8~16,中班2:16~24,
+     * @return
+     */
+    public static Date getThisDayTimeBegin(Date date, int nDay, int nHour) {
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(date);
+        calendar.add(Calendar.DAY_OF_WEEK, nDay);
+        calendar.set(Calendar.HOUR_OF_DAY, nHour);//设置时为0点
+        calendar.set(Calendar.MINUTE, 0);//设置分钟为0分
+        calendar.set(Calendar.SECOND, 0);//设置秒为0秒
+        calendar.set(Calendar.MILLISECOND, 000);
+        return calendar.getTime();
     }
 }

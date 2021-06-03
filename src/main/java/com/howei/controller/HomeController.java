@@ -3,9 +3,12 @@ package com.howei.controller;
 import com.alibaba.fastjson.JSONObject;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.howei.config.redis.MyRedisManager;
+import com.howei.pojo.*;
 import com.howei.realm.LoginRealm;
+import com.howei.service.*;
+import com.howei.util.DateFormat;
 import com.howei.util.MD5;
-import com.howei.util.MenuTree;
+import com.howei.util.Result;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authc.UsernamePasswordToken;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
@@ -15,11 +18,8 @@ import org.springframework.stereotype.Controller;
 
 import com.alibaba.fastjson.JSON;
 
-import com.howei.pojo.Menu;
-import com.howei.pojo.Users;
-import com.howei.service.MenuService;
-import com.howei.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
@@ -29,7 +29,10 @@ import javax.servlet.http.HttpSession;
 import java.io.Serializable;
 import java.io.UnsupportedEncodingException;
 import java.security.NoSuchAlgorithmException;
+import java.security.PublicKey;
+import java.text.SimpleDateFormat;
 import java.util.*;
+import java.util.stream.Collectors;
 
 import static org.apache.shiro.authz.annotation.Logical.OR;
 
@@ -42,6 +45,11 @@ public class HomeController {
 
     @Autowired
     UserService userService;
+    @Autowired
+    IndexDataService indexDataService;
+    @Autowired
+    CompanyService companyService;
+
 
     /*存入session里的用户名称*/
     public static final String SESSION_USER = "sessionUser";
@@ -142,8 +150,7 @@ public class HomeController {
     }
 
     /**
-     *
-     * @return  动态区域管理
+     * @return 动态区域管理
      */
     @GetMapping("/dynamicRegion")
     public String toOperationPaget() {
@@ -174,13 +181,13 @@ public class HomeController {
     @RequestMapping("/logout")
     public String logOut(HttpServletResponse response) {
         Subject subject = SecurityUtils.getSubject();
-        PrincipalCollection principalCollection=(PrincipalCollection)subject.getPrincipal();
+        PrincipalCollection principalCollection = (PrincipalCollection) subject.getPrincipal();
         response.setStatus(302);
         if (subject.isAuthenticated()) {
             subject.logout();
             return "login";
         }
-        LoginRealm loginRealm=new LoginRealm();
+        LoginRealm loginRealm = new LoginRealm();
         loginRealm.clearCache(principalCollection);
         loginRealm.clearCachedAuthenticationInfo(principalCollection);
         loginRealm.clearCachedAuthorizationInfo(principalCollection);
@@ -190,6 +197,7 @@ public class HomeController {
 
     /**
      * 登录页面
+     *
      * @return
      */
     @GetMapping(value = "/loginPage")
@@ -251,16 +259,16 @@ public class HomeController {
         manager.setTimeout(1800);
         manager.setPassword("12345");
         manager.init();
-        manager.set(id.toString(),user.getId().toString(),60*30);//半小时
+        manager.set(id.toString(), user.getId().toString(), 60 * 30);//半小时
         //防止同一个账号同时登录
-        manager.set(user.getId().toString(), id.toString(),60*30);
+        manager.set(user.getId().toString(), id.toString(), 60 * 30);
         //用户信息
-        manager.set(user.getId().toString(), JSONObject.toJSONString(user),60*30);
+        manager.set(user.getId().toString(), JSONObject.toJSONString(user), 60 * 30);
         long timeout = SecurityUtils.getSubject().getSession().getTimeout();
-        System.out.println("设置前:"+timeout+"毫秒");
+        System.out.println("设置前:" + timeout + "毫秒");
         //SecurityUtils.getSubject().getSession().setTimeout(10000);
         timeout = SecurityUtils.getSubject().getSession().getTimeout();
-        System.out.println("设置后:"+timeout+"毫秒");
+        System.out.println("设置后:" + timeout + "毫秒");
         mode.setViewName("home");
         return mode;
     }
@@ -360,32 +368,413 @@ public class HomeController {
         return JSON.toJSONString(userId);
     }
 
-    @RequestMapping(value="/getUserInfo")
+    @RequestMapping(value = "/getUserInfo")
     @ResponseBody
-    public String getUserInfo(){
-        Subject subject=SecurityUtils.getSubject();
-        Users users=(Users) subject.getPrincipal();
-        Integer employeeId=users.getEmployeeId();
+    public String getUserInfo() {
+        Subject subject = SecurityUtils.getSubject();
+        Users users = (Users) subject.getPrincipal();
+        Integer employeeId = users.getEmployeeId();
         return JSON.toJSONString(employeeId);
     }
 
     /**
      * 获取当前登录人信息
+     *
      * @return
      */
     @RequestMapping("/getLoginUserInfo")
     @ResponseBody
-    public Map getLoginUserInfo(){
-        Subject subject=SecurityUtils.getSubject();
-        Users users=(Users) subject.getPrincipal();
-        Map<String,Object> map=new HashMap<>();
-        if(users!=null){
-            map.put("id",users.getEmployeeId());
-            map.put("userName",users.getUserName());
-            map.put("userNumber",users.getUserNumber());
-            map.put("departmentId",users.getDepartmentId());
+    public Map getLoginUserInfo() {
+        Subject subject = SecurityUtils.getSubject();
+        Users users = (Users) subject.getPrincipal();
+        Map<String, Object> map = new HashMap<>();
+        if (users != null) {
+            map.put("id", users.getEmployeeId());
+            map.put("userName", users.getUserName());
+            map.put("userNumber", users.getUserNumber());
+            map.put("departmentId", users.getDepartmentId());
         }
         return map;
     }
+
+    /**
+     * @return
+     */
+    @GetMapping("/getIndexData")
+    @ResponseBody
+    public Result getIndexData(
+    ) {
+        List<Map<String, Object>> resultMapList = new ArrayList<>();
+
+        Subject subject = SecurityUtils.getSubject();
+        Users users = (Users) subject.getPrincipal();
+        if (users == null) {
+            return new Result(0, null, 0, "用户失效");
+        }
+        Date date = new Date();
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM");
+        String formatDate = sdf.format(date);
+
+        Map<String, Object> paramMap = new HashMap<>();
+        paramMap.put("date", formatDate + "%");
+        List<Integer> departmentIdList = new ArrayList<>();
+        if (subject.isPermitted("查询所有部门首页数据")) {
+        } else {
+
+            int departmentId = users.getDepartmentId();
+            boolean contains = Arrays.asList(new Integer[]{17, 18, 19, 20}).contains(departmentId);
+            if (contains) {
+                departmentIdList.add(departmentId);
+            }
+        }
+        if (departmentIdList.size() > 0) {
+            for (Integer departmentId : departmentIdList) {
+                Map<String, Object> jxEmoloyeeNameMapMap = new HashMap<>();
+                List<String> yxEmployeeNameList = new ArrayList<>();
+                Map<String, Object> resultMap = new HashMap<>();
+                paramMap.put("departmentId", departmentId);
+                //天气的城市码和城市名称
+                Map<String, Object> cityCodeAndName = getCityCodeAndNameByDepartmentId(departmentId);
+                resultMap.putAll(cityCodeAndName);
+                //部门名称
+                Company company = companyService.getCompanyById(departmentId.toString());
+                resultMap.put("departmentId", departmentId);
+                resultMap.put("departmentName", company.getName());
+                //解析数据,返回统计数据,并且在参数中计算检修人员名单
+                List<Map<String, Object>> staticsList = this.parseJXRecoreListByDepartmentId(paramMap, jxEmoloyeeNameMapMap, yxEmployeeNameList);
+                Collection<Object> jxData = jxEmoloyeeNameMapMap.values();
+                resultMap.put("departmentJXData", jxData);
+                resultMap.put("departmentYXData", yxEmployeeNameList);
+                resultMap.put("staticsData", staticsList);
+                resultMapList.add(resultMap);
+            }
+        }
+
+        return new Result(resultMapList.size(), resultMapList, 200, "查询成功");
+    }
+
+
+    /**
+     * 解析不同的部门的首页元数据
+     *
+     * @param paramMap
+     * @param jxEmoloyeeNameMapMap
+     * @return
+     */
+    public List<Map<String, Object>> parseJXRecoreListByDepartmentId(Map<String, Object> paramMap, Map<String, Object> jxEmoloyeeNameMapMap, List<String> yxEmploeeNameList) {
+        List<Map<String, Object>> mapListMapList = new ArrayList<>();
+
+        Map<String, Object> mapListMap;
+
+        Date date = new Date();
+        Date thisDayBegin = DateFormat.getThisDayTimeBegin(date, 0, 0);
+        Date nextDayBegin = DateFormat.getThisDayTimeBegin(date, 1, 0);
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+
+        //任务完成率  已完成数量
+        int countFinished = 0;
+        int countUnfinished = 0;
+
+        //当月维护数据
+        List<MaintainRecord> maintainRecordListThisMonth = indexDataService.getMaintainRecordByMap(paramMap);
+        if (maintainRecordListThisMonth.size() > 0) {
+            //当天维护数据
+            List<MaintainRecord> maintainRecordListThisDay = maintainRecordListThisMonth.stream().filter(item ->
+                    item.getCreateTime().after(thisDayBegin) && item.getCreateTime().before(nextDayBegin)
+            ).collect(Collectors.toList());
+            //解析当天检修人员名单 维护部分
+            this.parseJXRecordList(maintainRecordListThisDay, jxEmoloyeeNameMapMap);
+
+            //当天维护数据 按状态分
+            Map<String, List<MaintainRecord>> maintainRecordListThisDayGroupByStatus = maintainRecordListThisDay.stream().collect(Collectors.groupingBy(MaintainRecord::getStatus));
+
+            countFinished += maintainRecordListThisDayGroupByStatus.get("2") != null ? maintainRecordListThisDayGroupByStatus.get("2").size() : 0;
+            countUnfinished += maintainRecordListThisDay.size() - (maintainRecordListThisDayGroupByStatus.get("2") != null ? maintainRecordListThisDayGroupByStatus.get("2").size() : 0);
+
+        }
+        //当月缺陷数
+        List<Defect> defectListThisMonth = indexDataService.getDefectByMap(paramMap);
+        if (defectListThisMonth.size() > 0) {
+            //当月缺陷数 按类型分
+            Map<Integer, List<Defect>> defectListThisMonthGroupByType = defectListThisMonth.stream().collect(Collectors.groupingBy(Defect::getType));
+            //当月缺陷统计数据
+            mapListMap = this.parseDefectStaticsData(defectListThisMonthGroupByType, "当月缺陷统计");
+            mapListMapList.add(mapListMap);
+
+            //当天缺陷数
+            List<Defect> defectListThisDay = defectListThisMonth.stream().filter(
+                    item -> item.getCreated().compareTo(sdf.format(thisDayBegin)) > 0 && item.getCreated().compareTo(sdf.format(nextDayBegin)) < 0
+            ).collect(Collectors.toList());
+
+            //解析当天检修人员名单 缺陷部分
+            this.parseJXRecordList(defectListThisDay, jxEmoloyeeNameMapMap);
+            //当天缺陷 按类型分
+            Map<Integer, List<Defect>> defectListThisDayGroupByType = defectListThisDay.stream().collect(Collectors.groupingBy(Defect::getType));
+            //当天缺陷统计数据
+            mapListMap = this.parseDefectStaticsData(defectListThisDayGroupByType, "当天缺陷统计");
+            mapListMapList.add(mapListMap);
+
+            countFinished += defectListThisDayGroupByType.get(4) != null ? defectListThisDayGroupByType.get(4).size() : 0;
+            countUnfinished += defectListThisDay.size() - (defectListThisDayGroupByType.get(4) != null ? defectListThisDayGroupByType.get(4).size() : 0);
+        }
+
+        //当天任务完成率
+        mapListMap = this.parseFinishRate(countFinished, countUnfinished, "当天检修任务完成率");
+        mapListMapList.add(mapListMap);
+
+        /* <- 运行人员名单  */
+        SimpleDateFormat sdf1 = new SimpleDateFormat("yyyy-MM-dd");
+        paramMap.put("date", sdf1.format(date) + "%");
+        Date thisDayBegin8 = DateFormat.getThisDayTimeBegin(date, 0, 8);
+        Date thisDayBegin16 = DateFormat.getThisDayTimeBegin(date, 0, 16);
+        Integer type = null;
+        String endTime = "";
+        String startTime;
+        if (thisDayBegin.getTime() < date.getTime() && date.getTime() < thisDayBegin8.getTime()) {
+            type = 3;
+            startTime = sdf.format(thisDayBegin);
+            endTime = sdf.format(thisDayBegin8);
+        } else if (thisDayBegin8.getTime() < date.getTime() && date.getTime() < thisDayBegin16.getTime()) {
+            type = 1;
+            startTime = sdf.format(thisDayBegin8);
+            endTime = sdf.format(thisDayBegin16);
+        } else {
+            type = 2;
+            startTime = sdf.format(thisDayBegin16);
+            endTime = sdf.format(nextDayBegin);
+        }
+
+        //当天运行人员名单
+        List<ScrDaily> scrDailyList = indexDataService.getScrDailyByMap(paramMap);
+        Integer finalType = type;
+        List<ScrDaily> thisTimeScrDailyList = scrDailyList.stream().filter(item -> item.getType() == finalType).collect(Collectors.toList());
+        if (thisTimeScrDailyList != null && thisTimeScrDailyList.size() > 0) {
+            for (ScrDaily scrDaily : thisTimeScrDailyList) {
+                String successor = scrDaily.getSuccessor();
+                String[] successors = null;
+                if (!StringUtils.isEmpty(successor)) {
+                    successors = successor.split(";");
+                }
+                if (successors != null) {
+                    for (String userNumber : successors) {
+                        Users userByEmployeeId = userService.getUserByUserNumber(userNumber);
+                        if (userByEmployeeId != null) {
+                            yxEmploeeNameList.add(userByEmployeeId.getUserName());
+                        }
+                    }
+                }
+            }
+        }
+
+        paramMap.put("startTime", sdf.format(thisDayBegin));
+        paramMap.put("endTime", sdf.format(nextDayBegin));
+        List<Map<String, Object>> thisDayYxStsticMapList = indexDataService.getPostPeratorDataMapByMap(paramMap);
+        int countThisDayFrequency = thisDayYxStsticMapList.stream().mapToInt(item -> Integer.valueOf((String) item.get("frequency"))).sum();
+        int countThisDayPoint = thisDayYxStsticMapList.stream().mapToInt(item -> Integer.valueOf((String) item.get("point"))).sum();
+        mapListMap = this.parseYxStatic(countThisDayFrequency, countThisDayPoint, "当天检修统计");
+        mapListMapList.add(mapListMap);
+        paramMap.put("startTime", startTime);
+        paramMap.put("endTime", endTime);
+        List<Map<String, Object>> thisShiftYxStsticMapList = indexDataService.getPostPeratorDataMapByMap(paramMap);
+        int countThisShiftFrequency = thisShiftYxStsticMapList.stream().mapToInt(item -> Integer.valueOf((String) item.get("frequency"))).sum();
+        int countThisShiftPoint = thisShiftYxStsticMapList.stream().mapToInt(item -> Integer.valueOf((String) item.get("point"))).sum();
+        mapListMap = this.parseYxStatic(countThisShiftFrequency, countThisShiftPoint, "当班检修统计");
+        mapListMapList.add(mapListMap);
+        return mapListMapList;
+    }
+
+    /**
+     * 检修统计图
+     *
+     * @param countFrequency 检修次数
+     * @param countPoint     检修点数
+     * @param name
+     * @return
+     */
+    private Map<String, Object> parseYxStatic(int countFrequency, int countPoint, String name) {
+        Map<String, Object> mapListMap = new HashMap<>();
+        List<Map<String, Object>> mapList = new ArrayList<>();
+        Map<String, Object> map;
+        if (countFrequency > 0) {
+            map = new HashMap<>();
+            map.put("name", "检修次数");
+            map.put("value", countFrequency);
+            mapList.add(map);
+        }
+        if (countPoint > 0) {
+            map = new HashMap<>();
+            map.put("name", "检修点数");
+            map.put("value", countPoint);
+            mapList.add(map);
+        }
+        mapListMap.put("name", name);
+        mapListMap.put("data", mapList);
+        return mapListMap;
+    }
+
+    //当前检修任务完成率
+    private Map<String, Object> parseFinishRate(int countFinished, int countUnfinished, String name) {
+        Map<String, Object> mapListMap = new HashMap<>();
+        List<Map<String, Object>> mapList = new ArrayList<>();
+        Map<String, Object> map;
+        if (countFinished > 0) {
+            map = new HashMap<>();
+            map.put("name", "已完成");
+            map.put("value", countFinished);
+            mapList.add(map);
+        }
+        if (countUnfinished > 0) {
+            map = new HashMap<>();
+            map.put("name", "未完成");
+            map.put("value", countUnfinished);
+            mapList.add(map);
+        }
+        mapListMap.put("name", name);
+        mapListMap.put("data", mapList);
+        return mapListMap;
+    }
+
+
+    /**
+     * 解析统计图
+     *
+     * @param defectListGroupByType
+     * @param name
+     * @return
+     */
+    public Map<String, Object> parseDefectStaticsData(Map<Integer, List<Defect>> defectListGroupByType, String name) {
+
+        Map<String, Object> mapListMap = new HashMap<>();
+        List<Map<String, Object>> mapList = new ArrayList<>();
+        //得到Key
+        Set<Integer> defectListThisMonthGroupByTypeKeySet = defectListGroupByType.keySet();
+        for (Integer defectListGroupByTypeKey : defectListThisMonthGroupByTypeKeySet) {
+            Map<String, Object> map = new HashMap<>();
+            List<Defect> defectListByTypeId = defectListGroupByType.get(defectListGroupByTypeKey);
+            //添加每一类的大小
+            map.put("value", defectListByTypeId.size());
+
+            //添加颜色和名称
+            map.putAll(this.getDefectKVByType(defectListGroupByTypeKey));
+            mapList.add(map);
+        }
+        mapListMap.put("name", name);
+        mapListMap.put("data", mapList);
+        return mapListMap;
+    }
+
+    public Map<String, Object> getDefectKVByType(Integer type) {
+        Map<String, Object> resultMap = new HashMap<>();
+        Map<String, Object> map = new HashMap<>();
+        if (type == 1) {
+            resultMap.put("name", "未认领");
+            map.put("color", "red");
+            resultMap.put("itemStyle", map);
+        } else if (type == 5) {
+            resultMap.put("name", "已认领");
+            map.put("color", "#dcb422");
+            resultMap.put("itemStyle", map);
+        } else if (type == 2) {
+            resultMap.put("name", "消缺中");
+            map.put("color", "#ff8100");
+            resultMap.put("itemStyle", map);
+        } else if (type == 3) {
+            resultMap.put("name", "已消缺");
+            map.put("color", "#8fc323");
+            resultMap.put("itemStyle", map);
+        } else if (type == 4) {
+            resultMap.put("name", "已完成");
+            map.put("color", "green");
+            resultMap.put("itemStyle", map);
+        } else {
+            resultMap.put("name", "延期中");
+            map.put("color", "#001580");
+            resultMap.put("itemStyle", map);
+        }
+        return resultMap;
+    }
+
+
+    /**
+     * 解析 每一个部门的列表
+     *
+     * @param list
+     * @param jxEmoloyeeNameMapMap
+     * @return
+     */
+    public void parseJXRecordList(List list, Map<String, Object> jxEmoloyeeNameMapMap) {
+        for (Object record : list) {
+            String employeeIdStr = null;
+            //如果是维护类的示例  否则判断是缺陷类的实例
+            if (record instanceof MaintainRecord) {
+                employeeIdStr = ((MaintainRecord) record).getEmployeeId();
+            } else if (record instanceof Defect) {
+                employeeIdStr = ((Defect) record).getEmpIds();
+            }
+            if (employeeIdStr == null || "".equals(employeeIdStr.trim())) {
+                continue;
+            }
+            //解析数据
+            parseJXRecord(employeeIdStr, jxEmoloyeeNameMapMap);
+        }
+    }
+
+    /**
+     * 解析每一条记录
+     *
+     * @param employeeIdStr
+     * @param jxEmoloyeeNameMapMap
+     * @return
+     */
+    public void parseJXRecord(String employeeIdStr, Map<String, Object> jxEmoloyeeNameMapMap) {
+        Map<String, Object> emoloyeeNameMap = null;
+        if (employeeIdStr != null && !"".equals(employeeIdStr.trim())) {
+            String[] employeeIds = employeeIdStr.split(",");
+            if (employeeIds.length > 0) {
+                for (String employeeId : employeeIds) {
+                    //jxEmoloyeeNameMapMap中是否含有该用户编号的key
+                    if (!jxEmoloyeeNameMapMap.containsKey(employeeId)) {
+
+                        //查询用户名并初始化任务数量为一
+                        emoloyeeNameMap = new HashMap<>();
+                        Users usersByEmployeeId = userService.getUserByEmployeeId(employeeId);
+                        if (usersByEmployeeId != null) {
+                            emoloyeeNameMap.put("name", usersByEmployeeId.getUserName());
+                            emoloyeeNameMap.put("taskNum", 1);
+                            jxEmoloyeeNameMapMap.put(employeeId, emoloyeeNameMap);
+                        }
+                    } else {
+                        //根据employeeId查询数据,并使任务数据加一
+                        emoloyeeNameMap = (Map<String, Object>) jxEmoloyeeNameMapMap.get(employeeId);
+                        emoloyeeNameMap.put("taskNum", (Integer) emoloyeeNameMap.get("taskNum") + 1);
+                        jxEmoloyeeNameMapMap.put(employeeId, emoloyeeNameMap);
+                    }
+                }
+            }
+        }
+    }
+
+
+    /**
+     * 根据部门得到地区码
+     *
+     * @param departmentId
+     * @return
+     */
+    public Map<String, Object> getCityCodeAndNameByDepartmentId(Integer departmentId) {
+        Map<String, Object> map = new HashMap<>();
+        if (departmentId == 17 || departmentId == 18) {
+            map.put("cityCode", "101210301");
+            map.put("cityName", "嘉兴市");
+        } else if (departmentId == 19) {
+            map.put("cityCode", "101210901");
+            map.put("cityName", "嘉兴市");
+        } else {
+            map.put("cityCode", "101210101");
+            map.put("cityName", "杭州市");
+        }
+        return map;
+    }
+
 
 }

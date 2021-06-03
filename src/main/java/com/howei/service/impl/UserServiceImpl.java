@@ -147,4 +147,15 @@ public class UserServiceImpl implements UserService {
     public List<Users> searchUsersList(Map map) {
         return usersMapper.searchUsersList(map);
     }
+
+    @Override
+    public Users getUserByEmployeeId(String employeeId) {
+
+        return usersMapper.getUserByEmployeeId(employeeId);
+    }
+
+    @Override
+    public Users getUserByUserNumber(String userNumber) {
+        return usersMapper.getUserByUserNumber(userNumber);
+    }
 }
