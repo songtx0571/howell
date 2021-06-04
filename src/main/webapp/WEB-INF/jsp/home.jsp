@@ -63,7 +63,7 @@
                         </li>
                     </shiro:hasPermission>
                     <shiro:hasPermission name="权限管理">
-                        <li onclick="administration('authorityManagement')><span" style="margin-right: 8px;">权限管理</span>
+                        <li onclick="administration('authorityManagement')"><span style="margin-right: 8px;">权限管理</span>
                         </li>
                     </shiro:hasPermission>
                     <shiro:hasPermission name="通讯管理">

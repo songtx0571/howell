@@ -419,6 +419,7 @@ public class HomeController {
         paramMap.put("date", formatDate + "%");
         List<Integer> departmentIdList = new ArrayList<>();
         if (subject.isPermitted("查询所有部门首页数据")) {
+            departmentIdList= Arrays.asList(new Integer[]{17, 18, 19, 20});
         } else {
 
             int departmentId = users.getDepartmentId();
@@ -569,8 +570,8 @@ public class HomeController {
         paramMap.put("startTime", sdf.format(thisDayBegin));
         paramMap.put("endTime", sdf.format(nextDayBegin));
         List<Map<String, Object>> thisDayYxStsticMapList = indexDataService.getPostPeratorDataMapByMap(paramMap);
-        int countThisDayFrequency = thisDayYxStsticMapList.stream().mapToInt(item -> Integer.valueOf((String) item.get("frequency"))).sum();
-        int countThisDayPoint = thisDayYxStsticMapList.stream().mapToInt(item -> Integer.valueOf((String) item.get("point"))).sum();
+        int countThisDayFrequency = (int) thisDayYxStsticMapList.stream().mapToLong(item -> (long) item.get("frequency")).sum();
+        int countThisDayPoint = (int) thisDayYxStsticMapList.stream().mapToLong(item ->  (long)item.get("point")).sum();
         mapListMap = this.parseYxStatic(countThisDayFrequency, countThisDayPoint, "当天检修统计");
         mapListMapList.add(mapListMap);
         paramMap.put("startTime", startTime);
