@@ -50,22 +50,31 @@
 
 .weatherBox {
     width: 316px;
-    height: 362px;
+    /*height: 362px;*/
+    height: 600px;
     background: #FFFFFF;
     box-shadow: 0px 2px 10px 10px rgba(0, 86, 255, 0.2);
     border-radius: 4px;
     float: left;
     padding: 20px 0 20px 20px;
     box-sizing: border-box;
+    margin-top: 10px;
 }
 
-@media (min-width: 842px) {
+@media (min-width: 842px) and (max-width: 935px) {
     .weatherBox {
-        width: 316px;
-        margin-left: 0px;
+        width: 38%;
         margin-top: 10px;
     }
 }
+
+/*@media (min-width: 842px) {
+    .weatherBox {
+        width: 35%;
+        margin-left: 0px;
+        margin-top: 10px;
+    }
+}*/
 
 
 @media (max-width: 841px) {
@@ -101,17 +110,28 @@
 }
 
 .weather_carousel {
-    height: 246px;
+    /*height: 246px;
+    overflow: hidden;*/
+
+    height: 499px;
     overflow: hidden;
 }
 
 .left {
-    width: 45%;
+   /* width: 45%;
     height: 242px;
     background: #F3F6FB;
     border-radius: 4px;
     float: left;
+    margin-right: 10px;*/
+
+
+    width: 279px;
+    height: 230px;
+    background: #F3F6FB;
+    border-radius: 4px;
     margin-right: 10px;
+    margin-bottom: 15px;
 }
 
 .left p {
@@ -179,20 +199,23 @@
 }*/
 
 .overhaulBox {
-    width: 496px;
+    /*width: 496px;*/
+    width: 580px;
     height: 249px;
     background: #FFFFFF;
     box-shadow: 0px 2px 10px 10px rgba(0, 86, 255, 0.1);
     border-radius: 4px;
     float: left;
      margin-left: 10px;
+    margin-top: 10px;
     padding: 20px 20px 11px 20px;
     box-sizing: border-box;
 }
 
-@media (min-width: 842px) {
+@media (min-width: 842px) and (max-width: 935px)  {
     .overhaulBox {
-        width: 494px;
+        /*width: 494px;*/
+        width: 60%;
         margin-top: 10px;
     }
 }
@@ -271,6 +294,13 @@
     float: left;
 }
 
+@media (min-width: 842px) and (max-width: 935px) {
+    .functionDivUp {
+        width: 38%;
+        margin-top: 10px;
+    }
+}
+
 @media (max-width: 841px) {
     .functionDivUp {
         width: 35%;
@@ -280,7 +310,8 @@
 }
 
 .functionDivDown {
-    width: 494px;
+    /*width: 494px;*/
+    width: 580px;
     box-shadow: 0px 2px 10px 10px rgba(0, 86, 255, 0.1);
     border-radius: 4px;
     padding: 20px 20px 0 20px;
@@ -288,8 +319,15 @@
     margin-top: 10px;
     float: left;
     margin-left: 10px;
-    height: 362px;
+    /*height: 362px;*/
+    height: 600px;
     background: #fff;
+}
+@media (min-width: 842px) and (max-width: 935px) {
+    .functionDivDown {
+        width: 60%;
+        margin-top: 10px;
+    }
 }
 
 @media (max-width: 841px) {
@@ -312,6 +350,14 @@
 }
 
 .left_toDay {
+    /*width: 75px;
+    height: 22px;
+    font-family: PingFangSC-Regular;
+    font-size: 16px;
+    color: #252631;
+    font-weight: 400;
+    margin: 20px auto;*/
+
     width: 75px;
     height: 22px;
     font-family: PingFangSC-Regular;
@@ -319,6 +365,7 @@
     color: #252631;
     font-weight: 400;
     margin: 20px auto;
+    line-height: 45px;
 }
 
 .left_font span {
@@ -363,9 +410,20 @@ body::-webkit-scrollbar {
     display: none;
 }
 
+.pinjie{
+    width: 907px;
+    margin: 0 auto;
+}
+@media (max-width: 841px) {
+    .pinjie{
+        width: 100%;
+    }
+}
 .notice{
-    width: 820px;
-    margin-top: 15px;
+    /*width: 820px;*/
+    /*margin-top: 15px;*/
+    width: 907px;
+    margin: 15px auto 0px;
 }
 @media (max-width: 841px) {
     .notice{

@@ -19,7 +19,7 @@ if (day < 10) {
 
 var pieJson = "";//拼接
 
-$(function (){
+$(function () {
     $.ajax({
         type: 'get',
         url: "/getUserInfo",
@@ -48,19 +48,19 @@ function pinjie() {
         dataType: "json",
         success: function (data) {
             data1 = data.data;
-            for (var z = 0; z < data1.length; z ++) {
+            for (let z = 0; z < data1.length; z++) {
                 data = data1[z];
-                var div = "<div class=\"warp1\"><div class=\"title\"><i class=\"title_quote\"></i><span class=\"title_name\">"+data.departmentName+"</span></div><div class=\"clear\"></div>" +
-                    "<div class=\"weatherBox\"><p><span class=\"iconfont icon-dizhi\" style=\"margin-right: 11px;color: #0000FF;\"></span><span class=\"weather_address weather_address1\">"+data.cityName+"</span></p><p class=\"weather_toDay\"></p><div class=\"weather_carousel weather_carousel1\"></div><div class=\"clear\"></div></div><div class=\"functionDivDown\"><ul>";
+                var div = "<div class=\"warp1\"><div class=\"title\"><i class=\"title_quote\"></i><span class=\"title_name\">" + data.departmentName + "</span></div><div class=\"clear\"></div>" +
+                    "<div class=\"weatherBox\"><p><span class=\"iconfont icon-dizhi\" style=\"margin-right: 11px;color: #0000FF;\"></span><span class=\"weather_address weather_address1\">" + data.cityName + "</span></p><p class=\"weather_toDay\"></p><div class=\"weather_carousel weather_carousel1\"></div><div class=\"clear\"></div></div><div class=\"functionDivDown\"><ul>";
                 pieJson = data.staticsData;
                 for (let i = 0; i < data.staticsData.length; i++) {
-                    div += "<li><p><span class=\"iconfont icon-triangle-right\" style=\"margin-right: 8px;color: #0000FF;\"></span><span class=\"functionUp_title\">"+data.staticsData[i].name+"</span></p><div id='main"+z+""+i+"' style=\"width: 64px;height:64px;margin: 10px auto 0;\"></div></li>";
+                    div += "<li><p><span class=\"iconfont icon-triangle-right\" style=\"margin-right: 8px;color: #0000FF;\"></span><span class=\"functionUp_title\">" + data.staticsData[i].name + "</span></p><div id='main" + z + "" + i + "' style=\"width: 230px;height:150px;margin: 10px auto 0;\"></div></li>";
                 }
-                div += "</ul></div><div class=\"clear\"></div><div class=\"functionDivUp\"><p><span class=\"iconfont icon-peoples\" style=\"margin-right: 11px;color: #0000FF;\"></span><span class=\"functionUp_title\">运行人员名单</span></p><i class=\"functionUp_line\"></i><ul class=\"functionUp_person functionUp_person0\">"
+                div += "</ul></div><div class=\"clear\"></div><div class='functionDivUp functionDivUp"+z+"'><p><span class=\"iconfont icon-peoples\" style=\"margin-right: 11px;color: #0000FF;\"></span><span class=\"functionUp_title\">运行人员名单</span></p><i class=\"functionUp_line\"></i><ul class=\"functionUp_person functionUp_person0\">"
                 for (var i = 0; i < data.departmentYXData.length; i++) {
                     div += "<li>" + data.departmentYXData[i] + "</li>"
                 }
-                div += "</ul></div><div class=\"overhaulBox\"><p><span class=\"iconfont icon-peoples\" style=\"margin-right: 11px;color: #0000FF;\"></span><span class=\"overhaul_title\">检修人员名单</span></p><i class=\"overhaul_line\"></i><ul class=\"overhaul_person overhaul_person0\">"
+                div += "</ul></div><div class='overhaulBox overhaulBox"+z+"'><p><span class=\"iconfont icon-peoples\" style=\"margin-right: 11px;color: #0000FF;\"></span><span class=\"overhaul_title\">检修人员名单</span></p><i class=\"overhaul_line\"></i><ul class=\"overhaul_person overhaul_person0\">"
                 for (var i = 0; i < data.departmentJXData.length; i++) {
                     div += "<li><span>" + data.departmentJXData[i].name + "</span><span class=\"layui-badge li_badge\">" + data.departmentJXData[i].taskNum + "</span></li>"
                 }
@@ -71,7 +71,12 @@ function pinjie() {
                     fullWeather(data.cityCode, j);
                 }
                 for (let i = 0; i < data.staticsData.length; i++) {
-                    pieChart('main',i,data.staticsData[i].name,z);
+                    pieChart('main', i, data.staticsData[i].name, z);
+                }
+
+                if (data.departmentName != "嘉爱斯项目部") {
+                    $(".functionDivUp"+z).css("height","149");
+                    $(".overhaulBox"+z).css("height","149");
                 }
             }
         }
@@ -83,8 +88,8 @@ function pinjie() {
 }
 
 //饼状图
-function pieChart(id,i,name,z) {
-    id = id+z+i;
+function pieChart(id, i, name, z) {
+    id = id + z + i;
     var dom = document.getElementById(id);
     var data = pieJson[i].data;
     if (data == "") {
@@ -101,16 +106,34 @@ function pieChart(id,i,name,z) {
                 {
                     name: name,
                     type: 'pie',
-                    radius: ['60%', '90%'],
+                    radius: ['20%', '40%'],
                     avoidLabelOverlap: false,
                     itemStyle: {
                         borderRadius: 0,
                         borderColor: '#fff',
-                        borderWidth: 1
+                        borderWidth: 2
                     },
                     label: {
-                        show: false,
-                        position: 'center'
+                        normal: {
+                            show: true,
+                            formatter: (params) => {
+                                return '{c|' + params.value + '}\n{a|' + params.name + '}';
+                            }, rich: {
+                                c: {
+                                    fontSize: 18,
+                                    lineHeight: 30,
+                                    width: "16",
+                                    align: 'center',
+                                    backgroundColor: "white"
+                                },
+                                a: {
+                                    color: '#999',
+                                    fontSize: 14,
+                                    lineHeight: 30,
+                                    align: 'center'
+                                }
+                            }
+                        }
                     },
                     emphasis: {
                         label: {
@@ -120,7 +143,7 @@ function pieChart(id,i,name,z) {
                         }
                     },
                     labelLine: {
-                        show: false
+                        show: true
                     },
                     data: data
                 }
@@ -201,6 +224,7 @@ function getUserSetting() {
         }
     };
 }
+
 //颜色选择
 function colorFun() {
     layui.use('colorpicker', function () {
