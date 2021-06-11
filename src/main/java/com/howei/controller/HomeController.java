@@ -359,7 +359,7 @@ public class HomeController {
         return list;
     }
 
-    @RequestMapping(value = "/getLoginInfo")
+    @RequestMapping(value = "/getLoginInf")
     @ResponseBody
     public String getLoginInf() {
         Subject subject = SecurityUtils.getSubject();
@@ -418,8 +418,8 @@ public class HomeController {
 
         List<Integer> departmentIdList = new ArrayList<>();
         if (subject.isPermitted("查询所有部门首页数据")) {
-            departmentIdList = Arrays.asList(new Integer[]{17, 18, 19, 20});
         } else {
+
             int departmentId = users.getDepartmentId();
             boolean contains = Arrays.asList(new Integer[]{17, 18, 19, 20}).contains(departmentId);
             if (contains) {
