@@ -30,7 +30,7 @@ import javax.servlet.DispatcherType;
 import javax.servlet.Filter;
 import java.util.*;
 
-@Configuration
+//@Configuration
 public class ShiroConfig {
 
     @Value("${shiro.loginUrl}")
@@ -102,9 +102,15 @@ public class ShiroConfig {
         sessionManager.setGlobalSessionTimeout(14400000);
         //是否开启删除无效的session对象  默认为true
         sessionManager.setDeleteInvalidSessions(true);
-        sessionManager.setSessionIdCookie(new SimpleCookie("sessionUser"));
+        sessionManager.setSessionIdCookie(getSessionIdCookie());
         return sessionManager;
     }
+    @Bean(name="sessionIdCookie")
+    public SimpleCookie getSessionIdCookie(){
+        SimpleCookie simpleCookie = new SimpleCookie(jessionId);
+        return simpleCookie;
+    }
+
 
     /**
      * cacheManager 缓存 redis实现

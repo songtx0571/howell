@@ -359,7 +359,7 @@ public class HomeController {
         return list;
     }
 
-    @RequestMapping(value = "/getLoginInf")
+    @RequestMapping(value = "/getLoginInfo")
     @ResponseBody
     public String getLoginInf() {
         Subject subject = SecurityUtils.getSubject();
@@ -415,12 +415,11 @@ public class HomeController {
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM");
         String formatDate = sdf.format(date);
 
-        Map<String, Object> paramMap = new HashMap<>();
-        paramMap.put("date", formatDate + "%");
+
         List<Integer> departmentIdList = new ArrayList<>();
         if (subject.isPermitted("查询所有部门首页数据")) {
+            departmentIdList = Arrays.asList(new Integer[]{17, 18, 19, 20});
         } else {
-
             int departmentId = users.getDepartmentId();
             boolean contains = Arrays.asList(new Integer[]{17, 18, 19, 20}).contains(departmentId);
             if (contains) {
@@ -429,6 +428,8 @@ public class HomeController {
         }
         if (departmentIdList.size() > 0) {
             for (Integer departmentId : departmentIdList) {
+                Map<String, Object> paramMap = new HashMap<>();
+                paramMap.put("date", formatDate + "%");
                 Map<String, Object> jxEmoloyeeNameMapMap = new HashMap<>();
                 List<String> yxEmployeeNameList = new ArrayList<>();
                 Map<String, Object> resultMap = new HashMap<>();
@@ -467,8 +468,8 @@ public class HomeController {
         Map<String, Object> mapListMap;
 
         Date date = new Date();
-        Date thisDayBegin = DateFormat.getThisDayTimeBegin(date, 0, 0);
-        Date nextDayBegin = DateFormat.getThisDayTimeBegin(date, 1, 0);
+        Date thisDayBegin = DateFormat.getThisDayTimeBegin(date, -1, 17);
+        Date nextDayBegin = DateFormat.getThisDayTimeBegin(date, 0, 17);
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
         //任务完成率  已完成数量
@@ -477,49 +478,45 @@ public class HomeController {
 
         //当月维护数据
         List<MaintainRecord> maintainRecordListThisMonth = indexDataService.getMaintainRecordByMap(paramMap);
-        if (maintainRecordListThisMonth.size() > 0) {
-            //当天维护数据
-            List<MaintainRecord> maintainRecordListThisDay = maintainRecordListThisMonth.stream().filter(item ->
-                    item.getCreateTime().after(thisDayBegin) && item.getCreateTime().before(nextDayBegin)
-            ).collect(Collectors.toList());
-            //解析当天检修人员名单 维护部分
-            this.parseJXRecordList(maintainRecordListThisDay, jxEmoloyeeNameMapMap);
+        //当天维护数据
+        List<MaintainRecord> maintainRecordListThisDay = maintainRecordListThisMonth.stream().filter(item ->
+                item.getCreateTime().after(thisDayBegin) && item.getCreateTime().before(nextDayBegin)
+        ).collect(Collectors.toList());
+        //解析当天检修人员名单 维护部分
+        this.parseJXRecordList(maintainRecordListThisDay, jxEmoloyeeNameMapMap);
 
-            //当天维护数据 按状态分
-            Map<String, List<MaintainRecord>> maintainRecordListThisDayGroupByStatus = maintainRecordListThisDay.stream().collect(Collectors.groupingBy(MaintainRecord::getStatus));
+        //当天维护数据 按状态分
+        Map<String, List<MaintainRecord>> maintainRecordListThisDayGroupByStatus = maintainRecordListThisDay.stream().collect(Collectors.groupingBy(MaintainRecord::getStatus));
 
-            countFinished += maintainRecordListThisDayGroupByStatus.get("2") != null ? maintainRecordListThisDayGroupByStatus.get("2").size() : 0;
-            countUnfinished += maintainRecordListThisDay.size() - (maintainRecordListThisDayGroupByStatus.get("2") != null ? maintainRecordListThisDayGroupByStatus.get("2").size() : 0);
+        countFinished += maintainRecordListThisDayGroupByStatus.get("2") != null ? maintainRecordListThisDayGroupByStatus.get("2").size() : 0;
+        countUnfinished += maintainRecordListThisDay.size() - (maintainRecordListThisDayGroupByStatus.get("2") != null ? maintainRecordListThisDayGroupByStatus.get("2").size() : 0);
 
-        }
         //当月缺陷数
         List<Defect> defectListThisMonth = indexDataService.getDefectByMap(paramMap);
-        if (defectListThisMonth.size() > 0) {
-            //当月缺陷数 按类型分
-            Map<Integer, List<Defect>> defectListThisMonthGroupByType = defectListThisMonth.stream().collect(Collectors.groupingBy(Defect::getType));
-            //当月缺陷统计数据
-            mapListMap = this.parseDefectStaticsData(defectListThisMonthGroupByType, "当月缺陷统计");
-            mapListMapList.add(mapListMap);
+        //当月缺陷数 按类型分
+        Map<Integer, List<Defect>> defectListThisMonthGroupByType = defectListThisMonth.stream().collect(Collectors.groupingBy(Defect::getType));
+        //当月缺陷统计数据
+        mapListMap = this.parseDefectStaticsData(defectListThisMonthGroupByType, "当月缺陷统计");
+        mapListMapList.add(mapListMap);
 
-            //当天缺陷数
-            List<Defect> defectListThisDay = defectListThisMonth.stream().filter(
-                    item -> item.getCreated().compareTo(sdf.format(thisDayBegin)) > 0 && item.getCreated().compareTo(sdf.format(nextDayBegin)) < 0
-            ).collect(Collectors.toList());
+        //当天缺陷数
+        List<Defect> defectListThisDay = defectListThisMonth.stream().filter(
+                item -> item.getCreated().compareTo(sdf.format(thisDayBegin)) > 0 && item.getCreated().compareTo(sdf.format(nextDayBegin)) < 0
+        ).collect(Collectors.toList());
 
-            //解析当天检修人员名单 缺陷部分
-            this.parseJXRecordList(defectListThisDay, jxEmoloyeeNameMapMap);
-            //当天缺陷 按类型分
-            Map<Integer, List<Defect>> defectListThisDayGroupByType = defectListThisDay.stream().collect(Collectors.groupingBy(Defect::getType));
-            //当天缺陷统计数据
-            mapListMap = this.parseDefectStaticsData(defectListThisDayGroupByType, "当天缺陷统计");
-            mapListMapList.add(mapListMap);
+        //解析当天检修人员名单 缺陷部分
+        this.parseJXRecordList(defectListThisDay, jxEmoloyeeNameMapMap);
+        //当天缺陷 按类型分
+        Map<Integer, List<Defect>> defectListThisDayGroupByType = defectListThisDay.stream().collect(Collectors.groupingBy(Defect::getType));
+        //当天缺陷统计数据
+        mapListMap = this.parseDefectStaticsData(defectListThisDayGroupByType, "当天缺陷统计");
+        mapListMapList.add(mapListMap);
 
-            countFinished += defectListThisDayGroupByType.get(4) != null ? defectListThisDayGroupByType.get(4).size() : 0;
-            countUnfinished += defectListThisDay.size() - (defectListThisDayGroupByType.get(4) != null ? defectListThisDayGroupByType.get(4).size() : 0);
-        }
+        countFinished += defectListThisDayGroupByType.get(4) != null ? defectListThisDayGroupByType.get(4).size() : 0;
+        countUnfinished += defectListThisDay.size() - (defectListThisDayGroupByType.get(4) != null ? defectListThisDayGroupByType.get(4).size() : 0);
 
         //当天任务完成率
-        mapListMap = this.parseFinishRate(countFinished, countUnfinished, "当天检修任务完成率");
+        mapListMap = this.parseFinishRate(countFinished, countUnfinished, "当天巡检任务完成率");
         mapListMapList.add(mapListMap);
 
         /* <- 运行人员名单  */
@@ -527,7 +524,7 @@ public class HomeController {
         paramMap.put("date", sdf1.format(date) + "%");
         Date thisDayBegin8 = DateFormat.getThisDayTimeBegin(date, 0, 8);
         Date thisDayBegin16 = DateFormat.getThisDayTimeBegin(date, 0, 16);
-        Integer type = null;
+        Integer type = null; //白班 中班,夜班
         String endTime = "";
         String startTime;
         if (thisDayBegin.getTime() < date.getTime() && date.getTime() < thisDayBegin8.getTime()) {
@@ -569,16 +566,16 @@ public class HomeController {
         paramMap.put("startTime", sdf.format(thisDayBegin));
         paramMap.put("endTime", sdf.format(nextDayBegin));
         List<Map<String, Object>> thisDayYxStsticMapList = indexDataService.getPostPeratorDataMapByMap(paramMap);
-        int countThisDayFrequency = thisDayYxStsticMapList.stream().mapToInt(item -> Integer.valueOf((String) item.get("frequency"))).sum();
-        int countThisDayPoint = thisDayYxStsticMapList.stream().mapToInt(item -> Integer.valueOf((String) item.get("point"))).sum();
-        mapListMap = this.parseYxStatic(countThisDayFrequency, countThisDayPoint, "当天检修统计");
+        int countThisDayFrequency = thisDayYxStsticMapList.stream().mapToInt(item -> Integer.valueOf(String.valueOf(item.get("frequency")))).sum();
+        int countThisDayPoint = thisDayYxStsticMapList.stream().mapToInt(item -> Integer.valueOf(String.valueOf(item.get("point")))).sum();
+        mapListMap = this.parseYxStatic(countThisDayFrequency, countThisDayPoint, "当天巡检统计");
         mapListMapList.add(mapListMap);
         paramMap.put("startTime", startTime);
         paramMap.put("endTime", endTime);
         List<Map<String, Object>> thisShiftYxStsticMapList = indexDataService.getPostPeratorDataMapByMap(paramMap);
-        int countThisShiftFrequency = thisShiftYxStsticMapList.stream().mapToInt(item -> Integer.valueOf((String) item.get("frequency"))).sum();
-        int countThisShiftPoint = thisShiftYxStsticMapList.stream().mapToInt(item -> Integer.valueOf((String) item.get("point"))).sum();
-        mapListMap = this.parseYxStatic(countThisShiftFrequency, countThisShiftPoint, "当班检修统计");
+        int countThisShiftFrequency = thisShiftYxStsticMapList.stream().mapToInt(item -> Integer.valueOf(String.valueOf(item.get("frequency")))).sum();
+        int countThisShiftPoint = thisShiftYxStsticMapList.stream().mapToInt(item -> Integer.valueOf(String.valueOf(item.get("point")))).sum();
+        mapListMap = this.parseYxStatic(countThisShiftFrequency, countThisShiftPoint, "当班巡检统计");
         mapListMapList.add(mapListMap);
         return mapListMapList;
     }
@@ -768,7 +765,7 @@ public class HomeController {
             map.put("cityName", "嘉兴市");
         } else if (departmentId == 19) {
             map.put("cityCode", "101210901");
-            map.put("cityName", "嘉兴市");
+            map.put("cityName", "浦江县");
         } else {
             map.put("cityCode", "101210101");
             map.put("cityName", "杭州市");
