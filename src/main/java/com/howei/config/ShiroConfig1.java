@@ -1,8 +1,5 @@
 package com.howei.config;
 
-import com.howei.config.redis.LoginInterceptor;
-import com.howei.config.redis.MyRedisManager;
-import com.howei.config.redis.RedisSessionDao;
 import com.howei.config.redis.ShiroFormAuthenticationFilter;
 import com.howei.realm.LoginRealm;
 import org.apache.shiro.session.mgt.eis.MemorySessionDAO;
@@ -28,9 +25,11 @@ import org.springframework.web.filter.DelegatingFilterProxy;
 
 import javax.servlet.DispatcherType;
 import javax.servlet.Filter;
-import java.util.*;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.Map;
 
-//@Configuration
+@Configuration
 public class ShiroConfig1 {
 
     @Value("${shiro.loginUrl}")
@@ -49,8 +48,9 @@ public class ShiroConfig1 {
     private int timeout;
     @Value("${spring.redis.isRedisCache}")
     private int isRedisCache;
+    @Value("${shiro.conf.sessionTimeout}")
+    private Integer maxAge;
 
-    //将验证方式加入容器
     @Bean("loginRealm")
     @DependsOn(value = "lifecycleBeanPostProcessor")
     LoginRealm loginRealm() {
@@ -69,16 +69,11 @@ public class ShiroConfig1 {
         redisManager.setHost(host);
         redisManager.setPort(port);
         redisManager.setPassword(password);
-        redisManager.setExpire(8*60*60);// 配置过期时间
+        redisManager.setExpire(28800);// 配置过期时间：8小时
         return redisManager;
     }
 
-    /*@Bean
-    public LoginInterceptor loginInterceptor(){
-        return  new LoginInterceptor();
-    }*/
-
-    @Bean
+    @Bean("sessionDAO")
     SessionDAO sessionDAO(@Qualifier("redisManager")RedisManager redisManager) {
         if (1 == isRedisCache) {
             RedisSessionDAO redisSessionDAO = new RedisSessionDAO();
@@ -90,19 +85,32 @@ public class ShiroConfig1 {
         }
     }
 
+    /**
+     * 给shiro的sessionId默认的JSSESSIONID名字改掉
+     *
+     * @return
+     */
+    @Bean(name = "sessionIdCookie")
+    public SimpleCookie getSessionIdCookie() {
+        SimpleCookie simpleCookie = new SimpleCookie(jessionId);
+        simpleCookie.setPath("/");
+        simpleCookie.setHttpOnly(true);
+        simpleCookie.setMaxAge(maxAge);
+        return simpleCookie;
+    }
+
     @Bean(name = "sessionManager")
-    public DefaultWebSessionManager sessionManager(SessionDAO sessionDAO) {
+    public DefaultWebSessionManager sessionManager(@Qualifier("sessionDAO")SessionDAO sessionDAO,@Qualifier("sessionIdCookie") SimpleCookie simpleCookie) {
         DefaultWebSessionManager sessionManager = new DefaultWebSessionManager();
         sessionManager.setDeleteInvalidSessions(true);
         sessionManager.setSessionDAO(sessionDAO);
         //去掉shiro登录时url里的JSESSIONID
         sessionManager.setSessionIdUrlRewritingEnabled(false);
         sessionManager.setSessionValidationSchedulerEnabled(true);
-        sessionManager.setSessionValidationInterval(14400000);
-        sessionManager.setGlobalSessionTimeout(14400000);
+        sessionManager.setSessionValidationInterval(28800000);
         //是否开启删除无效的session对象  默认为true
         sessionManager.setDeleteInvalidSessions(true);
-        sessionManager.setSessionIdCookie(new SimpleCookie("sessionUser"));
+        sessionManager.setSessionIdCookie(simpleCookie);
         return sessionManager;
     }
 
@@ -119,7 +127,7 @@ public class ShiroConfig1 {
     }
 
     @Bean(name = "securityManager")
-    public DefaultWebSecurityManager securityManager(@Qualifier("loginRealm") LoginRealm loginRealm,@Qualifier("sessionManager")DefaultWebSessionManager sessionManager,@Qualifier("redisCacheManager") RedisCacheManager redisCacheManager) {
+    public DefaultWebSecurityManager securityManager(@Qualifier("loginRealm") LoginRealm loginRealm, @Qualifier("sessionManager") DefaultWebSessionManager sessionManager, @Qualifier("redisCacheManager") RedisCacheManager redisCacheManager) {
         DefaultWebSecurityManager manager = new DefaultWebSecurityManager();
         manager.setRealm(loginRealm);
         manager.setCacheManager(redisCacheManager);
@@ -147,6 +155,7 @@ public class ShiroConfig1 {
         bean.setFilters(filters);
         Map<String,String> map1=new HashMap<>();
         map1.put("/logout","logout");
+        //map1.put("/**","user");
         bean.setSuccessUrl("/home");
         bean.setFilterChainDefinitionMap(map1);
         //自定义过滤类
@@ -186,7 +195,7 @@ public class ShiroConfig1 {
      *
      * @return
      */
-    @Bean("lifecycleBeanPostProcessor")
+    @Bean
     public static LifecycleBeanPostProcessor lifecycleBeanPostProcessor() {
         return new LifecycleBeanPostProcessor();
     }

@@ -50,41 +50,48 @@ function pinjie() {
             data1 = data.data;
             for (let z = 0; z < data1.length; z++) {
                 data = data1[z];
-                var div = "<div class=\"warp1\"><div class=\"title\"><i class=\"title_quote\"></i><span class=\"title_name\">" + data.departmentName + "</span></div><div class=\"clear\"></div>" +
-                    "<div class=\"weatherBox\"><p><span class=\"iconfont icon-dizhi\" style=\"margin-right: 11px;color: #0000FF;\"></span><span class=\"weather_address weather_address1\">" + data.cityName + "</span></p><p class=\"weather_toDay\"></p><div class=\"weather_carousel weather_carousel1\"></div><div class=\"clear\"></div></div><div class=\"functionDivDown\"><ul>";
-                pieJson = data.staticsData;
-                for (let i = 0; i < data.staticsData.length; i++) {
-                    div += "<li><p><span class=\"iconfont icon-triangle-right\" style=\"margin-right: 8px;color: #0000FF;\"></span><span class=\"functionUp_title\">" + data.staticsData[i].name + "</span></p><div id='main" + z + "" + i + "' style=\"width: 230px;height:150px;margin: 10px auto 0;\"></div></li>";
-                }
-                div += "</ul></div><div class=\"clear\"></div><div class='functionDivUp functionDivUp"+z+"'><p><span class=\"iconfont icon-peoples\" style=\"margin-right: 11px;color: #0000FF;\"></span><span class=\"functionUp_title\">运行人员名单</span></p><i class=\"functionUp_line\"></i><ul class=\"functionUp_person functionUp_person0\">"
+                var div = "<div class=\"warp1\"><div class='left'>" +
+                    "<div class='weaDiv weaDiv"+z+"'><div class='weaAll weaAll"+z+"'></div><div class='clear'></div><ul class='weaList weaList"+z+"'></ul></div>" +
+                    "<div class=\"yunxing\">" +
+                    "<p>" +
+                    "<span class=\"iconfont icon-peoples\" style=\"margin-right: 11px;color: #0000FF;\"></span>" +
+                    "<span class=\"yunxing_title\">运行人员动态</span>" +
+                    "</p>" +
+                    "<i class=\"yunxing_line\"></i>" +
+                    "<ul class=\"yunxing_person yunxing_person0\">";
                 for (var i = 0; i < data.departmentYXData.length; i++) {
                     div += "<li>" + data.departmentYXData[i] + "</li>"
+                    // div += "<li><span>" + data.departmentYXData[i] + "</span><span class=\"layui-badge li_badge\">2</span></li>"
                 }
-                div += "</ul></div><div class='overhaulBox overhaulBox"+z+"'><p><span class=\"iconfont icon-peoples\" style=\"margin-right: 11px;color: #0000FF;\"></span><span class=\"overhaul_title\">检修人员名单</span></p><i class=\"overhaul_line\"></i><ul class=\"overhaul_person overhaul_person0\">"
+                    div += "</ul></div>" +
+                        "<div class=\"jianxiu\">" +
+                        "<p>" +
+                        "<span class=\"iconfont icon-peoples\" style=\"margin-right: 11px;color: #0000FF;\"></span>" +
+                        "<span class=\"jianxiu_title\">检修人员动态</span>" +
+                        "</p>" +
+                        "<i class=\"jianxiu_line\"></i>" +
+                        "<ul class=\"jianxiu_person\">";
                 for (var i = 0; i < data.departmentJXData.length; i++) {
-                    div += "<li><span>" + data.departmentJXData[i].name + "</span><span class=\"layui-badge li_badge\">" + data.departmentJXData[i].taskNum + "</span></li>"
+                    div += "<li><span>" + data.departmentJXData[i].name + "</span><span class='layui-badge li_badge'>" + data.departmentJXData[i].taskNum + "</span></li>"
                 }
-                div += "</ul></div><div class=\"clear\"></div></div>";
+                div += "</ul></div></div>";
+                div += "<ul class=\"pieList\">"
+                pieJson = data.staticsData;
+                for (let i = 0; i < data.staticsData.length; i++) {
+                    div += "<li><p class='pieTitle'><span class=\"iconfont icon-triangle-right\" style=\"margin-right: 8px;color: #0000FF;\"></span><span>" + data.staticsData[i].name + "</span></p>" +
+                        "<div id='main"+z+""+i+"' style=\"width: 235px;height:175px;margin: 5px auto 0;\"></div></li>"
+                }
+                div += "</ul><div class=\"clear\"></div>"
+
                 var pinjie = $(".pinjie");
                 pinjie.append(div);
-                for (let j = 1; j < 5; j++) {
-                    fullWeather(data.cityCode, j);
-                }
+                fullWeather(z, data.cityCode,data.departmentName)
                 for (let i = 0; i < data.staticsData.length; i++) {
                     pieChart('main', i, data.staticsData[i].name, z);
-                }
-
-                if (data.departmentName != "嘉爱斯项目部") {
-                    $(".functionDivUp"+z).css("height","149");
-                    $(".overhaulBox"+z).css("height","149");
                 }
             }
         }
     });
-    var arr = ["日", "一", "二", "三", "四", "五", "六"];
-    week = arr[week];
-    var weather_toDay = $(".weather_toDay");
-    weather_toDay.html(month + "月" + day + "日&nbsp;周" + week);
 }
 
 //饼状图
@@ -93,7 +100,7 @@ function pieChart(id, i, name, z) {
     var dom = document.getElementById(id);
     var data = pieJson[i].data;
     if (data == "") {
-        dom.innerHTML = "<p style=\"line-height: 60px;color: red;\">无数据</p>";
+        dom.innerHTML = "<p style=\"line-height: 60px;color: red;text-align: center;\">无数据</p>";
     } else {
         // 基于准备好的dom，初始化echarts实例\n" +
         var myChart = echarts.init(dom);
@@ -154,45 +161,55 @@ function pieChart(id, i, name, z) {
 }
 
 //填充天气
-function fullWeather(citykey, num) {
+function fullWeather(num,cityCode,departmentName) {
     var ajax = new XMLHttpRequest();
-    ajax.open('get', 'http://wthrcdn.etouch.cn/weather_mini?citykey=' + citykey);
+    ajax.open('get', 'https://v0.yiketianqi.com/api?version=v62&appid=93825797&appsecret=wugk17qm&cityid='+cityCode);
     ajax.send();
-    ajax.onreadystatechange = function () {
+    ajax.onreadystatechange = function() {
         if (ajax.readyState == 4 && ajax.status == 200) {
-            var data = ajax.response
-            data = JSON.parse(data)
-            var json = data.data.forecast;
-            json[0].fengli = json[0].fengli.replace(/[^0-9]/ig, "");
-            json[0].date = json[0].date.replace('星期', '周');
-            json[0].high = json[0].high.substr(3, 2)
-            json[0].low = json[0].low.substr(3, 4)
-            var div = "";
-            div += '<div class="left"><p class="left_toDay">' + json[0].date +
-                '</p><p class="left_font"><span class="iconfont icon-' + replaceWeather(json[0].type) +
-                '" style="margin-right: 11px;"></span></p><p class="left_type">' + json[0].type +
-                '</p><p class="left_temperature">' + json[0].high + '/' + json[0].low +
-                '</p><p class="left_fengxiang">' + json[0].fengxiang + '' + json[0].fengli +
-                '级</p></div>';
-            for (var i = 1; i < json.length; i++) {
-                json[i].fengli = json[i].fengli.replace(/[^0-9]/ig, "");
-                json[i].date = json[i].date.replace('星期', '周')
-                json[i].high = json[i].high.substr(3, 2)
-                json[i].low = json[i].low.substr(3, 4)
-                div += '<div class="left right"><p class="left_toDay">' + json[i].date +
-                    '</p><p class="left_font"><span class="iconfont icon-' + replaceWeather(json[i]
-                        .type) + '" style="margin-right: 11px;"></span></p><p class="left_type">' + json[
-                        i]
-                        .type + '</p><p class="left_temperature">' + json[i].high + '/' + json[i].low +
-                    '</p><p class="left_fengxiang">' + json[i].fengxiang + '' + json[i].fengli +
-                    '级</p></div>';
+            $(".weaDiv"+num).css("background","linear-gradient(#afb6c1, #fff)");
+            if (JSON.parse(ajax.response).wea_day == "阴") {
+                $(".weaDiv"+num).css("background","linear-gradient(#afb6c1, #fff)");
+            } else if (JSON.parse(ajax.response).wea_day == "多云") {
+                $(".weaDiv"+num).css("background","linear-gradient(#3f78d2, #fff)");
+            } else if (JSON.parse(ajax.response).wea_day == "中雨") {
+                $(".weaDiv"+num).css("background","linear-gradient(#1e2735, #fff)");
+            } else if (JSON.parse(ajax.response).wea_day == "大雨") {
+                $(".weaDiv"+num).css("background","linear-gradient(#1a1e25, #fff)");
+            } else if (JSON.parse(ajax.response).wea_day == "晴") {
+                $(".weaDiv"+num).css("background","linear-gradient(orange, #fff)");
+            } else if (JSON.parse(ajax.response).wea_day == "小雨") {
+                $(".weaDiv"+num).css("background","linear-gradient(#767a82, #fff)");
+            } else if (JSON.parse(ajax.response).wea_day == "阴转多云") {
+                $(".weaDiv"+num).css("background","linear-gradient(#3f78d2, #fff)");
+            } else {
+                $(".weaDiv"+num).css("background","linear-gradient(#005dff, #fff)");
             }
-            var weather_carousel = $(".weather_carousel" + num);
-            weather_carousel.html(div);
+            var div = "";
+
+            div += "<div class='allLeft'><p>" + departmentName + "</p><p>" + JSON.parse(ajax
+                    .response).tem + "</p></div><div class='allRight'><p><span class='iconfont icon-" +
+                replaceWeather(JSON.parse(ajax.response).wea_day) + "' style='font-size:30px;'></span></p><p>" + JSON
+                    .parse(ajax.response).win + " " + JSON.parse(ajax.response).win_speed + "<br>最高" + JSON.parse(ajax
+                    .response).tem1 + "最低" + JSON.parse(ajax.response).tem2 + "</p></div>";
+            $('.weaAll'+num).html(div);
+
+            var date = new Date();
+            var data = JSON.parse(ajax.response).hours;
+            var ul = "";
+            for (var i = 0; i < 6; i++) {
+                if (data[i].hours == "现在") {
+                    data[i].hours = date.getHours() + ":00";
+                }
+                ul += "<li><p>" + data[i].hours + "</p><p><span class='iconfont icon-" + replaceWeather(data[i]
+                        .wea) + "' style='font-size:30px;'></span></p><p>" + data[i].tem +
+                    "℃</p></li>";
+            }
+            $('.weaList'+num).html(ul);
         }
     };
-}
 
+}
 //替换天气图标
 function replaceWeather(type) {
     var icon = "";
@@ -208,6 +225,10 @@ function replaceWeather(type) {
         icon = "taiyang";
     } else if (type == "小雨") {
         icon = "xiaoyu";
+    } else if (type == "阴转多云") {
+        icon = "duoyun";
+    } else {
+        icon = "duoyun";
     }
     return icon;
 }
@@ -319,7 +340,7 @@ function setMessageInnerHTML(json) {
             index = index + 1;
         }
         dom.innerHTML = html;
-        if (index >= 6) {
+        if (index >= 3) {
             timer = setInterval(rollStart, colorLevel["rollingTime"]);
         }
     }

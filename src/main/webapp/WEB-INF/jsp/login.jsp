@@ -182,7 +182,7 @@
             margin: 0 auto;
             border: none;
             border-radius: 4px;
-            background: #E6E6E6;
+            background: #0056FF;
             outline: none;
         }
         .foot {
@@ -423,14 +423,6 @@
             input.style.border = '1.5px solid #DDE3E9';
         }
 
-        //按钮鼠标移入移出事件
-        var btnOk = document.getElementsByClassName("btnOk")[0];
-        btnOk.onmouseover = function(){
-            btnOk.style.backgroundColor = '#0056FF';
-        };
-        btnOk.onmouseout = function(){
-            btnOk.style.backgroundColor = '#E6E6E6';
-        };
 
 
         var winHeight = $(window).height(); //获取当前页面高度

@@ -9,228 +9,143 @@
 .clear {
     clear: both;
 }
-.warp{
+
+.warp {
     height: 100%;
     padding: 0 10px;
     box-sizing: border-box;
 }
-.warp1{
-    height: auto;
+
+.notice {
+    width: 907px;
+    margin: 15px auto 0px;
 }
-.warp,.warp1 {
+
+@media (max-width: 841px) {
+    .notice {
+        width: 100%;
+    }
+}
+
+.notice ul {
     width: 100%;
-
+    height: 120px;
+    overflow: auto;
+    font-size: 19px;
+    text-indent: 20px;
+    box-shadow: 0px 2px 10px 10px rgba(0, 86, 255, 0.1);
+    background: #fff;
+    border-radius: 4px;
 }
-.title {
-    padding: 16px 0px 16px 36px;
-    box-sizing: border-box;
+
+.notice ul li {
+    line-height: 40px;
 }
 
-.title .title_quote {
+.notice li:first-child {
+    margin-top: 0;
+    transition: margin-top .8s;
+}
+
+.notice ul li span:first-of-type {
     display: inline-block;
-    width: 8px;
-    height: 24px;
-    background: #0056FF;
-    border-radius: 1px;
-    float: left;
     margin-right: 10px;
 }
 
-.title_name {
-    width: 95px;
-    height: 24px;
-    font-family: PingFangSC-Semibold;
-    font-size: 14px;
-    color: #252631;
-    letter-spacing: 1.75px;
-    line-height: 24px;
-    font-weight: 600;
-    float: left;
+.notice ul::-webkit-scrollbar {
+    display: none;
 }
 
-.weatherBox {
-    width: 316px;
-    /*height: 362px;*/
-    height: 600px;
-    background: #FFFFFF;
-    box-shadow: 0px 2px 10px 10px rgba(0, 86, 255, 0.2);
-    border-radius: 4px;
-    float: left;
-    padding: 20px 0 20px 20px;
-    box-sizing: border-box;
-    margin-top: 10px;
+body::-webkit-scrollbar {
+    display: none;
 }
 
-@media (min-width: 842px) and (max-width: 935px) {
-    .weatherBox {
-        width: 38%;
-        margin-top: 10px;
-    }
-}
-
-/*@media (min-width: 842px) {
-    .weatherBox {
-        width: 35%;
-        margin-left: 0px;
-        margin-top: 10px;
-    }
-}*/
-
-
-@media (max-width: 841px) {
-    .weatherBox {
-        width: 35%;
-        margin-left: 0px;
-        margin-top: 10px;
-        float: left;
-    }
-}
-
-.weatherBox .weather_address {
-    width: 48px;
-    height: 24px;
-    font-family: PingFangSC-Semibold;
-    font-size: 14px;
-    color: #252631;
-    letter-spacing: 1.75px;
-    line-height: 24px;
-    font-weight: 600;
-    margin-right: 20px;
-}
-
-.weather_toDay {
-    width: 114px;
-    height: 22px;
-    font-family: PingFangSC-Regular;
-    font-size: 16px;
-    color: #4A4A4A;
-    text-align: left;
-    font-weight: 400;
-    margin: 8px 0 10px 0;
-}
-
-.weather_carousel {
-    /*height: 246px;
-    overflow: hidden;*/
-
-    height: 499px;
-    overflow: hidden;
+/*拼接*/
+.warp1 {
+    width: 907px;
+    height: auto;
+    margin: 15px auto 0;
 }
 
 .left {
-   /* width: 45%;
-    height: 242px;
-    background: #F3F6FB;
-    border-radius: 4px;
+    width: 420px;
+    height: auto;
     float: left;
-    margin-right: 10px;*/
-
-
-    width: 279px;
-    height: 230px;
-    background: #F3F6FB;
-    border-radius: 4px;
-    margin-right: 10px;
-    margin-bottom: 15px;
 }
 
-.left p {
-    text-align: center;
-}
-
-.right {
-    border: 2px solid #F3F6FB;
-    background-color: #fff;
-
-    margin: 0;
-}
-
-@media (min-width: 842px) {
-    .right {
-        margin-right: 10px;
-        border: 2px solid #F3F6FB;
-        background-color: #fff;
-    }
-
-    /*.weather_point {
-        display: block;
-    }*/
-}
-
-
-@media (max-width: 841px) {
-    .right {
-        border: 2px solid #F3F6FB;
-        background-color: #fff;
-    }
-
-    /*.weather_point {
-        display: none;
-    }*/
-}
-
-/*.weather_point {
-    width: 45px;
-    display: flex;
-    justify-content: space-between;
-    margin: 10px auto 0;
-}
-
-@media (min-width: 842px) {
-    .weather_point {
-        display: block;
-    }
-}
-
-
-@media (max-width: 841px) {
-    .weather_point {
-        display: none;
-    }
-}
-
-.weather_point li {
-    float: left;
-    width: 8px;
-    height: 8px;
-    border-radius: 50%;
-    background-color: #DDE3E9;
-    margin-right: 5px;
-}*/
-
-.overhaulBox {
-    /*width: 496px;*/
-    width: 580px;
-    height: 249px;
-    background: #FFFFFF;
-    box-shadow: 0px 2px 10px 10px rgba(0, 86, 255, 0.1);
-    border-radius: 4px;
-    float: left;
-     margin-left: 10px;
-    margin-top: 10px;
-    padding: 20px 20px 11px 20px;
+.weaDiv {
+    width: 100%;
+    background: linear-gradient(#afb6c1, #fff);
+    box-shadow: 0px 2px 10px 10px rgba(0, 86, 255, 0.2);
+    border-radius: 20px;
+    padding: 10px 0;
     box-sizing: border-box;
 }
 
-@media (min-width: 842px) and (max-width: 935px)  {
-    .overhaulBox {
-        /*width: 494px;*/
-        width: 60%;
-        margin-top: 10px;
-    }
+.weaAll {
+    width: 100%;
+    height: 115px;
 }
 
-@media (max-width: 841px) {
-    .overhaulBox {
-        width: 63%;
-        margin-top: 10px;
-        height: 249px;
-        float: left;
-    }
+.allLeft {
+    float: left;
+    margin-left: 33px;
 }
 
-.overhaul_title,
-.functionUp_title {
+.allLeft p:first-child {
+    font-size: 20px;
+}
+
+.allLeft p:last-child {
+    font-size: 62px;
+}
+
+.allRight {
+    float: right;
+    margin-right: 33px;
+    text-align: right;
+}
+
+.allRight p:first-child {
+    font-size: 20px;
+    margin-bottom: 12px;
+}
+
+.allRight p:last-child {
+    font-size: 22px;
+}
+
+.weaList {
+    display: flex;
+    justify-content: space-around;
+    padding-left: 0px;
+}
+
+.weaList li {
+    display: inline-block;
+    line-height: 30px;
+    text-align: center;
+}
+
+.yunxing,
+.jianxiu {
+    width: 100%;
+    height: 150px;
+    background: #FFFFFF;
+    box-shadow: 0px 2px 10px 10px rgba(0, 86, 255, 0.2);
+    border-radius: 20px;
+    margin-left: 0px;
+    padding: 20px 20px 11px 20px;
+    box-sizing: border-box;
+    margin: 15px 0px 0px 0px;
+}
+
+.jianxiu {
+    height: 230px;
+}
+
+.yunxing .yunxing_title,
+.jianxiu .jianxiu_title {
     width: 95px;
     height: 20px;
     font-family: PingFangSC-Semibold;
@@ -240,8 +155,8 @@
     font-weight: 600;
 }
 
-.overhaul_line,
-.functionUp_line {
+.yunxing .yunxing_line,
+.jianxiu .jianxiu_line {
     width: 100%;
     display: inline-block;
     height: 1px;
@@ -250,13 +165,10 @@
     margin-bottom: 5px;
 }
 
-.overhaul_person,
-.functionUp_person {
-    width: 100%;
-}
-.overhaul_person li,.functionUp_person li{
+.yunxing .yunxing_person li,
+.jianxiu .jianxiu_person li {
     float: left;
-    width: 110px;
+    width: 95px;
     text-align: center;
     line-height: 40px;
     position: relative;
@@ -267,193 +179,28 @@
     font-weight: 400;
     cursor: pointer;
 }
-.functionUp_person li{
-    width: 85px;
-}
-.overhaul_person .li_badge{
-    position: absolute;
-    top: 11px;
-    border-radius: 8px;
-    margin-left: 4px;
-}
-.overhaul_person li:hover,
-.functionUp_person li:hover {
-    color: #0000FF;
+
+.yunxing .yunxing_person li .li_badge {
+    background-color: darkolivegreen;
 }
 
-.functionDivUp {
-    width: 316px;
-    height: 249px;
-    background: #FFFFFF;
-    box-shadow: 0px 2px 10px 10px rgba(0, 86, 255, 0.1);
-    border-radius: 4px;
-    margin-left: 0px;
-    padding: 20px 20px 11px 20px;
+.pieList {
+    width: 470px;
+    height: 636px;
+    border-radius: 20px;
+    box-shadow: 0px 2px 10px 10px rgba(0, 86, 255, 0.2);
+    float: right;
+    padding-top: 5px;
     box-sizing: border-box;
-    margin-top: 10px;
-    float: left;
-}
-
-@media (min-width: 842px) and (max-width: 935px) {
-    .functionDivUp {
-        width: 38%;
-        margin-top: 10px;
-    }
-}
-
-@media (max-width: 841px) {
-    .functionDivUp {
-        width: 35%;
-        float: left;
-        margin-left: 0px;
-    }
-}
-
-.functionDivDown {
-    /*width: 494px;*/
-    width: 580px;
-    box-shadow: 0px 2px 10px 10px rgba(0, 86, 255, 0.1);
-    border-radius: 4px;
-    padding: 20px 20px 0 20px;
-    box-sizing: border-box;
-    margin-top: 10px;
-    float: left;
-    margin-left: 10px;
-    /*height: 362px;*/
-    height: 600px;
     background: #fff;
 }
-@media (min-width: 842px) and (max-width: 935px) {
-    .functionDivDown {
-        width: 60%;
-        margin-top: 10px;
-    }
-}
 
-@media (max-width: 841px) {
-    .functionDivDown {
-        width: 63%;
-    }
-}
-
-
-
-.functionDivDown ul li {
+.pieList li {
     float: left;
+    padding-top: 10px;
+    box-sizing: border-box;
+}
+
+.pieList li .pieTitle {
     text-align: center;
-    width: 50%;
-    margin-bottom: 17px;
-}
-
-.functionDivDown ul li p {
-    margin-bottom: 10px;
-}
-
-.left_toDay {
-    /*width: 75px;
-    height: 22px;
-    font-family: PingFangSC-Regular;
-    font-size: 16px;
-    color: #252631;
-    font-weight: 400;
-    margin: 20px auto;*/
-
-    width: 75px;
-    height: 22px;
-    font-family: PingFangSC-Regular;
-    font-size: 16px;
-    color: #252631;
-    font-weight: 400;
-    margin: 20px auto;
-    line-height: 45px;
-}
-
-.left_font span {
-    font-size: 35px;
-    color: #0000FF;
-}
-
-.left .left_type {
-    width: 35px;
-    height: 22px;
-    font-family: PingFangSC-Regular;
-    font-size: 16px;
-    color: #252631;
-    font-weight: 400;
-    text-align: left;
-    margin: 18px auto 0;
-}
-
-.left_temperature {
-    width: 58px;
-    height: 22px;
-    font-family: PingFangSC-Regular;
-    font-size: 16px;
-    color: #252631;
-    text-align: left;
-    font-weight: 400;
-    margin: 18px auto 0;
-}
-
-.left_fengxiang {
-    width: 93px;
-    height: 22px;
-    font-family: PingFangSC-Regular;
-    font-size: 16px;
-    color: #252631;
-    text-align: left;
-    font-weight: 400;
-    margin: 18px auto 0;
-}
-
-body::-webkit-scrollbar {
-    display: none;
-}
-
-.pinjie{
-    width: 907px;
-    margin: 0 auto;
-}
-@media (max-width: 841px) {
-    .pinjie{
-        width: 100%;
-    }
-}
-.notice{
-    /*width: 820px;*/
-    /*margin-top: 15px;*/
-    width: 907px;
-    margin: 15px auto 0px;
-}
-@media (max-width: 841px) {
-    .notice{
-        width: 100%;
-    }
-}
-.notice ul {
-    width: 100%;
-    height: 240px;
-    overflow: auto;
-    font-size: 19px;
-    text-indent: 20px;
-    box-shadow: 0px 2px 10px 10px rgba(0, 86, 255, 0.1);
-    background: #fff;
-    border-radius: 4px;
-}
-.notice ul li {
-    line-height: 40px;
-}
-.notice li:first-child {
-    margin-top: 0;
-    transition: margin-top .8s;
-}
-.notice ul li span:first-of-type {
-    display: inline-block;
-    margin-right: 10px;
-}
-.notice ul::-webkit-scrollbar{
-    display: none;
-}
-body::-webkit-scrollbar{
-    display: none;
 }
