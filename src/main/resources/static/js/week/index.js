@@ -44,7 +44,7 @@ function pinjie() {
         type: 'get',
         url: "/getIndexData",
         data: {},
-        async: false, // 同步
+        async: true, // 异步
         dataType: "json",
         success: function (data) {
             data1 = data.data;
@@ -162,53 +162,51 @@ function pieChart(id, i, name, z) {
 
 //填充天气
 function fullWeather(num,cityCode,departmentName) {
-    var ajax = new XMLHttpRequest();
-    ajax.open('get', 'https://v0.yiketianqi.com/api?version=v62&appid=93825797&appsecret=wugk17qm&cityid='+cityCode);
-    ajax.send();
-    ajax.onreadystatechange = function() {
-        if (ajax.readyState == 4 && ajax.status == 200) {
+    $.ajax({
+        type: 'get',
+        url: "https://v0.yiketianqi.com/api?version=v62&appid=93825797&appsecret=wugk17qm&cityid="+cityCode,
+        data: {},
+        async: true, // 异步
+        dataType: "json",
+        success: function (data) {
             $(".weaDiv"+num).css("background","linear-gradient(#afb6c1, #fff)");
-            if (JSON.parse(ajax.response).wea_day == "阴") {
+            if (data.wea_day == "阴") {
                 $(".weaDiv"+num).css("background","linear-gradient(#afb6c1, #fff)");
-            } else if (JSON.parse(ajax.response).wea_day == "多云") {
+            } else if (data.wea_day == "多云") {
                 $(".weaDiv"+num).css("background","linear-gradient(#3f78d2, #fff)");
-            } else if (JSON.parse(ajax.response).wea_day == "中雨") {
+            } else if (data.wea_day == "中雨") {
                 $(".weaDiv"+num).css("background","linear-gradient(#1e2735, #fff)");
-            } else if (JSON.parse(ajax.response).wea_day == "大雨") {
+            } else if (data.wea_day == "大雨") {
                 $(".weaDiv"+num).css("background","linear-gradient(#1a1e25, #fff)");
-            } else if (JSON.parse(ajax.response).wea_day == "晴") {
+            } else if (data.wea_day == "晴") {
                 $(".weaDiv"+num).css("background","linear-gradient(orange, #fff)");
-            } else if (JSON.parse(ajax.response).wea_day == "小雨") {
+            } else if (data.wea_day == "小雨") {
                 $(".weaDiv"+num).css("background","linear-gradient(#767a82, #fff)");
-            } else if (JSON.parse(ajax.response).wea_day == "阴转多云") {
+            } else if (data.wea_day == "阴转多云") {
                 $(".weaDiv"+num).css("background","linear-gradient(#3f78d2, #fff)");
             } else {
                 $(".weaDiv"+num).css("background","linear-gradient(#005dff, #fff)");
             }
             var div = "";
 
-            div += "<div class='allLeft'><p>" + departmentName + "</p><p>" + JSON.parse(ajax
-                    .response).tem + "</p></div><div class='allRight'><p><span class='iconfont icon-" +
-                replaceWeather(JSON.parse(ajax.response).wea_day) + "' style='font-size:30px;'></span></p><p>" + JSON
-                    .parse(ajax.response).win + " " + JSON.parse(ajax.response).win_speed + "<br>最高" + JSON.parse(ajax
-                    .response).tem1 + "最低" + JSON.parse(ajax.response).tem2 + "</p></div>";
+            div += "<div class='allLeft'><p>" + departmentName + "</p><p>" + data.tem + "</p></div><div class='allRight'><p><span class='iconfont icon-" +
+                replaceWeather(data.wea_day) + "' style='font-size:30px;'></span></p><p>" + data.win + " " + data.win_speed + "<br>最高" + data.tem1 + "最低" + data.tem2 + "</p></div>";
             $('.weaAll'+num).html(div);
 
             var date = new Date();
-            var data = JSON.parse(ajax.response).hours;
+            var dataHours = data.hours;
             var ul = "";
             for (var i = 0; i < 6; i++) {
-                if (data[i].hours == "现在") {
-                    data[i].hours = date.getHours() + ":00";
+                if (dataHours[i].hours == "现在") {
+                    dataHours[i].hours = date.getHours() + ":00";
                 }
-                ul += "<li><p>" + data[i].hours + "</p><p><span class='iconfont icon-" + replaceWeather(data[i]
-                        .wea) + "' style='font-size:30px;'></span></p><p>" + data[i].tem +
+                ul += "<li><p>" + dataHours[i].hours + "</p><p><span class='iconfont icon-" + replaceWeather(dataHours[i]
+                        .wea) + "' style='font-size:30px;'></span></p><p>" + dataHours[i].tem +
                     "℃</p></li>";
             }
             $('.weaList'+num).html(ul);
         }
-    };
-
+    })
 }
 //替换天气图标
 function replaceWeather(type) {
@@ -298,7 +296,6 @@ function fullUl() {
 
         //接收到消息的回调方法，此处添加处理接收消息方法，当前是将接收到的信息显示在网页上
         websocket.onmessage = function (event) {
-            //console.log(event.data)
             setMessageInnerHTML(event.data);
         };
 
@@ -395,7 +392,6 @@ function rollStart() {
             "</li>";
         if (recordCount >= totalRecordCount) {
             clearInterval(timer);
-            console.log(colorLevel)
             timer = setInterval(rollStart, colorLevel["rollingTime"]);
             var firstNode = dom.firstElementChild;
             firstNode.parentElement.removeChild(firstNode);
