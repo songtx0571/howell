@@ -285,11 +285,17 @@ function  noticeClickFS() {
                     ,content: $(".detail")
                     ,data: {"data": data}
                     ,shade: 0.4 //不显示遮罩
-                    ,area: ['510px', '450px']
+                    ,area: ['600px', '500px']
                     ,success: function (layero, index) {
                         $("#detailData").text(jStr);
                         $("#detailDataTitle").text(data.title);
                         $("#detailDataContent").text(data.content);
+                        if (data.filedir) {
+                            data.filedir = data.filedir.split("/");
+                            $("#detailFiledir").text(data.filedir[data.filedir.length-1]);
+                        } else {
+                            $("#detailFiledir").text('无附件');
+                        }
                         $.ajax({
                             type: "GET",
                             url: path + "/inform/updateStatus",
@@ -402,6 +408,12 @@ function  noticeClickSD(isactive) {
                         $("#detailData").text(jStr);
                         $("#detailDataTitle").text(data.title);
                         $("#detailDataContent").text(data.content);
+                        if (data.filedir) {
+                            data.filedir = data.filedir.split("/");
+                            $("#detailFiledir").text(data.filedir[data.filedir.length-1]);
+                        } else {
+                            $("#detailFiledir").text('无附件');
+                        }
                         $.ajax({
                             type: "GET",
                             url: path + "/inform/updateStatus",

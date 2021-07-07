@@ -209,10 +209,11 @@
         <%--查看通知--%>
         <div class="detail">
             <p id="detailData" hidden></p>
-            <div class="detailTop" style="border-bottom:1px solid;height: 70px">
+            <div class="detailTop" style="border-bottom:1px solid;height: 60px;overflow: hidden">
                 <button id="downLoad" class="layui-btn layui-btn" onclick="downLoad()"
-                        style="margin: 10px 60px;float: right;">下载
+                        style="margin: 10px 10px;">下载附件
                 </button>
+                <span id="detailFiledir">附件名称</span>
             </div>
             <div style="margin: 10px;line-height: 28px;font-size: 20px">
                 <p style="text-align: center;font-weight: bold" id="detailDataTitle"></p>
