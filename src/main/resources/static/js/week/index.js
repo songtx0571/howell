@@ -60,8 +60,8 @@ function pinjie() {
                     "<i class=\"yunxing_line\"></i>" +
                     "<ul class=\"yunxing_person yunxing_person0\">";
                 for (var i = 0; i < data.departmentYXData.length; i++) {
-                    div += "<li>" + data.departmentYXData[i] + "</li>"
-                    // div += "<li><span>" + data.departmentYXData[i] + "</span><span class=\"layui-badge li_badge\">2</span></li>"
+                    // div += "<li>" + data.departmentYXData[i] + "</li>"
+                    div += "<li><span>" + data.departmentYXData[i] + "</span><span class=\"layui-badge li_badge\">0</span></li>"
                 }
                     div += "</ul></div>" +
                         "<div class=\"jianxiu\">" +
@@ -79,7 +79,7 @@ function pinjie() {
                 pieJson = data.staticsData;
                 for (let i = 0; i < data.staticsData.length; i++) {
                     div += "<li><p class='pieTitle'><span class=\"iconfont icon-triangle-right\" style=\"margin-right: 8px;color: #0000FF;\"></span><span>" + data.staticsData[i].name + "</span></p>" +
-                        "<div id='main"+z+""+i+"' style=\"width: 235px;height:175px;margin: 5px auto 0;\"></div></li>"
+                        "<div id='main"+z+""+i+"' style=\"width: 210px;height:175px;margin: 5px auto 0;\"></div></li>"
                 }
                 div += "</ul><div class=\"clear\"></div>"
 
@@ -169,28 +169,31 @@ function fullWeather(num,cityCode,departmentName) {
         async: true, // 异步
         dataType: "json",
         success: function (data) {
-            $(".weaDiv"+num).css("background","linear-gradient(#afb6c1, #fff)");
-            if (data.wea_day == "阴") {
-                $(".weaDiv"+num).css("background","linear-gradient(#afb6c1, #fff)");
-            } else if (data.wea_day == "多云") {
-                $(".weaDiv"+num).css("background","linear-gradient(#3f78d2, #fff)");
-            } else if (data.wea_day == "中雨") {
-                $(".weaDiv"+num).css("background","linear-gradient(#1e2735, #fff)");
-            } else if (data.wea_day == "大雨") {
-                $(".weaDiv"+num).css("background","linear-gradient(#1a1e25, #fff)");
-            } else if (data.wea_day == "晴") {
-                $(".weaDiv"+num).css("background","linear-gradient(orange, #fff)");
-            } else if (data.wea_day == "小雨") {
-                $(".weaDiv"+num).css("background","linear-gradient(#767a82, #fff)");
-            } else if (data.wea_day == "阴转多云") {
-                $(".weaDiv"+num).css("background","linear-gradient(#3f78d2, #fff)");
-            } else {
+            $(".weaDiv"+num).css("background","linear-gradient(rgba(175,182,193,0.8), rgb(255, 255, 255))");
+            if (data.wea == "阴") {
+                $(".weaDiv"+num).css("background","linear-gradient(rgba(175,182,193,0.8), rgb(255, 255, 255))");
+            } else if (data.wea == "多云") {
+                $(".weaDiv"+num).css("background","linear-gradient(rgba(63,120,210,0.8), rgb(255, 255, 255))");
+            } else if (data.wea == "中雨") {
+                $(".weaDiv"+num).css("background","linear-gradient(rgba(63,69,80,0.8), rgb(255, 255, 255))");
+            } else if (data.wea == "大雨") {
+                $(".weaDiv"+num).css("background","linear-gradient(rgba(26,30,37,0.8), rgb(255, 255, 255))");
+            }  else if (data.wea == "阵雨") {
+                $(".weaDiv"+num).css("background","linear-gradient(rgba(63,69,80,0.8), rgb(255, 255, 255))");
+            } else if (data.wea == "晴") {
+                $(".weaDiv"+num).css("background","linear-gradient(rgba(255,148,0,0.8), rgb(255, 255, 255))");
+            } else if (data.wea == "小雨") {
+                $(".weaDiv"+num).css("background","linear-gradient(rgba(118,122,130,0.8), rgb(255, 255, 255))");
+            } else if (data.wea == "阴转多云") {
+                $(".weaDiv"+num).css("background","linear-gradient(rgba(63,120,210,0.8), rgb(255, 255, 255))");
+            }else {
                 $(".weaDiv"+num).css("background","linear-gradient(#005dff, #fff)");
             }
             var div = "";
 
-            div += "<div class='allLeft'><p>" + departmentName + "</p><p>" + data.tem + "</p></div><div class='allRight'><p><span class='iconfont icon-" +
-                replaceWeather(data.wea_day) + "' style='font-size:30px;'></span></p><p>" + data.win + " " + data.win_speed + "<br>最高" + data.tem1 + "最低" + data.tem2 + "</p></div>";
+            /*div += "<div class='allLeft'><p>" + departmentName + "</p><p>" + data.tem + "</p></div><div class='allRight'><p><span class='iconfont icon-" +
+                replaceWeather(data.wea_day) + "' style='font-size:30px;'></span></p><p>" + data.win + " " + data.win_speed + "<br>最高" + data.tem1 + "最低" + data.tem2 + "</p></div>";*/
+            div += "<div class='allLeft'><p>" + departmentName + "</p><p>" + data.tem + "℃</p></div><div class='allRight'><p><span style='font-size:23px;'>"+data.wea_day+"</span></p><p>" + data.win + " " + data.win_speed + "<br>最高" + data.tem1 + "最低" + data.tem2 + "</p></div>";
             $('.weaAll'+num).html(div);
 
             var date = new Date();
@@ -207,6 +210,52 @@ function fullWeather(num,cityCode,departmentName) {
             $('.weaList'+num).html(ul);
         }
     })
+    /*var ajax = new XMLHttpRequest();
+    ajax.open('get', 'https://v0.yiketianqi.com/api?version=v62&appid=93825797&appsecret=wugk17qm&cityid='+cityCode);
+    ajax.send();
+    ajax.onreadystatechange = function() {
+        if (ajax.readyState == 4 && ajax.status == 200) {
+            $(".weaDiv"+num).css("background","linear-gradient(#afb6c1, #fff)");
+            if (JSON.parse(ajax.response).wea_day == "阴") {
+                $(".weaDiv"+num).css("background","linear-gradient(#afb6c1, #fff)");
+            } else if (JSON.parse(ajax.response).wea_day == "多云") {
+                $(".weaDiv"+num).css("background","linear-gradient(#3f78d2, #fff)");
+            } else if (JSON.parse(ajax.response).wea_day == "中雨") {
+                $(".weaDiv"+num).css("background","linear-gradient(#1e2735, #fff)");
+            } else if (JSON.parse(ajax.response).wea_day == "大雨") {
+                $(".weaDiv"+num).css("background","linear-gradient(#1a1e25, #fff)");
+            } else if (JSON.parse(ajax.response).wea_day == "晴") {
+                $(".weaDiv"+num).css("background","linear-gradient(orange, #fff)");
+            } else if (JSON.parse(ajax.response).wea_day == "小雨") {
+                $(".weaDiv"+num).css("background","linear-gradient(#767a82, #fff)");
+            } else if (JSON.parse(ajax.response).wea_day == "阴转多云") {
+                $(".weaDiv"+num).css("background","linear-gradient(#3f78d2, #fff)");
+            } else {
+                $(".weaDiv"+num).css("background","linear-gradient(#005dff, #fff)");
+            }
+            var div = "";
+
+            div += "<div class='allLeft'><p>" + departmentName + "</p><p>" + JSON.parse(ajax
+                    .response).tem + "</p></div><div class='allRight'><p><span class='iconfont icon-" +
+                replaceWeather(JSON.parse(ajax.response).wea_day) + "' style='font-size:30px;'></span></p><p>" + JSON
+                    .parse(ajax.response).win + " " + JSON.parse(ajax.response).win_speed + "<br>最高" + JSON.parse(ajax
+                    .response).tem1 + "最低" + JSON.parse(ajax.response).tem2 + "</p></div>";
+            $('.weaAll'+num).html(div);
+
+            var date = new Date();
+            var data = JSON.parse(ajax.response).hours;
+            var ul = "";
+            for (var i = 0; i < 6; i++) {
+                if (data[i].hours == "现在") {
+                    data[i].hours = date.getHours() + ":00";
+                }
+                ul += "<li><p>" + data[i].hours + "</p><p><span class='iconfont icon-" + replaceWeather(data[i]
+                        .wea) + "' style='font-size:30px;'></span></p><p>" + data[i].tem +
+                    "℃</p></li>";
+            }
+            $('.weaList'+num).html(ul);
+        }
+    };*/
 }
 //替换天气图标
 function replaceWeather(type) {
@@ -225,6 +274,10 @@ function replaceWeather(type) {
         icon = "xiaoyu";
     } else if (type == "阴转多云") {
         icon = "duoyun";
+    }  else if (type == "中到大雨") {
+        icon = "dayu";
+    }  else if (type == "雷阵雨") {
+        icon = "dayu";
     } else {
         icon = "duoyun";
     }
