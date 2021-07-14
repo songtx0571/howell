@@ -140,14 +140,14 @@ body::-webkit-scrollbar {
 .yunxing{
     border-top-left-radius: 20px;
     border-top-right-radius: 20px;
-    box-shadow: -2px 4px 10px 10px rgba(0, 86, 255, 0.2);
+    box-shadow: -9px 0px 10px 4px rgba(0, 86, 255, 0.2);
 }
 .jianxiu {
     height: 154px;
     margin: 0px;
     border-bottom-left-radius: 20px;
     border-bottom-right-radius: 20px;
-    box-shadow: -2px 22px 10px 10px rgba(0, 86, 255, 0.2)
+    box-shadow: -7px 9px 10px 4px rgba(0, 86, 255, 0.2);
 }
 
 .yunxing .yunxing_title,
