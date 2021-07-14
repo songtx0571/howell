@@ -60,17 +60,16 @@ function pinjie() {
                     "<i class=\"yunxing_line\"></i>" +
                     "<ul class=\"yunxing_person yunxing_person0\">";
                 for (var i = 0; i < data.departmentYXData.length; i++) {
-                    // div += "<li>" + data.departmentYXData[i] + "</li>"
-                    div += "<li><span>" + data.departmentYXData[i] + "</span><span class=\"layui-badge li_badge\">0</span></li>"
+                    div += "<li><span>" + data.departmentYXData[i].name + "</span><span class=\"layui-badge li_badge\">" + data.departmentYXData[i].taskNum + "</span></li>"
                 }
-                    div += "</ul></div>" +
-                        "<div class=\"jianxiu\">" +
-                        "<p>" +
-                        "<span class=\"iconfont icon-peoples\" style=\"margin-right: 11px;color: #0000FF;\"></span>" +
-                        "<span class=\"jianxiu_title\">检修人员动态</span>" +
-                        "</p>" +
-                        "<i class=\"jianxiu_line\"></i>" +
-                        "<ul class=\"jianxiu_person\">";
+                div += "</ul></div>" +
+                    "<div class=\"jianxiu\">" +
+                    "<p>" +
+                    "<span class=\"iconfont icon-peoples\" style=\"margin-right: 11px;color: #0000FF;\"></span>" +
+                    "<span class=\"jianxiu_title\">检修人员动态</span>" +
+                    "</p>" +
+                    "<i class=\"jianxiu_line\"></i>" +
+                    "<ul class=\"jianxiu_person\">";
                 for (var i = 0; i < data.departmentJXData.length; i++) {
                     div += "<li><span>" + data.departmentJXData[i].name + "</span><span class='layui-badge li_badge'>" + data.departmentJXData[i].taskNum + "</span></li>"
                 }
