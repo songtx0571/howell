@@ -418,7 +418,7 @@ public class HomeController {
 
         List<Integer> departmentIdList = new ArrayList<>();
         if (subject.isPermitted("查询所有部门首页数据")) {
-            departmentIdList.addAll( Arrays.asList(new Integer[]{17, 18, 19, 20}));
+            departmentIdList.addAll(Arrays.asList(new Integer[]{17, 18, 19, 20}));
         } else {
             int departmentId = users.getDepartmentId();
             boolean contains = Arrays.asList(new Integer[]{17, 18, 19, 20}).contains(departmentId);
@@ -431,7 +431,7 @@ public class HomeController {
                 Map<String, Object> paramMap = new HashMap<>();
                 paramMap.put("date", formatDate + "%");
                 Map<String, Object> jxEmoloyeeNameMapMap = new HashMap<>();
-                List<String> yxEmployeeNameList = new ArrayList<>();
+                List<Map<String, Object>> yxEmployeeNameList = new ArrayList<>();
                 Map<String, Object> resultMap = new HashMap<>();
                 paramMap.put("departmentId", departmentId);
                 //天气的城市码和城市名称
@@ -462,7 +462,7 @@ public class HomeController {
      * @param jxEmoloyeeNameMapMap
      * @return
      */
-    public List<Map<String, Object>> parseJXRecoreListByDepartmentId(Map<String, Object> paramMap, Map<String, Object> jxEmoloyeeNameMapMap, List<String> yxEmploeeNameList) {
+    public List<Map<String, Object>> parseJXRecoreListByDepartmentId(Map<String, Object> paramMap, Map<String, Object> jxEmoloyeeNameMapMap, List<Map<String, Object>> yxEmploeeNameList) {
         List<Map<String, Object>> mapListMapList = new ArrayList<>();
 
         Map<String, Object> mapListMap;
@@ -474,6 +474,7 @@ public class HomeController {
 
         //任务完成率  已完成数量
         int countFinished = 0;
+        //任务完成率 未完成数量
         int countUnfinished = 0;
 
         //当月维护数据
@@ -482,13 +483,15 @@ public class HomeController {
         List<MaintainRecord> maintainRecordListThisDay = maintainRecordListThisMonth.stream().filter(item ->
                 item.getCreateTime().after(thisDayBegin) && item.getCreateTime().before(nextDayBegin)
         ).collect(Collectors.toList());
-        //解析当天检修人员名单 维护部分
+        //解析当天检修人员名单 维护部分,将结果保存在jxEmoloyeeNameMapMap中
         this.parseJXRecordList(maintainRecordListThisDay, jxEmoloyeeNameMapMap);
 
-        //当天维护数据 按状态分
+        //当天维护数据 按状态分组
         Map<String, List<MaintainRecord>> maintainRecordListThisDayGroupByStatus = maintainRecordListThisDay.stream().collect(Collectors.groupingBy(MaintainRecord::getStatus));
 
+        //已完成数量 统计列表中状态是2的记录
         countFinished += maintainRecordListThisDayGroupByStatus.get("2") != null ? maintainRecordListThisDayGroupByStatus.get("2").size() : 0;
+        //完成数量 统计列表中状态不是2的记录
         countUnfinished += maintainRecordListThisDay.size() - (maintainRecordListThisDayGroupByStatus.get("2") != null ? maintainRecordListThisDayGroupByStatus.get("2").size() : 0);
 
         //当月缺陷数
@@ -497,6 +500,7 @@ public class HomeController {
         Map<Integer, List<Defect>> defectListThisMonthGroupByType = defectListThisMonth.stream().collect(Collectors.groupingBy(Defect::getType));
         //当月缺陷统计数据
         mapListMap = this.parseDefectStaticsData(defectListThisMonthGroupByType, "当月缺陷统计");
+        //添加到返回集合中
         mapListMapList.add(mapListMap);
 
         //当天缺陷数
@@ -504,29 +508,38 @@ public class HomeController {
                 item -> item.getCreated().compareTo(sdf.format(thisDayBegin)) > 0 && item.getCreated().compareTo(sdf.format(nextDayBegin)) < 0
         ).collect(Collectors.toList());
 
-        //解析当天检修人员名单 缺陷部分
+        //解析当天检修人员名单 缺陷部分,将结果保存在jxEmoloyeeNameMapMap中
         this.parseJXRecordList(defectListThisDay, jxEmoloyeeNameMapMap);
         //当天缺陷 按类型分
         Map<Integer, List<Defect>> defectListThisDayGroupByType = defectListThisDay.stream().collect(Collectors.groupingBy(Defect::getType));
         //当天缺陷统计数据
         mapListMap = this.parseDefectStaticsData(defectListThisDayGroupByType, "当天缺陷统计");
+        //添加到返回集合中
         mapListMapList.add(mapListMap);
 
         countFinished += defectListThisDayGroupByType.get(4) != null ? defectListThisDayGroupByType.get(4).size() : 0;
         countUnfinished += defectListThisDay.size() - (defectListThisDayGroupByType.get(4) != null ? defectListThisDayGroupByType.get(4).size() : 0);
 
-        //当天任务完成率
-        mapListMap = this.parseFinishRate(countFinished, countUnfinished, "当天巡检任务完成率");
+        //当天检修任务完成率
+        mapListMap = this.parseFinishRate(countFinished, countUnfinished, "当天检修任务完成率");
+        //添加到返回集合中
         mapListMapList.add(mapListMap);
 
         /* <- 运行人员名单  */
         SimpleDateFormat sdf1 = new SimpleDateFormat("yyyy-MM-dd");
         paramMap.put("date", sdf1.format(date) + "%");
+        //当天8点
         Date thisDayBegin8 = DateFormat.getThisDayTimeBegin(date, 0, 8);
+        //当天16点
         Date thisDayBegin16 = DateFormat.getThisDayTimeBegin(date, 0, 16);
         Integer type = null; //白班 中班,夜班
         String endTime = "";
         String startTime;
+        /**
+         *  0<date<8 type =3
+         *  8<date<16 type =1
+         *  16<date<24 type =2
+         */
         if (thisDayBegin.getTime() < date.getTime() && date.getTime() < thisDayBegin8.getTime()) {
             type = 3;
             startTime = sdf.format(thisDayBegin);
@@ -541,41 +554,66 @@ public class HomeController {
             endTime = sdf.format(nextDayBegin);
         }
 
-        //当天运行人员名单
+        //当天运行记录
         List<ScrDaily> scrDailyList = indexDataService.getScrDailyByMap(paramMap);
         Integer finalType = type;
+        //当班运行记录
         List<ScrDaily> thisTimeScrDailyList = scrDailyList.stream().filter(item -> item.getType() == finalType).collect(Collectors.toList());
+
+        paramMap.put("startTime", sdf.format(thisDayBegin));
+        paramMap.put("endTime", sdf.format(nextDayBegin));
+        //当天运行数据记录
+        List<Map<String, Object>> thisDayYxStsticMapList = indexDataService.getPostPeratorDataMapByMap(paramMap);
+        //检修次数
+        int countThisDayFrequency = thisDayYxStsticMapList.stream().mapToInt(item -> Integer.valueOf(String.valueOf(item.get("frequency")))).sum();
+        //检修点数
+        int countThisDayPoint = thisDayYxStsticMapList.stream().mapToInt(item -> Integer.valueOf(String.valueOf(item.get("point")))).sum();
+        //解析数据
+        mapListMap = this.parseYxStatic(countThisDayFrequency, countThisDayPoint, "当天巡检统计");
+        //添加到结果集合中
+        mapListMapList.add(mapListMap);
+        paramMap.put("startTime", startTime);
+        paramMap.put("endTime", endTime);
+        //当班运行数据记录
+        List<Map<String, Object>> thisShiftYxStsticMapList = indexDataService.getPostPeratorDataMapByMap(paramMap);
+
+
         if (thisTimeScrDailyList != null && thisTimeScrDailyList.size() > 0) {
             for (ScrDaily scrDaily : thisTimeScrDailyList) {
+                //接班人编号
                 String successor = scrDaily.getSuccessor();
                 String[] successors = null;
                 if (!StringUtils.isEmpty(successor)) {
                     successors = successor.split(";");
                 }
                 if (successors != null) {
+                    //将运行人员编号转化为名称添加到运行人员列表中
                     for (String userNumber : successors) {
                         Users userByEmployeeId = userService.getUserByUserNumber(userNumber);
+                        Object frequency = "0";
                         if (userByEmployeeId != null) {
-                            yxEmploeeNameList.add(userByEmployeeId.getUserName());
+                            Map<String, Object> map = new HashMap<>();
+                            List<Map<String, Object>> thisEmployeeYxStaticMapList = thisShiftYxStsticMapList.stream().filter(item -> item.get("userNumber") .equals(userByEmployeeId.getUserNumber()) ).collect(Collectors.toList());
+                            if (thisEmployeeYxStaticMapList.size() > 0) {
+                                frequency = thisEmployeeYxStaticMapList.get(0).get("frequency");
+                            }
+                            map.put("name", userByEmployeeId.getUserName());
+                            map.put("taskNum", frequency);
+                            yxEmploeeNameList.add(map);
                         }
                     }
                 }
             }
         }
 
-        paramMap.put("startTime", sdf.format(thisDayBegin));
-        paramMap.put("endTime", sdf.format(nextDayBegin));
-        List<Map<String, Object>> thisDayYxStsticMapList = indexDataService.getPostPeratorDataMapByMap(paramMap);
-        int countThisDayFrequency = thisDayYxStsticMapList.stream().mapToInt(item -> Integer.valueOf(String.valueOf(item.get("frequency")))).sum();
-        int countThisDayPoint = thisDayYxStsticMapList.stream().mapToInt(item -> Integer.valueOf(String.valueOf(item.get("point")))).sum();
-        mapListMap = this.parseYxStatic(countThisDayFrequency, countThisDayPoint, "当天巡检统计");
-        mapListMapList.add(mapListMap);
-        paramMap.put("startTime", startTime);
-        paramMap.put("endTime", endTime);
-        List<Map<String, Object>> thisShiftYxStsticMapList = indexDataService.getPostPeratorDataMapByMap(paramMap);
+
+        //检修次数
         int countThisShiftFrequency = thisShiftYxStsticMapList.stream().mapToInt(item -> Integer.valueOf(String.valueOf(item.get("frequency")))).sum();
+        //检修点数
         int countThisShiftPoint = thisShiftYxStsticMapList.stream().mapToInt(item -> Integer.valueOf(String.valueOf(item.get("point")))).sum();
+        //解析数据
         mapListMap = this.parseYxStatic(countThisShiftFrequency, countThisShiftPoint, "当班巡检统计");
+        //添加到结果集合中
         mapListMapList.add(mapListMap);
         return mapListMapList;
     }
@@ -594,13 +632,13 @@ public class HomeController {
         Map<String, Object> map;
         if (countFrequency > 0) {
             map = new HashMap<>();
-            map.put("name", "检修次数");
+            map.put("name", "巡检次数");
             map.put("value", countFrequency);
             mapList.add(map);
         }
         if (countPoint > 0) {
             map = new HashMap<>();
-            map.put("name", "检修点数");
+            map.put("name", "巡检点数");
             map.put("value", countPoint);
             mapList.add(map);
         }
@@ -609,7 +647,14 @@ public class HomeController {
         return mapListMap;
     }
 
-    //当前检修任务完成率
+    /**
+     * 当前检修任务完成率
+     *
+     * @param countFinished   已完成数量
+     * @param countUnfinished 未完成数量
+     * @param name            图表名称
+     * @return
+     */
     private Map<String, Object> parseFinishRate(int countFinished, int countUnfinished, String name) {
         Map<String, Object> mapListMap = new HashMap<>();
         List<Map<String, Object>> mapList = new ArrayList<>();
@@ -633,7 +678,7 @@ public class HomeController {
 
 
     /**
-     * 解析统计图
+     * 解析数据返回统计图格式所需数据
      *
      * @param defectListGroupByType
      * @param name
@@ -643,14 +688,15 @@ public class HomeController {
 
         Map<String, Object> mapListMap = new HashMap<>();
         List<Map<String, Object>> mapList = new ArrayList<>();
-        //得到Key
+        //得到Key的集合
         Set<Integer> defectListThisMonthGroupByTypeKeySet = defectListGroupByType.keySet();
+        //循环Key
         for (Integer defectListGroupByTypeKey : defectListThisMonthGroupByTypeKeySet) {
             Map<String, Object> map = new HashMap<>();
+            //得到该Key的缺陷数据
             List<Defect> defectListByTypeId = defectListGroupByType.get(defectListGroupByTypeKey);
             //添加每一类的大小
             map.put("value", defectListByTypeId.size());
-
             //添加颜色和名称
             map.putAll(this.getDefectKVByType(defectListGroupByTypeKey));
             mapList.add(map);
@@ -660,6 +706,12 @@ public class HomeController {
         return mapListMap;
     }
 
+    /**
+     * 添加每一类的名称和颜色
+     *
+     * @param type
+     * @return
+     */
     public Map<String, Object> getDefectKVByType(Integer type) {
         Map<String, Object> resultMap = new HashMap<>();
         Map<String, Object> map = new HashMap<>();
@@ -729,7 +781,7 @@ public class HomeController {
             String[] employeeIds = employeeIdStr.split(",");
             if (employeeIds.length > 0) {
                 for (String employeeId : employeeIds) {
-                    //jxEmoloyeeNameMapMap中是否含有该用户编号的key
+                    //jxEmoloyeeNameMapMap中是否含有该用户编号的key  存在则在该员工的任务数量加1,不存在则添加该员工
                     if (!jxEmoloyeeNameMapMap.containsKey(employeeId)) {
 
                         //查询用户名并初始化任务数量为一
