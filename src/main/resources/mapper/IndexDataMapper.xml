@@ -24,6 +24,29 @@
         <result column="work_content" property="workContent"/>
     </resultMap>
 
+    <resultMap id="maintainMap" type="com.howei.pojo.Maintain">
+        <id column="id" property="id"/>
+        <result column="company_id" property="companyId"/>
+        <result column="department_id" property="departmentId"/>
+        <result column="employee_id" property="employeeId"/>
+        <result column="system_id" property="systemId"/>
+        <result column="equipment_id" property="equipmentId"/>
+        <result column="unit_id" property="unitId"/>
+        <result column="work_content" property="workContent"/>
+        <result column="cycle" property="cycle"/>
+        <result column="assignment_status" property="assignmentStatus"/>
+        <result column="planed_working_hour" property="planedWorkingHour"/>
+
+        <result column="create_time" property="createTime"/>
+        <result column="update_time" property="updateTime"/>
+        <result column="start_time" property="startTime"/>
+
+        <result column="system_name" property="systemName"/>
+        <result column="equipment_name" property="equipmentName"/>
+        <result column="unit_name" property="unitName"/>
+        <result column="work_content" property="workContent"/>
+    </resultMap>
+
     <select id="getMaintainRecordByMap" resultMap="maintainRecordMap">
 
         SELECT
@@ -38,12 +61,12 @@
         LEFT JOIN equipment e ON e.id = m.system_id
         LEFT JOIN equipment e1 ON e1.id = m.equipment_id
         LEFT JOIN unit u ON u.id = m.unit_id
-        WHERE
-        1 = 1
-        <if test="date!=null">
-            and mr.create_time like #{date}
-        </if>
-        <if test="departmentId!=null">and mr.department_id=#{ departmentId}</if>
+        WHERE 1 = 1
+        <if test="date!=null">and mr.create_time like #{date}</if>
+        <if test="departmentId!=null">and mr.department_id=#{departmentId}</if>
+        <if test="employeeId!=null">and mr.employee_id like concat("%",#{employeeId},"%")</if>
+        <if test="isToFinish!=true">and mr.status=2</if>
+        <if test="isToFinish=true">and mr.status!=2</if>
         order by mr.end_time desc,mr.create_time desc
 
 
@@ -66,6 +89,11 @@
             <if test="date!=null">
                 and de.created like #{date}
             </if>
+            <if test="isToDo!=null">
+                <if test="isToDo==0">and (de.type=1 or de.type=6 or de.type=7)</if>
+                <if test="isToDo==1">and (de.type=5 or de.type=2 or de.type=3)</if>
+            </if>
+            <if test="employeeId!=null">and de.empIds like concat("%",#{employeeId},"%")</if>
         </where>
         order by de.created desc
     </select>
@@ -80,26 +108,28 @@
 
     </select>
     <select id="getPostPeratorDataMapByMap" resultType="java.util.Map">
-      SELECT p.id AS id,p.userNumber,p.companyId,p.companyName,p.departmentId,p.departmentName,p.userName AS userName,if(p.sex=1,"男","女") sex ,p.frequency AS frequency,pdd.point AS point
+        SELECT p.id AS id,p.userNumber,p.companyId,p.companyName,p.departmentId,p.departmentName,p.userName AS
+        userName,if(p.sex=1,"男","女") sex ,p.frequency AS frequency,pdd.point AS point
         FROM
         (
-          SELECT  u.id,u.userName,u.sex,u.userNumber,c.id companyId,c. NAME companyName,c2.id departmentId,c2. NAME departmentName,COUNT(*) AS frequency
-          FROM postPerator p
-          JOIN users u ON u.Id = p.postPeratorId
-          JOIN company c ON c.id = u.companyId
-          JOIN company c2 ON c2.id = u.departmentId
-          WHERE 1 = 1
-          AND p.inspectionEndTime IS NOT NULL
-          AND p.created  BETWEEN  #{startTime}  and #{endTime}
-          GROUP BY p.postPeratorId
+        SELECT u.id,u.userName,u.sex,u.userNumber,c.id companyId,c. NAME companyName,c2.id departmentId,c2. NAME
+        departmentName,COUNT(*) AS frequency
+        FROM postPerator p
+        JOIN users u ON u.Id = p.postPeratorId
+        JOIN company c ON c.id = u.companyId
+        JOIN company c2 ON c2.id = u.departmentId
+        WHERE 1 = 1
+        AND p.inspectionEndTime IS NOT NULL
+        AND p.created BETWEEN #{startTime} and #{endTime}
+        GROUP BY p.postPeratorId
         ) p
         JOIN (
-          SELECT pd.createdBy AS createdBy,count(pd.postPeratorId) AS point
-          FROM postPerator_data pd
-          WHERE 1 = 1
-          AND pd.measuringTypeData IS NOT NULL
-          AND pd.created BETWEEN    #{startTime}  and #{endTime}
-          GROUP BY pd.createdBy
+        SELECT pd.createdBy AS createdBy,count(pd.postPeratorId) AS point
+        FROM postPerator_data pd
+        WHERE 1 = 1
+        AND pd.measuringTypeData IS NOT NULL
+        AND pd.created BETWEEN #{startTime} and #{endTime}
+        GROUP BY pd.createdBy
         ) pdd ON pdd.createdBy = p.Id
         <where>
             <if test="departmentId!=null and empId!='0'">
@@ -107,6 +137,24 @@
             </if>
         </where>
 
+
+    </select>
+    <select id="getMaintainByMap" resultMap="maintainMap">
+        SELECT
+        e.`name` AS system_name,
+        e1.`name` AS equipment_name,
+        u.nuit AS unit_name,
+        m.*
+        FROM
+        maintain m
+        LEFT JOIN equipment e ON e.id = m.system_id
+        LEFT JOIN equipment e1 ON e1.id = m.equipment_id
+        LEFT JOIN unit u ON u.id = m.unit_id
+        where 1=1
+        <if test="departmentId!=null">and m.department_id=#{departmentId}</if>
+        <if test="assignmentStatus!=null">and m.assignment_status=#{assignmentStatus}</if>
+        <if test="isToAssign==true">and unix_timestamp(now()) > UNIX_TIMESTAMP(m.start_time) + m.cycle * 24 * 3600</if>
+        order by m.assignment_status desc,m.start_time desc
 
     </select>
 </mapper>

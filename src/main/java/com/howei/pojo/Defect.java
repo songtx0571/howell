@@ -9,8 +9,8 @@ public class Defect {
     private Integer company;//公司
     private Integer createdBy;
     private Integer level;//缺陷等级
-    private String created;
-    private Integer type;//缺陷状态
+    private String created;//创建时间
+    private Integer type;//缺陷状态 1.未认领,5已认领,2,消缺中 3已消缺,7工时确认,4已完成,6延期中
     private Integer departmentId;//部门
     private String abs;//故障描述
     private String orderReceivingTime;//接单开始时间
@@ -38,10 +38,28 @@ public class Defect {
     private String delaySTime;//延期开始时间
     private String delayETime;//延期结束时间
     private Integer delayBy;//延期申请人
-    private Integer delayReason;//延期理由
+    private Integer delayReason;//延期理由 1,等待备件 2无法安措 3停炉处理 4继续观察
     private Double realExecuteTime;//实际工时
     private Double plannedWork;//计划工时
     private Integer sourceType;//来源类型:1是defect项目创建；2是guide项目创建的
+    private Double overtime;//加班工时
+    private String workTimeConfirmTime;//加班工时确认时间
+    private String timeoutType;//超时类型,  A认领超时,  B开工超时, C反馈超时,D验收超时, E结束超时, Z缺陷处理超时
+    private Integer isStarted;//是否开始,0开始计时,1结束计时
+    private Integer countdownDelayTimes;//倒计时加时次数
+    private Double plannedHoursPart1;
+    private Double plannedHoursPart5;
+    private Double plannedHoursPart2;
+    private Double plannedHoursPart3;
+    private Double plannedHoursPart7;
+    private Double plannedHours;//计时器暂停时间
+    private Double totalPauseSeconds;
+    private Double partPauseSeconds;
+    private String totalStartTime; //总倒计时开始时间
+    private String partStartTime; //每一部分倒计时开始时间
+    private String pauseTime;//暂停时间
+
+
 
     //虚字段
     private String createdByName;//创建人
@@ -56,6 +74,134 @@ public class Defect {
     private String empIdsName;//执行人员名称
     private String aPlc64;
     private String bPlc64;
+
+    public Double getTotalPauseSeconds() {
+        return totalPauseSeconds;
+    }
+
+    public void setTotalPauseSeconds(Double totalPauseSeconds) {
+        this.totalPauseSeconds = totalPauseSeconds;
+    }
+
+    public Double getPartPauseSeconds() {
+        return partPauseSeconds;
+    }
+
+    public void setPartPauseSeconds(Double partPauseSeconds) {
+        this.partPauseSeconds = partPauseSeconds;
+    }
+
+    public String getPauseTime() {
+        return pauseTime;
+    }
+
+    public void setPauseTime(String pauseTime) {
+        this.pauseTime = pauseTime;
+    }
+
+    public String getTotalStartTime() {
+        return totalStartTime;
+    }
+
+    public void setTotalStartTime(String totalStartTime) {
+        this.totalStartTime = totalStartTime;
+    }
+
+    public String getPartStartTime() {
+        return partStartTime;
+    }
+
+    public void setPartStartTime(String partStartTime) {
+        this.partStartTime = partStartTime;
+    }
+
+    public Double getPlannedHoursPart1() {
+        return plannedHoursPart1;
+    }
+
+    public void setPlannedHoursPart1(Double plannedHoursPart1) {
+        this.plannedHoursPart1 = plannedHoursPart1;
+    }
+
+    public Double getPlannedHoursPart5() {
+        return plannedHoursPart5;
+    }
+
+    public void setPlannedHoursPart5(Double plannedHoursPart5) {
+        this.plannedHoursPart5 = plannedHoursPart5;
+    }
+
+    public Double getPlannedHoursPart2() {
+        return plannedHoursPart2;
+    }
+
+    public void setPlannedHoursPart2(Double plannedHoursPart2) {
+        this.plannedHoursPart2 = plannedHoursPart2;
+    }
+
+    public Double getPlannedHoursPart3() {
+        return plannedHoursPart3;
+    }
+
+    public void setPlannedHoursPart3(Double plannedHoursPart3) {
+        this.plannedHoursPart3 = plannedHoursPart3;
+    }
+
+    public Double getPlannedHoursPart7() {
+        return plannedHoursPart7;
+    }
+
+    public void setPlannedHoursPart7(Double plannedHoursPart7) {
+        this.plannedHoursPart7 = plannedHoursPart7;
+    }
+
+    public Double getPlannedHours() {
+        return plannedHours;
+    }
+
+    public void setPlannedHours(Double plannedHours) {
+        this.plannedHours = plannedHours;
+    }
+
+    public Integer getCountdownDelayTimes() {
+        return countdownDelayTimes;
+    }
+
+    public void setCountdownDelayTimes(Integer countdownDelayTimes) {
+        this.countdownDelayTimes = countdownDelayTimes;
+    }
+
+    public Integer getIsStarted() {
+        return isStarted;
+    }
+
+    public void setIsStarted(Integer isStarted) {
+        this.isStarted = isStarted;
+    }
+
+    public String getTimeoutType() {
+        return timeoutType;
+    }
+
+    public void setTimeoutType(String timeoutType) {
+        this.timeoutType = timeoutType;
+    }
+
+    public String getWorkTimeConfirmTime() {
+        return workTimeConfirmTime;
+    }
+
+    public void setWorkTimeConfirmTime(String workTimeConfirmTime) {
+        this.workTimeConfirmTime = workTimeConfirmTime;
+    }
+
+    public Double getOvertime() {
+        return overtime;
+    }
+
+    public void setOvertime(Double overtime) {
+        this.overtime = overtime;
+    }
 
     public Integer getId() {
         return id;

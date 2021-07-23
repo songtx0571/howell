@@ -9,6 +9,7 @@ import com.howei.service.*;
 import com.howei.util.DateFormat;
 import com.howei.util.MD5;
 import com.howei.util.Result;
+import org.apache.catalina.User;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authc.UsernamePasswordToken;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
@@ -30,6 +31,7 @@ import java.io.Serializable;
 import java.io.UnsupportedEncodingException;
 import java.security.NoSuchAlgorithmException;
 import java.security.PublicKey;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -593,7 +595,7 @@ public class HomeController {
                         Object frequency = "0";
                         if (userByEmployeeId != null) {
                             Map<String, Object> map = new HashMap<>();
-                            List<Map<String, Object>> thisEmployeeYxStaticMapList = thisShiftYxStsticMapList.stream().filter(item -> item.get("userNumber") .equals(userByEmployeeId.getUserNumber()) ).collect(Collectors.toList());
+                            List<Map<String, Object>> thisEmployeeYxStaticMapList = thisShiftYxStsticMapList.stream().filter(item -> item.get("userNumber").equals(userByEmployeeId.getUserNumber())).collect(Collectors.toList());
                             if (thisEmployeeYxStaticMapList.size() > 0) {
                                 frequency = thisEmployeeYxStaticMapList.get(0).get("frequency");
                             }
@@ -823,6 +825,63 @@ public class HomeController {
             map.put("cityName", "杭州市");
         }
         return map;
+    }
+
+
+    @GetMapping("/getPersonalTasks")
+    @ResponseBody
+    public Result getPersonalTask() {
+        Subject subject = SecurityUtils.getSubject();
+        Users users = (Users) subject.getPrincipal();
+        if (users == null) {
+            return Result.fail("用户失效");
+        }
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        Map<String, Object> resultMap = new HashMap<>();
+        Map<String, Object> queryMap = new HashMap<>();
+        List<Maintain> maintainList = new ArrayList<>();
+        if (subject.isPermitted("分配维护配置")) {
+            Integer departmentId = null;
+            if (!subject.isPermitted("查询所有部门维护引导")) {
+                departmentId = users.getDepartmentId();
+            }
+            queryMap.put("departmentId", departmentId);
+            queryMap.put("assignmentStatus", "0");
+            queryMap.put("isToAssign", true);
+            maintainList = indexDataService.getMintainByMap(queryMap);
+        }
+        resultMap.put("maintains", maintainList);
+        queryMap.clear();
+        queryMap.put("departmentId", users.getDepartmentId());
+        queryMap.put("employeeId", users.getEmployeeId());
+        queryMap.put("isToFinish", true);
+        List<MaintainRecord> maintainRecordList = indexDataService.getMaintainRecordByMap(queryMap);
+        maintainRecordList = maintainRecordList == null ? new ArrayList<>() : maintainRecordList;
+        resultMap.put("maintainRecords", maintainRecordList);
+
+        queryMap.clear();
+        List<Defect> defectTotalList = new ArrayList<>();
+        Integer departmentId = null;
+        if (!subject.isPermitted("缺陷管理员")) {
+            departmentId = users.getDepartmentId();
+        }
+        queryMap.put("departmentId", departmentId);
+        queryMap.put("isToDo", "0");
+        //待分配和待确认
+        List<Defect> defectList = indexDataService.getDefectByMap(queryMap);
+        if (defectList != null && defectList.size() > 0){
+            defectTotalList.addAll(defectList);
+        }
+        queryMap.clear();
+        queryMap.put("departmentId", departmentId);
+        queryMap.put("employeeId", users.getEmployeeId());
+        queryMap.put("isToDo", "1");
+        defectList = indexDataService.getDefectByMap(queryMap);
+        if (defectList != null && defectList.size() > 0){
+            defectTotalList.addAll(defectList);
+        }
+        resultMap.put("defects", defectTotalList);
+        return Result.ok(0, resultMap);
     }
 
 

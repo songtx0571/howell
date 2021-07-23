@@ -2,6 +2,7 @@ package com.howei.service.impl;
 
 import com.howei.mapper.IndexDataMapper;
 import com.howei.pojo.Defect;
+import com.howei.pojo.Maintain;
 import com.howei.pojo.MaintainRecord;
 import com.howei.pojo.ScrDaily;
 import com.howei.service.IndexDataService;
@@ -35,6 +36,12 @@ public class IndexDataServiceImpl  implements IndexDataService {
     @Override
     public List<Map<String, Object>> getPostPeratorDataMapByMap(Map<String, Object> map) {
         return mapper.getPostPeratorDataMapByMap(map);
+    }
+
+    @Override
+    public List<Maintain> getMintainByMap(Map<String, Object> map) {
+        return mapper.getMaintainByMap(map);
+
     }
 
 }

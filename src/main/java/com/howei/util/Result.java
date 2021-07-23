@@ -50,4 +50,37 @@ public class Result {
     public void setMsg(String msg) {
         this.msg = msg;
     }
+
+    public static Result ok(int count, Object data, String msg) {
+        Result result = new Result();
+        result.setCount(count);
+        result.setData(data);
+        result.setMsg(msg);
+        result.setCode(0);
+        return result;
+    }
+
+    public static Result ok(int count, Object data) {
+        return ok(count, data, "操作成功");
+    }
+
+    public static Result ok() {
+        return ok(0, null, "操作成功");
+    }
+
+    public static Result ok(String msg) {
+        return ok(0, null, msg);
+    }
+
+    public static Result fail(String msg) {
+        Result result = new Result();
+        result.setCode(-1);
+        result.setMsg(msg);
+        return result;
+    }
+
+    public static Result fail() {
+        return fail("操作失败");
+    }
+
 }
