@@ -82,9 +82,7 @@ function pinjie() {
                     div += "<li><p class='pieTitle'><span class=\"iconfont icon-triangle-right\" style=\"margin-right: 8px;color: #0000FF;\"></span><span>" + data.staticsData[i].name + "</span></p>" +
                         "<div id='main" + z + "" + i + "' style=\"width: 210px;height:175px;margin: 5px auto 0;\"></div></li>"
                 }
-                div += "</ul><div class=\"clear\"></div>"
-                div += ""
-                div += "</div>"
+                div += "</ul><div class=\"clear\"></div></div>";
                 var pinjie = $(".pinjie");
                 pinjie.append(div);
                 fullWeather(z, data.cityCode, data.departmentName)
@@ -326,7 +324,7 @@ function setMessageInnerHTML(json) {
     } else {
         liList.push(json)
     }
-    //页面加载，显示为6条，第七条开始定时
+    //页面加载，显示为3条，第4条开始定时
     if (recordCount == 0 || liList.length > 0) {
         var dom = document.getElementById("noticeUl");
         var html = "";
@@ -442,7 +440,7 @@ function clickRead(a) {
 
 //本人任务
 function getMyTsk() {
-    var myTaskDiv = $(".myTaskDivSon");
+    var myTaskDiv = $(".myTaskDiv");
     $.ajax({
         type: 'get',
         url: "/getPersonalTasks",
@@ -463,8 +461,6 @@ function getMyTsk() {
                         p += "<p onclick='jumpUrl(\"defectUrl\")'><span style='color: #9f4ba4'>请处理&nbsp;&nbsp;" + defect[i].number + "</span>&nbsp;&nbsp;" + defect[i].sysName + "&nbsp;&nbsp;" + defect[i].equipmentName + "</p>"
                     } else if (defect[i].type == '3') {//工时完成待确认-值班确认
                         p += "<p onclick='jumpUrl(\"defectUrl\")'><span style='color: #9f4ba4'>请确认&nbsp;&nbsp;" + defect[i].number + "</span>&nbsp;&nbsp;" + defect[i].sysName + "&nbsp;&nbsp;" + defect[i].equipmentName + "</p>"
-                    } else if (defect[i].type == '6') {//延期
-                        p += "<p onclick='jumpUrl(\"defectUrl\")'><span style='color: #9f4ba4'>已延期&nbsp;&nbsp;" + defect[i].number + "</span>&nbsp;&nbsp;" + defect[i].sysName + "&nbsp;&nbsp;" + defect[i].equipmentName + "</p>"
                     } else if (defect[i].type == '2') {//开始执行未完成-消缺反馈
                         p += "<p onclick='jumpUrl(\"defectUrl\")'><span style='color: #9f4ba4'>正在执行&nbsp;&nbsp;" + defect[i].number + "</span>&nbsp;&nbsp;" + defect[i].sysName + "&nbsp;&nbsp;" + defect[i].equipmentName + "</p>"
                     }
@@ -504,7 +500,7 @@ function scrollMyTsk(dom, time) {
 
 //定时本人任务事件
 function rollMyTsk() {
-    var dom = document.getElementsByClassName("myTaskDivSon")[0];
+    var dom = document.getElementsByClassName("myTaskDiv")[0];
     var firstDom = dom.firstElementChild;
     if (!firstDom) {
         return;

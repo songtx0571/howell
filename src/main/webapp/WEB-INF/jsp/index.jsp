@@ -20,8 +20,6 @@
             <ul id="noticeUl" style=""></ul>
         </div>
         <div class='myTaskDiv'>
-            <a style='position: absolute;top: 5px;right: 10px;font-size: 18px;color: #0000FF;cursor: pointer;'>&lt;&lt;本人任务</a>
-            <div class="myTaskDivSon"></div>
         </div>
         <div class="pinjie"></div>
     </div>

@@ -90,7 +90,7 @@
                 and de.created like #{date}
             </if>
             <if test="isToDo!=null">
-                <if test="isToDo==0">and (de.type=1 or de.type=6 or de.type=7)</if>
+                <if test="isToDo==0">and (de.type=1 or de.type=7)</if>
                 <if test="isToDo==1">and (de.type=5 or de.type=2 or de.type=3)</if>
             </if>
             <if test="employeeId!=null">and de.empIds like concat("%",#{employeeId},"%")</if>
