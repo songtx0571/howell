@@ -1,5 +1,6 @@
 var username = "";//当前登陆人
-var timer = "";//定时器
+var timer = "";//定时器动态区域
+var timerMyTsk = "";//定时器本人任务
 let colorLevel = "";//用户设置的颜色等级
 var liList = [];
 var index = 0;
@@ -29,9 +30,10 @@ $(function () {
             username = data;
             getUserSetting();
             fullUl();
+            getMyTsk();
+            scrollMyTsk('myTaskDiv', 3000);
         }
-    })
-
+    });
     //颜色选择
     colorFun();
     //拼接
@@ -51,7 +53,7 @@ function pinjie() {
             for (let z = 0; z < data1.length; z++) {
                 data = data1[z];
                 var div = "<div class=\"warp1\"><div class='left'>" +
-                    "<div class='weaDiv weaDiv"+z+"'><div class='weaAll weaAll"+z+"'></div><div class='clear'></div><ul class='weaList weaList"+z+"'></ul></div>" +
+                    "<div class='weaDiv weaDiv" + z + "'><div class='weaAll weaAll" + z + "'></div><div class='clear'></div><ul class='weaList weaList" + z + "'></ul></div>" +
                     "<div class=\"yunxing\">" +
                     "<p>" +
                     "<span class=\"iconfont icon-peoples\" style=\"margin-right: 11px;color: #0000FF;\"></span>" +
@@ -78,13 +80,14 @@ function pinjie() {
                 pieJson = data.staticsData;
                 for (let i = 0; i < data.staticsData.length; i++) {
                     div += "<li><p class='pieTitle'><span class=\"iconfont icon-triangle-right\" style=\"margin-right: 8px;color: #0000FF;\"></span><span>" + data.staticsData[i].name + "</span></p>" +
-                        "<div id='main"+z+""+i+"' style=\"width: 210px;height:175px;margin: 5px auto 0;\"></div></li>"
+                        "<div id='main" + z + "" + i + "' style=\"width: 210px;height:175px;margin: 5px auto 0;\"></div></li>"
                 }
                 div += "</ul><div class=\"clear\"></div>"
-
+                div += ""
+                div += "</div>"
                 var pinjie = $(".pinjie");
                 pinjie.append(div);
-                fullWeather(z, data.cityCode,data.departmentName)
+                fullWeather(z, data.cityCode, data.departmentName)
                 for (let i = 0; i < data.staticsData.length; i++) {
                     pieChart('main', i, data.staticsData[i].name, z);
                 }
@@ -160,40 +163,38 @@ function pieChart(id, i, name, z) {
 }
 
 //填充天气
-function fullWeather(num,cityCode,departmentName) {
+function fullWeather(num, cityCode, departmentName) {
     $.ajax({
         type: 'get',
-        url: "https://v0.yiketianqi.com/api?version=v62&appid=93825797&appsecret=wugk17qm&cityid="+cityCode,
+        url: "https://v0.yiketianqi.com/api?version=v62&appid=93825797&appsecret=wugk17qm&cityid=" + cityCode,
         data: {},
         async: true, // 异步
         dataType: "json",
         success: function (data) {
-            $(".weaDiv"+num).css("background","linear-gradient(rgba(175,182,193,0.8), rgb(255, 255, 255))");
-            if (data.wea == "阴") {
-                $(".weaDiv"+num).css("background","linear-gradient(rgba(175,182,193,0.8), rgb(255, 255, 255))");
-            } else if (data.wea == "多云") {
-                $(".weaDiv"+num).css("background","linear-gradient(rgba(63,120,210,0.8), rgb(255, 255, 255))");
-            } else if (data.wea == "中雨") {
-                $(".weaDiv"+num).css("background","linear-gradient(rgba(63,69,80,0.8), rgb(255, 255, 255))");
-            } else if (data.wea == "大雨") {
-                $(".weaDiv"+num).css("background","linear-gradient(rgba(26,30,37,0.8), rgb(255, 255, 255))");
-            }  else if (data.wea == "阵雨") {
-                $(".weaDiv"+num).css("background","linear-gradient(rgba(63,69,80,0.8), rgb(255, 255, 255))");
-            } else if (data.wea == "晴") {
-                $(".weaDiv"+num).css("background","linear-gradient(rgba(255,148,0,0.8), rgb(255, 255, 255))");
-            } else if (data.wea == "小雨") {
-                $(".weaDiv"+num).css("background","linear-gradient(rgba(118,122,130,0.8), rgb(255, 255, 255))");
-            } else if (data.wea == "阴转多云") {
-                $(".weaDiv"+num).css("background","linear-gradient(rgba(63,120,210,0.8), rgb(255, 255, 255))");
-            }else {
-                $(".weaDiv"+num).css("background","linear-gradient(#005dff, #fff)");
+            $(".weaDiv" + num).css("background", "linear-gradient(rgba(255,148,0,0.8), rgb(255, 255, 255))");//#ff9400--#fff
+            if (data.wea_day == "阴") {
+                $(".weaDiv" + num).css("background", "linear-gradient(rgba(175,182,193,0.8), rgb(255, 255, 255))");//#afb6c1--#fff
+            } else if (data.wea_day == "多云") {
+                $(".weaDiv" + num).css("background", "linear-gradient(rgba(63,120,210,0.8), rgb(255, 255, 255))");//#3f78d2--#fff
+            } else if (data.wea_day == "中雨") {
+                $(".weaDiv" + num).css("background", "linear-gradient(rgba(63,69,80,0.8), rgb(255, 255, 255))");//#3f4550--#fff
+            } else if (data.wea_day == "大雨") {
+                $(".weaDiv" + num).css("background", "linear-gradient(rgba(26,30,37,0.8), rgb(255, 255, 255))");//#1a1e25--#fff
+            } else if (data.wea_day == "阵雨") {
+                $(".weaDiv" + num).css("background", "linear-gradient(rgba(63,69,80,0.8), rgb(255, 255, 255))");//#3f4550--#fff
+            } else if (data.wea_day == "晴") {
+                $(".weaDiv" + num).css("background", "linear-gradient(rgba(255,148,0,0.8), rgb(255, 255, 255))");//#ff9400--#fff
+            } else if (data.wea_day == "小雨") {
+                $(".weaDiv" + num).css("background", "linear-gradient(rgba(118,122,130,0.8), rgb(255, 255, 255))");//#767a82--#fff
+            } else if (data.wea_day == "阴转多云") {
+                $(".weaDiv" + num).css("background", "linear-gradient(rgba(63,120,210,0.8), rgb(255, 255, 255))");//#3f78d2--#fff
+            } else {
+                $(".weaDiv" + num).css("background", "linear-gradient(rgba(255,148,0,0.8), rgb(255, 255, 255))");//#ff9400--#fff
             }
+            // var arr = ['中雨','雷阵雨','大雨','多云','阴','小雨','晴','阵雨','暴雨','大到暴雨','小到中雨','中到大雨','大暴雨']
             var div = "";
-
-            /*div += "<div class='allLeft'><p>" + departmentName + "</p><p>" + data.tem + "</p></div><div class='allRight'><p><span class='iconfont icon-" +
-                replaceWeather(data.wea_day) + "' style='font-size:30px;'></span></p><p>" + data.win + " " + data.win_speed + "<br>最高" + data.tem1 + "最低" + data.tem2 + "</p></div>";*/
-            div += "<div class='allLeft'><p>" + departmentName + "</p><p>" + data.tem + "℃</p></div><div class='allRight'><p><span style='font-size:23px;'>"+data.wea_day+"</span></p><p>" + data.win + " " + data.win_speed + "<br>最高" + data.tem1 + "最低" + data.tem2 + "</p></div>";
-            $('.weaAll'+num).html(div);
+            div += "<div class='allLeft'><p>" + departmentName + "</p><p>" + data.tem + "℃</p></div><div class='allRight'><p><span style='font-size:23px;'>" + data.wea_day + "</span></p><p>" + data.win + " " + data.win_speed + "<br>最高" + data.tem1 + "最低" + data.tem2 + "</p></div>";
+            $('.weaAll' + num).html(div);
 
             var date = new Date();
             var dataHours = data.hours;
@@ -206,56 +207,11 @@ function fullWeather(num,cityCode,departmentName) {
                         .wea) + "' style='font-size:30px;'></span></p><p>" + dataHours[i].tem +
                     "℃</p></li>";
             }
-            $('.weaList'+num).html(ul);
+            $('.weaList' + num).html(ul);
         }
     })
-    /*var ajax = new XMLHttpRequest();
-    ajax.open('get', 'https://v0.yiketianqi.com/api?version=v62&appid=93825797&appsecret=wugk17qm&cityid='+cityCode);
-    ajax.send();
-    ajax.onreadystatechange = function() {
-        if (ajax.readyState == 4 && ajax.status == 200) {
-            $(".weaDiv"+num).css("background","linear-gradient(#afb6c1, #fff)");
-            if (JSON.parse(ajax.response).wea_day == "阴") {
-                $(".weaDiv"+num).css("background","linear-gradient(#afb6c1, #fff)");
-            } else if (JSON.parse(ajax.response).wea_day == "多云") {
-                $(".weaDiv"+num).css("background","linear-gradient(#3f78d2, #fff)");
-            } else if (JSON.parse(ajax.response).wea_day == "中雨") {
-                $(".weaDiv"+num).css("background","linear-gradient(#1e2735, #fff)");
-            } else if (JSON.parse(ajax.response).wea_day == "大雨") {
-                $(".weaDiv"+num).css("background","linear-gradient(#1a1e25, #fff)");
-            } else if (JSON.parse(ajax.response).wea_day == "晴") {
-                $(".weaDiv"+num).css("background","linear-gradient(orange, #fff)");
-            } else if (JSON.parse(ajax.response).wea_day == "小雨") {
-                $(".weaDiv"+num).css("background","linear-gradient(#767a82, #fff)");
-            } else if (JSON.parse(ajax.response).wea_day == "阴转多云") {
-                $(".weaDiv"+num).css("background","linear-gradient(#3f78d2, #fff)");
-            } else {
-                $(".weaDiv"+num).css("background","linear-gradient(#005dff, #fff)");
-            }
-            var div = "";
-
-            div += "<div class='allLeft'><p>" + departmentName + "</p><p>" + JSON.parse(ajax
-                    .response).tem + "</p></div><div class='allRight'><p><span class='iconfont icon-" +
-                replaceWeather(JSON.parse(ajax.response).wea_day) + "' style='font-size:30px;'></span></p><p>" + JSON
-                    .parse(ajax.response).win + " " + JSON.parse(ajax.response).win_speed + "<br>最高" + JSON.parse(ajax
-                    .response).tem1 + "最低" + JSON.parse(ajax.response).tem2 + "</p></div>";
-            $('.weaAll'+num).html(div);
-
-            var date = new Date();
-            var data = JSON.parse(ajax.response).hours;
-            var ul = "";
-            for (var i = 0; i < 6; i++) {
-                if (data[i].hours == "现在") {
-                    data[i].hours = date.getHours() + ":00";
-                }
-                ul += "<li><p>" + data[i].hours + "</p><p><span class='iconfont icon-" + replaceWeather(data[i]
-                        .wea) + "' style='font-size:30px;'></span></p><p>" + data[i].tem +
-                    "℃</p></li>";
-            }
-            $('.weaList'+num).html(ul);
-        }
-    };*/
 }
+
 //替换天气图标
 function replaceWeather(type) {
     var icon = "";
@@ -273,9 +229,9 @@ function replaceWeather(type) {
         icon = "xiaoyu";
     } else if (type == "阴转多云") {
         icon = "duoyun";
-    }  else if (type == "中到大雨") {
+    } else if (type == "中到大雨") {
         icon = "dayu";
-    }  else if (type == "雷阵雨") {
+    } else if (type == "雷阵雨") {
         icon = "dayu";
     } else {
         icon = "duoyun";
@@ -412,7 +368,7 @@ function levelColor(lever) {
     }
 }
 
-//滚动事件
+//滚动动态区域事件
 function scroll(dom, time) {
 
     timer = setInterval(rollStart, time);
@@ -427,7 +383,7 @@ function scroll(dom, time) {
     };
 }
 
-//定时事件
+//定时动态区域事件
 function rollStart() {
     if (totalRecordCount > liList.length && index == liList.length) {
     } else {
@@ -482,4 +438,94 @@ function clickRead(a) {
 
         }
     };
+}
+
+//本人任务
+function getMyTsk() {
+    var myTaskDiv = $(".myTaskDivSon");
+    $.ajax({
+        type: 'get',
+        url: "/getPersonalTasks",
+        data: {},
+        async: true, // 异步
+        dataType: "json",
+        success: function (data) {
+            data = data.data;
+            var defect = data.defects;//缺陷
+            var p = "";
+            if (defect.length > 0) {
+                for (var i in defect) {
+                    if (defect[i].type == '1') {//新创建未认领-未认领
+                        p += "<p onclick='jumpUrl(\"defectUrl\")'><span style='color: #9f4ba4'>被创建&nbsp;&nbsp;" + defect[i].number + "</span>&nbsp;&nbsp;" + defect[i].sysName + "&nbsp;&nbsp;" + defect[i].equipmentName + "</p>"
+                    } else if (defect[i].type == '5') {//分配完成开始执行-开始执行
+                        p += "<p onclick='jumpUrl(\"defectUrl\")'><span style='color: #9f4ba4'>请处理&nbsp;&nbsp;" + defect[i].number + "</span>&nbsp;&nbsp;" + defect[i].sysName + "&nbsp;&nbsp;" + defect[i].equipmentName + "</p>"
+                    } else if (defect[i].type == '7') {//缺陷完成待工时确认-工时确认
+                        p += "<p onclick='jumpUrl(\"defectUrl\")'><span style='color: #9f4ba4'>请处理&nbsp;&nbsp;" + defect[i].number + "</span>&nbsp;&nbsp;" + defect[i].sysName + "&nbsp;&nbsp;" + defect[i].equipmentName + "</p>"
+                    } else if (defect[i].type == '3') {//工时完成待确认-值班确认
+                        p += "<p onclick='jumpUrl(\"defectUrl\")'><span style='color: #9f4ba4'>请确认&nbsp;&nbsp;" + defect[i].number + "</span>&nbsp;&nbsp;" + defect[i].sysName + "&nbsp;&nbsp;" + defect[i].equipmentName + "</p>"
+                    } else if (defect[i].type == '6') {//延期
+                        p += "<p onclick='jumpUrl(\"defectUrl\")'><span style='color: #9f4ba4'>已延期&nbsp;&nbsp;" + defect[i].number + "</span>&nbsp;&nbsp;" + defect[i].sysName + "&nbsp;&nbsp;" + defect[i].equipmentName + "</p>"
+                    } else if (defect[i].type == '2') {//开始执行未完成-消缺反馈
+                        p += "<p onclick='jumpUrl(\"defectUrl\")'><span style='color: #9f4ba4'>正在执行&nbsp;&nbsp;" + defect[i].number + "</span>&nbsp;&nbsp;" + defect[i].sysName + "&nbsp;&nbsp;" + defect[i].equipmentName + "</p>"
+                    }
+                }
+            }
+            var maintainRecords = data.maintainRecords;//维护工作
+            if (maintainRecords.length > 0) {
+                for (var j in maintainRecords) {
+                    p += "<p onclick='jumpUrl(\"maintainRecordsUrl\")'>" + maintainRecords[j].systemName + "&nbsp;&nbsp;" + maintainRecords[j].equipmentName + "&nbsp;&nbsp;" + maintainRecords[j].unitName + "&nbsp;&nbsp;<span style='color: #9f4ba4'>已分配</span></p>"
+                }
+            }
+
+            var maintains = data.maintains;//维护配置
+            if (maintains.length > 0) {
+                for (var k in maintains) {
+                    p += "<p onclick='jumpUrl(\"maintainsUrl\")'>" + maintains[k].systemName + "&nbsp;&nbsp;" + maintains[k].equipmentName + "&nbsp;&nbsp;" + maintains[k].unitName + "&nbsp;&nbsp;<span style='color: #9f4ba4'>待分配</span></p>"
+                }
+            }
+            myTaskDiv.html(p)
+        }
+    })
+}
+
+//滚动本人任务事件
+function scrollMyTsk(dom, time) {
+    timerMyTsk = setInterval(rollMyTsk, time);
+    dom = document.getElementsByClassName(dom)[0];
+    //鼠标移入
+    dom.onmouseover = function () {
+        clearInterval(timerMyTsk);
+    };
+    //鼠标移出
+    dom.onmouseout = function () {
+        timerMyTsk = setInterval(rollMyTsk, time);
+    };
+}
+
+//定时本人任务事件
+function rollMyTsk() {
+    var dom = document.getElementsByClassName("myTaskDivSon")[0];
+    var firstDom = dom.firstElementChild;
+    if (!firstDom) {
+        return;
+    } else {
+        firstDom.style.marginTop = "0px";
+        dom.appendChild(firstDom);
+        var firstDom = dom.firstElementChild;
+        firstDom.style.marginTop = "-30px";
+    }
+}
+
+//跳转
+function jumpUrl(url) {
+    var src = "";
+    if (url == "defectUrl") {
+        src = "http://localhost:8082/guide/defect/toDefect";
+    } else if (url == "maintainRecordsUrl") {
+        src = "http://localhost:8082/guide/maintain/toMaintainWork";
+    } else if (url == "maintainsUrl") {
+        src = "http://localhost:8082/guide/maintain/toMaintainConfig";
+    }
+    var $iframeRight = parent.$('.iframeContent');
+    $iframeRight.attr("src", src);
 }

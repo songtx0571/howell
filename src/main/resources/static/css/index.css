@@ -31,15 +31,16 @@
     width: 100%;
     height: 120px;
     overflow: auto;
-    font-size: 19px;
-    text-indent: 20px;
+    font-size: 18px;
+    text-indent: 10px;
     box-shadow: 0px 2px 10px 10px rgba(0, 86, 255, 0.1);
     background: #fff;
     border-radius: 20px;
+    letter-spacing: 2px;
 }
 
 .notice ul li {
-    line-height: 40px;
+    line-height: 30px;
 }
 
 .notice li:first-child {
@@ -49,7 +50,6 @@
 
 .notice ul li span:first-of-type {
     display: inline-block;
-    margin-right: 10px;
 }
 
 .notice ul::-webkit-scrollbar {
@@ -137,12 +137,14 @@ body::-webkit-scrollbar {
     margin: 15px 0px 0px 0px;
     box-sizing: border-box;
 }
-.yunxing{
+
+.yunxing {
     border-top-left-radius: 20px;
     border-top-right-radius: 20px;
     /*box-shadow: -2px 4px 10px 10px rgba(0, 86, 255, 0.2);*/
     box-shadow: -9px 0px 10px 4px rgba(0, 86, 255, 0.2);
 }
+
 .jianxiu {
     height: 154px;
     margin: 0px;
@@ -211,4 +213,25 @@ body::-webkit-scrollbar {
 
 .pieList li .pieTitle {
     text-align: center;
+}
+
+/*本人任务*/
+.myTaskDiv {
+    height: 120px;
+    width: 960px;
+    margin: 15px auto;
+    box-shadow: 0px 2px 10px 10px rgb(0 86 255 / 20%);
+    border-radius: 20px;
+    background: #fff;
+    overflow: hidden;
+    padding-left: 20px;
+    box-sizing: border-box;
+    position: relative;
+}
+
+.myTaskDiv .myTaskDivSon p {
+    line-height: 30px;
+    font-size: 18px;
+    letter-spacing: 2px;
+    cursor: pointer;
 }
