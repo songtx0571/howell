@@ -53,14 +53,12 @@
         e.`name` AS system_name,
         e1.`name` AS equipment_name,
         u.nuit AS unit_name,
-        m.work_content as work_content,
         mr.*
         FROM
         maintain_record mr
-        JOIN maintain m ON m.id = mr.maintain_id
-        LEFT JOIN equipment e ON e.id = m.system_id
-        LEFT JOIN equipment e1 ON e1.id = m.equipment_id
-        LEFT JOIN unit u ON u.id = m.unit_id
+        LEFT JOIN equipment e ON e.id = mr.system_id
+        LEFT JOIN equipment e1 ON e1.id = mr.equipment_id
+        LEFT JOIN unit u ON u.id = mr.unit_id
         WHERE 1 = 1
         <if test="date!=null">and mr.create_time like #{date}</if>
         <if test="departmentId!=null">and mr.department_id=#{departmentId}</if>

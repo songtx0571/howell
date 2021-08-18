@@ -34,6 +34,9 @@ import java.security.PublicKey;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import java.util.stream.Collectors;
 
 import static org.apache.shiro.authz.annotation.Logical.OR;
@@ -404,8 +407,7 @@ public class HomeController {
      */
     @GetMapping("/getIndexData")
     @ResponseBody
-    public Result getIndexData(
-    ) {
+    public Result getIndexData( ) throws InterruptedException {
         List<Map<String, Object>> resultMapList = new ArrayList<>();
 
         Subject subject = SecurityUtils.getSubject();
@@ -428,31 +430,42 @@ public class HomeController {
                 departmentIdList.add(departmentId);
             }
         }
+        //一池五线程
+        ExecutorService threadPool = Executors.newFixedThreadPool(5);///5个窗口
+        CountDownLatch countDownLatch = new CountDownLatch(departmentIdList.size());
         if (departmentIdList.size() > 0) {
-            for (Integer departmentId : departmentIdList) {
-                Map<String, Object> paramMap = new HashMap<>();
-                paramMap.put("date", formatDate + "%");
-                Map<String, Object> jxEmoloyeeNameMapMap = new HashMap<>();
-                List<Map<String, Object>> yxEmployeeNameList = new ArrayList<>();
-                Map<String, Object> resultMap = new HashMap<>();
-                paramMap.put("departmentId", departmentId);
-                //天气的城市码和城市名称
-                Map<String, Object> cityCodeAndName = getCityCodeAndNameByDepartmentId(departmentId);
-                resultMap.putAll(cityCodeAndName);
-                //部门名称
-                Company company = companyService.getCompanyById(departmentId.toString());
-                resultMap.put("departmentId", departmentId);
-                resultMap.put("departmentName", company.getName());
-                //解析数据,返回统计数据,并且在参数中计算检修人员名单
-                List<Map<String, Object>> staticsList = this.parseJXRecoreListByDepartmentId(paramMap, jxEmoloyeeNameMapMap, yxEmployeeNameList);
-                Collection<Object> jxData = jxEmoloyeeNameMapMap.values();
-                resultMap.put("departmentJXData", jxData);
-                resultMap.put("departmentYXData", yxEmployeeNameList);
-                resultMap.put("staticsData", staticsList);
-                resultMapList.add(resultMap);
+            try {
+                for (Integer departmentId : departmentIdList) {
+                    threadPool.execute(() -> {
+                        Map<String, Object> paramMap = new HashMap<>();
+                        paramMap.put("date", formatDate + "%");
+                        Map<String, Object> jxEmoloyeeNameMapMap = new HashMap<>();
+                        List<Map<String, Object>> yxEmployeeNameList = new ArrayList<>();
+                        Map<String, Object> resultMap = new HashMap<>();
+                        paramMap.put("departmentId", departmentId);
+                        //天气的城市码和城市名称
+                        Map<String, Object> cityCodeAndName = getCityCodeAndNameByDepartmentId(departmentId);
+                        resultMap.putAll(cityCodeAndName);
+                        //部门名称
+                        Company company = companyService.getCompanyById(departmentId.toString());
+                        resultMap.put("departmentId", departmentId);
+                        resultMap.put("departmentName", company.getName());
+                        //解析数据,返回统计数据,并且在参数中计算检修人员名单
+                        List<Map<String, Object>> staticsList = this.parseJXRecoreListByDepartmentId(paramMap, jxEmoloyeeNameMapMap, yxEmployeeNameList);
+                        Collection<Object> jxData = jxEmoloyeeNameMapMap.values();
+                        resultMap.put("departmentJXData", jxData);
+                        resultMap.put("departmentYXData", yxEmployeeNameList);
+                        resultMap.put("staticsData", staticsList);
+                        resultMapList.add(resultMap);
+                        countDownLatch.countDown();
+                    });
+                }
+
+            } finally {
+                threadPool.shutdown();
             }
         }
-
+        countDownLatch.await();
         return new Result(resultMapList.size(), resultMapList, 200, "查询成功");
     }
 
@@ -869,7 +882,7 @@ public class HomeController {
         queryMap.put("isToDo", "0");
         //待分配和待确认
         List<Defect> defectList = indexDataService.getDefectByMap(queryMap);
-        if (defectList != null && defectList.size() > 0){
+        if (defectList != null && defectList.size() > 0) {
             defectTotalList.addAll(defectList);
         }
         queryMap.clear();
@@ -877,7 +890,7 @@ public class HomeController {
         queryMap.put("employeeId", users.getEmployeeId());
         queryMap.put("isToDo", "1");
         defectList = indexDataService.getDefectByMap(queryMap);
-        if (defectList != null && defectList.size() > 0){
+        if (defectList != null && defectList.size() > 0) {
             defectTotalList.addAll(defectList);
         }
         resultMap.put("defects", defectTotalList);
