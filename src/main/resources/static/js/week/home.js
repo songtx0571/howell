@@ -114,7 +114,12 @@ function fullFun(data, div, i, typeHtml) {
     var three = data[i].children;//三级菜单
     for (var k = 0; k < three.length; k++) {
         three[k].url = "'" + three[k].url + "'";//刚给路径加上双引号，存放到点击事件里
-        div += '<span onclick="jump(' + typeHtml + ',' + three[k].url + ')">' + three[k].name + '</span>'
+        if (three[k].name == "查询设备"  && typeHtml == 23) {
+            div += '<span style="box-shadow: 0px 0px 5px #eab949;" onclick="jump(' + typeHtml + ',' + three[k].url + ')">' + three[k].name + '</span>'
+        } else {
+            div += '<span onclick="jump(' + typeHtml + ',' + three[k].url + ')">' + three[k].name + '</span>'
+        }
+
     }
     return div;
 }

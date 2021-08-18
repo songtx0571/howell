@@ -31,7 +31,6 @@ $(function () {
             getUserSetting();
             fullUl();
             getMyTsk();
-            scrollMyTsk('myTaskDiv', 3000);
         }
     });
     //颜色选择
@@ -78,16 +77,27 @@ function pinjie() {
                 div += "</ul></div></div>";
                 div += "<ul class=\"pieList\">"
                 pieJson = data.staticsData;
-                for (let i = 0; i < data.staticsData.length; i++) {
+                for (let i = 0; i < 2; i++) {
                     div += "<li><p class='pieTitle'><span class=\"iconfont icon-triangle-right\" style=\"margin-right: 8px;color: #0000FF;\"></span><span>" + data.staticsData[i].name + "</span></p>" +
-                        "<div id='main" + z + "" + i + "' style=\"width: 210px;height:175px;margin: 5px auto 0;\"></div></li>"
+                        "<div id='mainPie" + z + "" + i + "' style=\"width: 240px;height:205px;margin: 5px auto 0;\"></div></li>"
+                }
+                div += "<li><p class='pieTitle'><span class=\"iconfont icon-triangle-right\" style=\"margin-right: 8px;color: #0000FF;\"></span><span>" + data.staticsData[2].name + "</span></p>" +
+                    "<div id='mainBai" + z + "' style=\"width: 200px;height:175px;margin: 5px auto 0;\"></div></li>"
+                for (let j = 3; j < 4; j++) {
+                    div += "<li><p class='pieTitle'><span class=\"iconfont icon-triangle-right\" style=\"margin-right: 8px;color: #0000FF;\"></span><span>巡检统计</span></p>" +
+                        "<div id='mainBar" + z + "" + j + "' style=\"width: 355px;height:175px;margin: 5px auto 0;\"></div></li>"
                 }
                 div += "</ul><div class=\"clear\"></div></div>";
                 var pinjie = $(".pinjie");
                 pinjie.append(div);
                 fullWeather(z, data.cityCode, data.departmentName)
-                for (let i = 0; i < data.staticsData.length; i++) {
-                    pieChart('main', i, data.staticsData[i].name, z);
+                for (let i = 0; i < 2; i++) {
+                    pieChart('mainPie', i, data.staticsData[i].name, z);
+                }
+                baiChart('mainBai',data.staticsData[2].name,z)
+                for (let i = 3; i < 4; i++) {
+                    // console.log(i)
+                    barChart('mainBar', i, data.staticsData[i].name, z);
                 }
             }
         }
@@ -158,6 +168,137 @@ function pieChart(id, i, name, z) {
         };
         option && myChart.setOption(option);
     }
+}
+
+//条状图
+function barChart (id, i, name, z) {
+    id = id + z + i;
+    var dom = document.getElementById(id);
+    var data1 = pieJson[3];
+    var data2 = pieJson[pieJson.length-1];
+    var value1,value2,value3,value4;
+    if (data1.data == "") {
+        value1 = 0;
+        value3 = 0;
+    } else {
+        value1 = data1.data[0].value;
+        value3 = data1.data[1].value;
+    }
+    if (data2.data == "") {
+        value2 = 0;
+        value4 = 0;
+    } else {
+        value2 = data2.data[0].value;
+        value4 = data2.data[1].value;
+    }
+    var dataCount = [value1,value2]
+    var dataPoin = [value3,value4]
+
+    // 基于准备好的dom，初始化echarts实例\n" +
+    var myChart = echarts.init(dom);
+    // 指定图表的配置项和数据\n" +
+    var option = {
+        tooltip: {
+            trigger: 'axis',
+            axisPointer: {
+                type: 'shadow'
+            }
+        },
+        grid: {
+            left: '0%',
+            right: '4%',
+            bottom: '3%',
+            containLabel: true
+        },
+        xAxis: {
+            type: 'value',
+            boundaryGap: [0, 0.01]
+        },
+        yAxis: {
+            type: 'category',
+            data: ['当天', '当班']
+        },
+        series: [
+            {
+                name: '巡检次数',
+                type: 'bar',
+                data: dataCount
+            },
+            {
+                name: '巡检点数',
+                type: 'bar',
+                data: dataPoin
+            }
+        ]
+    };
+    option && myChart.setOption(option);
+}
+
+//百分比
+function baiChart (id, name,z) {
+    id = id + z;
+    var dom = document.getElementById(id);
+    var data = pieJson[2].data;
+    if (data == "") {
+        dom.innerHTML = "<p style=\"line-height: 60px;color: red;text-align: center;\">无数据</p>";
+    } else {
+        // 基于准备好的dom，初始化echarts实例\n" +
+        var myChart = echarts.init(dom);
+        // 指定图表的配置项和数据\n" +
+        var option = {
+            tooltip: {
+                trigger: 'item'
+            },
+            series: [
+                {
+                    name: name,
+                    type: 'pie',
+                    radius: ['20%', '40%'],
+                    avoidLabelOverlap: false,
+                    itemStyle: {
+                        borderRadius: 0,
+                        borderColor: '#fff',
+                        borderWidth: 2
+                    },
+                    label: {
+                        normal: {
+                            show: true,
+                            formatter: (params) => {
+                                return '{c|' + params.value + '}\n{a|' + params.name + '}';
+                            }, rich: {
+                                c: {
+                                    fontSize: 18,
+                                    lineHeight: 30,
+                                    width: "16",
+                                    align: 'center',
+                                    backgroundColor: "white"
+                                },
+                                a: {
+                                    color: '#999',
+                                    fontSize: 14,
+                                    lineHeight: 30,
+                                    align: 'center'
+                                }
+                            }
+                        }
+                    },
+                    emphasis: {
+                        label: {
+                            show: true,
+                            fontSize: '14',
+                            fontWeight: 'bold'
+                        }
+                    },
+                    labelLine: {
+                        show: true
+                    },
+                    data: data
+                }
+            ]
+        };
+        option && myChart.setOption(option);
+    }
+
 }
 
 //填充天气
@@ -246,6 +387,7 @@ function getUserSetting() {
         if (ajax.readyState == 4 && ajax.status == 200) {
             colorLevel = ajax.response;
             colorLevel = eval("(" + colorLevel + ")").data;
+            scrollMyTsk('myTaskDiv', colorLevel["rollingTime"]);
         }
     };
 }
@@ -505,10 +647,12 @@ function rollMyTsk() {
     if (!firstDom) {
         return;
     } else {
-        firstDom.style.marginTop = "0px";
-        dom.appendChild(firstDom);
-        var firstDom = dom.firstElementChild;
-        firstDom.style.marginTop = "-30px";
+        if (dom.childNodes > 3) {
+            firstDom.style.marginTop = "0px";
+            dom.appendChild(firstDom);
+            var firstDom = dom.firstElementChild;
+            firstDom.style.marginTop = "-30px";
+        }
     }
 }
 
