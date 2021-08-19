@@ -48,7 +48,22 @@ function pinjie() {
         async: true, // 异步
         dataType: "json",
         success: function (data) {
-            data1 = data.data;
+            var data1 = data.data;
+            function createComprisonFunction(propertyName){
+                return function(object1,object2){
+                    var value1 = object1[propertyName];
+                    var value2 = object2[propertyName];
+                    if(value1 < value2){
+                        return -1;
+                    }else if(value1 > value2){
+                        return 1;
+                    }else{
+                        return 0;
+                    }
+                }
+            }
+            //上面的函数可以像在下面的列子中这样使用
+            data1.sort(createComprisonFunction("departmentId"));
             for (let z = 0; z < data1.length; z++) {
                 data = data1[z];
                 var div = "<div class=\"warp1\"><div class='left'>" +
@@ -96,7 +111,6 @@ function pinjie() {
                 }
                 baiChart('mainBai',data.staticsData[2].name,z)
                 for (let i = 3; i < 4; i++) {
-                    // console.log(i)
                     barChart('mainBar', i, data.staticsData[i].name, z);
                 }
             }
