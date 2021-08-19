@@ -6,6 +6,9 @@ var liList = [];
 var index = 0;
 var recordCount = 0;
 var totalRecordCount = 6;
+//计算百分比
+var zonghe = 0;//总和
+var weiwancheng = 0;//未完成
 
 var date = new Date();//当天时间
 var month = date.getMonth() + 1;//月
@@ -94,13 +97,26 @@ function pinjie() {
                 pieJson = data.staticsData;
                 for (let i = 0; i < 2; i++) {
                     div += "<li><p class='pieTitle'><span class=\"iconfont icon-triangle-right\" style=\"margin-right: 8px;color: #0000FF;\"></span><span>" + data.staticsData[i].name + "</span></p>" +
-                        "<div id='mainPie" + z + "" + i + "' style=\"width: 240px;height:205px;margin: 5px auto 0;\"></div></li>"
+                        "<div id='mainPie" + z + "" + i + "' style=\"width: 240px;height:255px;margin: 5px auto 0;\"></div></li>"
+                }
+                var result = 0;//结果
+                if (data.staticsData[2].data.length == 1) {
+                    zonghe = Number(data.staticsData[2].data[0].value);
+                    weiwancheng = data.staticsData[2].data[0].value;
+                    result = ((weiwancheng/zonghe)*100).toFixed(2) + "%";
+                } else if (data.staticsData[2].data.length == 2) {
+                    zonghe = Number(data.staticsData[2].data[0].value) + Number(data.staticsData[2].data[1].value);
+                    weiwancheng = data.staticsData[2].data[1].value;
+                    result = ((weiwancheng/zonghe)*100).toFixed(2) + "%";
+                } else {
+                    result = 0+"%";
                 }
                 div += "<li><p class='pieTitle'><span class=\"iconfont icon-triangle-right\" style=\"margin-right: 8px;color: #0000FF;\"></span><span>" + data.staticsData[2].name + "</span></p>" +
-                    "<div id='mainBai" + z + "' style=\"width: 200px;height:175px;margin: 5px auto 0;\"></div></li>"
+                    "<span style='display: block;text-align: center;line-height: 100px;font-size: 20px;'>"+result+"</span></li>"
+
                 for (let j = 3; j < 4; j++) {
                     div += "<li><p class='pieTitle'><span class=\"iconfont icon-triangle-right\" style=\"margin-right: 8px;color: #0000FF;\"></span><span>巡检统计</span></p>" +
-                        "<div id='mainBar" + z + "" + j + "' style=\"width: 355px;height:175px;margin: 5px auto 0;\"></div></li>"
+                        "<div id='mainBar" + z + "" + j + "' style=\"width: 355px;height:120px;margin: 5px auto 0;\"></div></li>"
                 }
                 div += "</ul><div class=\"clear\"></div></div>";
                 var pinjie = $(".pinjie");
@@ -109,7 +125,6 @@ function pinjie() {
                 for (let i = 0; i < 2; i++) {
                     pieChart('mainPie', i, data.staticsData[i].name, z);
                 }
-                baiChart('mainBai',data.staticsData[2].name,z)
                 for (let i = 3; i < 4; i++) {
                     barChart('mainBar', i, data.staticsData[i].name, z);
                 }
@@ -205,12 +220,12 @@ function barChart (id, i, name, z) {
         value2 = data2.data[0].value;
         value4 = data2.data[1].value;
     }
-    var dataCount = [value1,value2]
-    var dataPoin = [value3,value4]
-
     // 基于准备好的dom，初始化echarts实例\n" +
     var myChart = echarts.init(dom);
     // 指定图表的配置项和数据\n" +
+    /*
+    var dataCount = [value1,value2]
+    var dataPoin = [value3,value4]
     var option = {
         tooltip: {
             trigger: 'axis',
@@ -244,75 +259,52 @@ function barChart (id, i, name, z) {
                 data: dataPoin
             }
         ]
-    };
-    option && myChart.setOption(option);
-}
-
-//百分比
-function baiChart (id, name,z) {
-    id = id + z;
-    var dom = document.getElementById(id);
-    var data = pieJson[2].data;
-    if (data == "") {
-        dom.innerHTML = "<p style=\"line-height: 60px;color: red;text-align: center;\">无数据</p>";
-    } else {
-        // 基于准备好的dom，初始化echarts实例\n" +
-        var myChart = echarts.init(dom);
-        // 指定图表的配置项和数据\n" +
-        var option = {
-            tooltip: {
-                trigger: 'item'
+    };*/
+    var dataCount = [value4,value2]
+    var dataPoin = [value3,value1]
+    var option = {
+        grid: {
+            left: '3%',
+            right: '4%',
+            bottom: '0%',
+            top: '0%',
+            containLabel: true
+        },
+        xAxis: {
+            type: 'value'
+        },
+        yAxis: {
+            type: 'category',
+            data: ['点数', '次数']
+        },
+        series: [
+            {
+                name: 'Direct',
+                type: 'bar',
+                stack: 'total',
+                label: {
+                    show: true
+                },
+                emphasis: {
+                    focus: 'series'
+                },
+                data: dataCount
             },
-            series: [
-                {
-                    name: name,
-                    type: 'pie',
-                    radius: ['20%', '40%'],
-                    avoidLabelOverlap: false,
-                    itemStyle: {
-                        borderRadius: 0,
-                        borderColor: '#fff',
-                        borderWidth: 2
-                    },
-                    label: {
-                        normal: {
-                            show: true,
-                            formatter: (params) => {
-                                return '{c|' + params.value + '}\n{a|' + params.name + '}';
-                            }, rich: {
-                                c: {
-                                    fontSize: 18,
-                                    lineHeight: 30,
-                                    width: "16",
-                                    align: 'center',
-                                    backgroundColor: "white"
-                                },
-                                a: {
-                                    color: '#999',
-                                    fontSize: 14,
-                                    lineHeight: 30,
-                                    align: 'center'
-                                }
-                            }
-                        }
-                    },
-                    emphasis: {
-                        label: {
-                            show: true,
-                            fontSize: '14',
-                            fontWeight: 'bold'
-                        }
-                    },
-                    labelLine: {
-                        show: true
-                    },
-                    data: data
-                }
-            ]
-        };
-        option && myChart.setOption(option);
+            {
+                name: 'Mail Ad',
+                type: 'bar',
+                stack: 'total',
+                label: {
+                    show: true
+                },
+                emphasis: {
+                    focus: 'series'
+                },
+                data: dataPoin
+            },
+        ]
     }
-
+    option && myChart.setOption(option);
 }
 
 //填充天气
