@@ -22,6 +22,32 @@ if (day < 10) {
 }
 
 var pieJson = "";//拼接
+//判断手机横竖屏
+var os = function () {
+    var ua = navigator.userAgent,
+        isWindowsPhone = /(?:Windows Phone)/.test(ua),
+        isSymbian = /(?:SymbianOS)/.test(ua) || isWindowsPhone,
+        isAndroid = /(?:Android)/.test(ua),
+        isFireFox = /(?:Firefox)/.test(ua),
+        isChrome = /(?:Chrome|CriOS)/.test(ua),
+        isTablet = /(?:iPad|PlayBook)/.test(ua) || (isAndroid && !/(?:Mobile)/.test(ua)) || (isFireFox && /(?:Tablet)/.test(ua)),
+        isPhone = /(?:iPhone)/.test(ua) && !isTablet,
+        isPc = !isPhone && !isAndroid && !isSymbian;
+    return {
+        isTablet: isTablet,
+        isPhone: isPhone,
+        isAndroid: isAndroid,
+        isPc: isPc
+    };
+}();
+if (os.isAndroid || os.isPhone) {//手机
+    $(".pieList").css({'width':'100%','margin-top': '15px','height': '300px'})
+    $(".left").css('width', '100%');
+} else  {//平板 电脑
+    $(".pieList").css({'width':'570px','margin-top': '0px','height':'470px'})
+    $(".left").css('width', '370px');
+}
+window.addEventListener("onorientationchange" in window ? "orientationchange" : "resize", hengshuping, false);
 
 $(function () {
     $.ajax({
@@ -41,7 +67,6 @@ $(function () {
     //拼接
     pinjie();
 })
-
 //拼接
 function pinjie() {
     $.ajax({
@@ -164,41 +189,43 @@ function pinjie() {
                     "<span style='display: block;text-align: center;line-height: 100px;font-size: 32px;'>" + result + "</span></li>"
                 var dataA = data.staticsData[3];
                 var dataB = data.staticsData[data.staticsData.length - 1];
-                var value1, value2, value3, value4;
+                var value1, value2, value3, value4;//value1当天次数 value2当天点数 value3当班次数 value4当班点数
                 if (dataA.data == "") {
                     value1 = 0;
                     value3 = 0;
                 } else {
                     value1 = dataA.data[0].value;
-                    value3 = dataA.data[1].value;
+                    value2 = dataA.data[1].value;
                 }
                 if (dataB.data == "") {
-                    value2 = 0;
+                    value3 = 0;
                     value4 = 0;
                 } else {
-                    value2 = dataB.data[0].value;
+                    value3 = dataB.data[0].value;
                     value4 = dataB.data[1].value;
                 }
-                var height1 = value2 / value4 * 100;
-                var height2 = value1 / value3 * 100;
+                var width1 = value3 / value1 * 100;
+                var width2 = value4 / value2 * 100;
                 if (value4 == 0) {
-                    height1 = 100;
+                    width1 = 0;
                 }
                 if (value3 == 0) {
-                    height2 = 100;
+                    width2 = 0;
                 }
-                div += "<li><p class='pieTitle' style='height: 30px;'><span class='iconfont icon-triangle-right' style='margin - right:8 px;color: #0000FF;'></span><span>巡检统计</span></p>" +
-                    "<span style='float: left;margin-left: 20px;'>当班：</span>" +
-                    "<div class='shiftDiv'><div class='shiftCountDiv' style='width: " + height1 + "%'>" + value2 + "</div><div class='shiftPointDiv'>" + value4 + "</div></div>" +
+                div += "<li><p class='pieTitle pieTitle1' style='height: 30px;'><span class='iconfont icon-triangle-right' style='margin - right:8 px;color: #0000FF;'></span><span>巡检统计</span></p>" +
+                    "<span style='float: left;margin-left: 20px;'>次数：</span>" +
+                    "<div class='countDiv'><div class='shiftCountDiv' style='width: " + width1 + "%'>" + value3 + "</div><div class='dayCountDiv'>" + value1 + "</div></div>" +
                     "<div class='clear'></div><br>" +
-                    "<span style='float: left;margin-left: 20px;'>当天：</span>" +
-                    "<div class='dayDiv'><div class='dayCountDiv' style='width: " + height2 + "%'>" + value1 + "</div><div class='dayPointDiv'>" + value3 + "</div></div></li>"
+                    "<span style='float: left;margin-left: 20px;'>点数：</span>" +
+                    "<div class='pointDiv'><div class='shiftPointDiv' style='width: " + width2 + "%'>" + value4 + "</div><div class='dayPointDiv'>" + value2 + "</div></div></li>"
                 div += "</ul><div class=\"clear\"></div></div>";
                 var pinjie = $(".pinjie");
                 pinjie.append(div);
                 for (let i = 0; i < 2; i++) {
                     pieChart('mainPie', i, data.staticsData[i].name, z);
                 }
+                //判断手机横竖屏
+                hengshuping();
             }
         }
     });
@@ -620,4 +647,19 @@ function jumpUrl(url) {
     }
     var $iframeRight = parent.$('.iframeContent');
     $iframeRight.attr("src", src);
+}
+
+
+//判断手机横竖屏状态：
+function hengshuping() {
+    if (window.orientation == 180 || window.orientation == 0) {//竖屏状态
+        $(".pieList").css({'width':'100%','margin-top': '15px','height': '300px'})
+        $(".left").css('width', '100%');
+        $(".pieTitle1").css('text-align', 'left');
+    }
+    if (window.orientation == 90 || window.orientation == -90) {//横屏状态
+        $(".pieList").css({'width':'570px','margin-top': '0px','height':'470px'})
+        $(".left").css('width', '370px');
+        $(".pieTitle1").css('text-align', 'center');
+    }
 }
