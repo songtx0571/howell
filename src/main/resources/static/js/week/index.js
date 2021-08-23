@@ -52,26 +52,75 @@ function pinjie() {
         dataType: "json",
         success: function (data) {
             var data1 = data.data;
-            function createComprisonFunction(propertyName){
-                return function(object1,object2){
+
+            function createComprisonFunction(propertyName) {
+                return function (object1, object2) {
                     var value1 = object1[propertyName];
                     var value2 = object2[propertyName];
-                    if(value1 < value2){
+                    if (value1 < value2) {
                         return -1;
-                    }else if(value1 > value2){
+                    } else if (value1 > value2) {
                         return 1;
-                    }else{
+                    } else {
                         return 0;
                     }
                 }
             }
             //上面的函数可以像在下面的列子中这样使用
             data1.sort(createComprisonFunction("departmentId"));
+
             for (let z = 0; z < data1.length; z++) {
                 data = data1[z];
                 var div = "<div class=\"warp1\"><div class='left'>" +
-                    "<div class='weaDiv weaDiv" + z + "'><div class='weaAll weaAll" + z + "'></div><div class='clear'></div><ul class='weaList weaList" + z + "'></ul></div>" +
-                    "<div class=\"yunxing\">" +
+                    "<div class='weaDiv weaDiv" + z + "'><div class='weaAll'>";
+                div += "<div class='allLeft'><p>" + data.departmentName + "</p><p>" + data.weatherData.tem + "℃</p></div>" +
+                    "<div class='allRight'><p><span style='font-size:23px;'>" + data.weatherData.wea_day + "</span></p>" +
+                    "<p>" + data.weatherData.win + " " + data.weatherData.win_speed + "<br>最高" + data.weatherData.tem1 + "最低" + data.weatherData.tem2 + "</p>" +
+                    "</div></div><div class='clear'></div><ul class='weaList'>";
+                $(".weaDiv" + z).css("background", "linear-gradient(rgba(255,148,0,0.8), rgb(255, 255, 255))");//#ff9400--#fff
+                if (data.weatherData.wea_day == "阴") {
+                    $(".weaDiv" + z).css("background", "linear-gradient(rgba(175,182,193,0.8), rgb(255, 255, 255))");//#afb6c1--#fff
+                } else if (data.weatherData.wea_day == "多云") {
+                    $(".weaDiv" + z).css("background", "linear-gradient(rgba(63,120,210,0.8), rgb(255, 255, 255))");//#3f78d2--#fff
+                } else if (data.weatherData.wea_day == "中雨") {
+                    $(".weaDiv" + z).css("background", "linear-gradient(rgba(63,69,80,0.8), rgb(255, 255, 255))");//#3f4550--#fff
+                } else if (data.weatherData.wea_day == "大雨") {
+                    $(".weaDiv" + z).css("background", "linear-gradient(rgba(26,30,37,0.8), rgb(255, 255, 255))");//#1a1e25--#fff
+                } else if (data.weatherData.wea_day == "阵雨") {
+                    $(".weaDiv" + z).css("background", "linear-gradient(rgba(63,69,80,0.8), rgb(255, 255, 255))");//#3f4550--#fff
+                } else if (data.weatherData.wea_day == "晴") {
+                    $(".weaDiv" + z).css("background", "linear-gradient(rgba(255,148,0,0.8), rgb(255, 255, 255))");//#ff9400--#fff
+                } else if (data.weatherData.wea_day == "小雨") {
+                    $(".weaDiv" + z).css("background", "linear-gradient(rgba(118,122,130,0.8), rgb(255, 255, 255))");//#767a82--#fff
+                } else if (data.weatherData.wea_day == "阴转多云") {
+                    $(".weaDiv" + z).css("background", "linear-gradient(rgba(63,120,210,0.8), rgb(255, 255, 255))");//#3f78d2--#fff
+                }  else if (data.weatherData.wea_day == "雷阵雨") {
+                    $(".weaDiv" + z).css("background", "linear-gradient(rgba(168,168,168,0.8), rgb(255, 255, 255))");//#a8a8a8--#fff
+                }  else if (data.weatherData.wea_day == "暴雨") {
+                    $(".weaDiv" + z).css("background", "linear-gradient(rgba(26,30,37,0.8), rgb(255, 255, 255))");//#1a1e25--#fff
+                }  else if (data.weatherData.wea_day == "大到暴雨") {
+                    $(".weaDiv" + z).css("background", "linear-gradient(rgba(26,30,37,0.8), rgb(255, 255, 255))");//#1a1e25--#fff
+                }  else if (data.weatherData.wea_day == "小到中雨") {
+                    $(".weaDiv" + z).css("background", "linear-gradient(rgba(168,168,168,0.8), rgb(255, 255, 255))");//#a8a8a8--#fff
+                }  else if (data.weatherData.wea_day == "中到大雨") {
+                    $(".weaDiv" + z).css("background", "linear-gradient(rgba(26,30,37,0.8), rgb(255, 255, 255))");//#1a1e25--#fff
+                }  else if (data.weatherData.wea_day == "大暴雨") {
+                    $(".weaDiv" + z).css("background", "linear-gradient(rgba(26,30,37,0.8), rgb(255, 255, 255))");//#1a1e25--#fff
+                } else {
+                    $(".weaDiv" + z).css("background", "linear-gradient(rgba(255,148,0,0.8), rgb(255, 255, 255))");//#ff9400--#fff
+                }
+                // var arr = ['中雨','雷阵雨','大雨','多云','阴','小雨','晴','阵雨','暴雨','大到暴雨','小到中雨','中到大雨','大暴雨']
+                var date = new Date();
+                var dataHours = data.weatherData.hours;
+                for (var i = 0; i < 6; i++) {
+                    if (dataHours[i].hours == "现在") {
+                        dataHours[i].hours = date.getHours() + ":00";
+                    }
+                    div += "<li><p>" + dataHours[i].hours + "</p><p><span class='iconfont icon-" + replaceWeather(dataHours[i]
+                            .wea) + "' style='font-size:30px;'></span></p><p>" + dataHours[i].tem +
+                        "℃</p></li>";
+                }
+                div += "</ul></div><div class=\"yunxing\">" +
                     "<p>" +
                     "<span class=\"iconfont icon-peoples\" style=\"margin-right: 11px;color: #0000FF;\"></span>" +
                     "<span class=\"yunxing_title\">运行人员动态</span>" +
@@ -97,36 +146,58 @@ function pinjie() {
                 pieJson = data.staticsData;
                 for (let i = 0; i < 2; i++) {
                     div += "<li><p class='pieTitle'><span class=\"iconfont icon-triangle-right\" style=\"margin-right: 8px;color: #0000FF;\"></span><span>" + data.staticsData[i].name + "</span></p>" +
-                        "<div id='mainPie" + z + "" + i + "' style=\"width: 240px;height:255px;margin: 5px auto 0;\"></div></li>"
+                        "<div id='mainPie" + z + "" + i + "' style=\"width: 280px;height:280px;margin: 5px auto 0;\"></div></li>"
                 }
                 var result = 0;//结果
                 if (data.staticsData[2].data.length == 1) {
                     zonghe = Number(data.staticsData[2].data[0].value);
                     weiwancheng = data.staticsData[2].data[0].value;
-                    result = ((weiwancheng/zonghe)*100).toFixed(2) + "%";
+                    result = ((1 - weiwancheng / zonghe) * 100).toFixed(0) + "%";
                 } else if (data.staticsData[2].data.length == 2) {
                     zonghe = Number(data.staticsData[2].data[0].value) + Number(data.staticsData[2].data[1].value);
                     weiwancheng = data.staticsData[2].data[1].value;
-                    result = ((weiwancheng/zonghe)*100).toFixed(2) + "%";
+                    result = ((1 - weiwancheng / zonghe) * 100).toFixed(0) + "%";
                 } else {
-                    result = 0+"%";
+                    result = 100 + "%";
                 }
                 div += "<li><p class='pieTitle'><span class=\"iconfont icon-triangle-right\" style=\"margin-right: 8px;color: #0000FF;\"></span><span>" + data.staticsData[2].name + "</span></p>" +
-                    "<span style='display: block;text-align: center;line-height: 100px;font-size: 20px;'>"+result+"</span></li>"
-
-                for (let j = 3; j < 4; j++) {
-                    div += "<li><p class='pieTitle'><span class=\"iconfont icon-triangle-right\" style=\"margin-right: 8px;color: #0000FF;\"></span><span>巡检统计</span></p>" +
-                        "<div id='mainBar" + z + "" + j + "' style=\"width: 355px;height:120px;margin: 5px auto 0;\"></div></li>"
+                    "<span style='display: block;text-align: center;line-height: 100px;font-size: 32px;'>" + result + "</span></li>"
+                var dataA = data.staticsData[3];
+                var dataB = data.staticsData[data.staticsData.length - 1];
+                var value1, value2, value3, value4;
+                if (dataA.data == "") {
+                    value1 = 0;
+                    value3 = 0;
+                } else {
+                    value1 = dataA.data[0].value;
+                    value3 = dataA.data[1].value;
                 }
+                if (dataB.data == "") {
+                    value2 = 0;
+                    value4 = 0;
+                } else {
+                    value2 = dataB.data[0].value;
+                    value4 = dataB.data[1].value;
+                }
+                var height1 = value2 / value4 * 100;
+                var height2 = value1 / value3 * 100;
+                if (value4 == 0) {
+                    height1 = 100;
+                }
+                if (value3 == 0) {
+                    height2 = 100;
+                }
+                div += "<li><p class='pieTitle' style='height: 30px;'><span class='iconfont icon-triangle-right' style='margin - right:8 px;color: #0000FF;'></span><span>巡检统计</span></p>" +
+                    "<span style='float: left;margin-left: 20px;'>当班：</span>" +
+                    "<div class='shiftDiv'><div class='shiftCountDiv' style='width: " + height1 + "%'>" + value2 + "</div><div class='shiftPointDiv'>" + value4 + "</div></div>" +
+                    "<div class='clear'></div><br>" +
+                    "<span style='float: left;margin-left: 20px;'>当天：</span>" +
+                    "<div class='dayDiv'><div class='dayCountDiv' style='width: " + height2 + "%'>" + value1 + "</div><div class='dayPointDiv'>" + value3 + "</div></div></li>"
                 div += "</ul><div class=\"clear\"></div></div>";
                 var pinjie = $(".pinjie");
                 pinjie.append(div);
-                fullWeather(z, data.cityCode, data.departmentName)
                 for (let i = 0; i < 2; i++) {
                     pieChart('mainPie', i, data.staticsData[i].name, z);
-                }
-                for (let i = 3; i < 4; i++) {
-                    barChart('mainBar', i, data.staticsData[i].name, z);
                 }
             }
         }
@@ -144,6 +215,57 @@ function pieChart(id, i, name, z) {
         // 基于准备好的dom，初始化echarts实例\n" +
         var myChart = echarts.init(dom);
         // 指定图表的配置项和数据\n" +
+        /*var option = {
+            tooltip: {
+                trigger: 'item'
+            },
+            series: [
+                {
+                    name: name,
+                    type: 'pie',
+                    radius: ['40%', '60%'],
+                    avoidLabelOverlap: false,
+                     itemStyle: {
+                         borderRadius: 0,
+                         borderColor: '#fff',
+                         borderWidth: 2
+                     },
+                  /* label: {
+                         normal: {
+                             show: true,
+                             formatter: (params) => {
+                                 return '{c|' + params.value + '}\n{a|' + params.name + '}';
+                             }, rich: {
+                                 c: {
+                                     fontSize: 18,
+                                     lineHeight: 30,
+                                     width: "16",
+                                     align: 'center',
+                                     backgroundColor: "white"
+                                 },
+                                 a: {
+                                     color: '#999',
+                                     fontSize: 14,
+                                     lineHeight: 30,
+                                     align: 'center'
+                                 }
+                             }
+                         }
+                     },
+                     emphasis: {
+                         label: {
+                             show: true,
+                             fontSize: '14',
+                             fontWeight: 'bold'
+                         }
+                     },
+                    labelLine: {
+                        show: true
+                    },
+                    data: data
+                }
+            ]
+        };*/
         var option = {
             tooltip: {
                 trigger: 'item'
@@ -152,7 +274,7 @@ function pieChart(id, i, name, z) {
                 {
                     name: name,
                     type: 'pie',
-                    radius: ['20%', '40%'],
+                    radius: ['40%', '60%'],
                     avoidLabelOverlap: false,
                     itemStyle: {
                         borderRadius: 0,
@@ -160,26 +282,8 @@ function pieChart(id, i, name, z) {
                         borderWidth: 2
                     },
                     label: {
-                        normal: {
-                            show: true,
-                            formatter: (params) => {
-                                return '{c|' + params.value + '}\n{a|' + params.name + '}';
-                            }, rich: {
-                                c: {
-                                    fontSize: 18,
-                                    lineHeight: 30,
-                                    width: "16",
-                                    align: 'center',
-                                    backgroundColor: "white"
-                                },
-                                a: {
-                                    color: '#999',
-                                    fontSize: 14,
-                                    lineHeight: 30,
-                                    align: 'center'
-                                }
-                            }
-                        }
+                        show: false,
+                        position: 'center'
                     },
                     emphasis: {
                         label: {
@@ -189,7 +293,7 @@ function pieChart(id, i, name, z) {
                         }
                     },
                     labelLine: {
-                        show: true
+                        show: false
                     },
                     data: data
                 }
@@ -197,164 +301,6 @@ function pieChart(id, i, name, z) {
         };
         option && myChart.setOption(option);
     }
-}
-
-//条状图
-function barChart (id, i, name, z) {
-    id = id + z + i;
-    var dom = document.getElementById(id);
-    var data1 = pieJson[3];
-    var data2 = pieJson[pieJson.length-1];
-    var value1,value2,value3,value4;
-    if (data1.data == "") {
-        value1 = 0;
-        value3 = 0;
-    } else {
-        value1 = data1.data[0].value;
-        value3 = data1.data[1].value;
-    }
-    if (data2.data == "") {
-        value2 = 0;
-        value4 = 0;
-    } else {
-        value2 = data2.data[0].value;
-        value4 = data2.data[1].value;
-    }
-    // 基于准备好的dom，初始化echarts实例\n" +
-    var myChart = echarts.init(dom);
-    // 指定图表的配置项和数据\n" +
-    /*
-    var dataCount = [value1,value2]
-    var dataPoin = [value3,value4]
-    var option = {
-        tooltip: {
-            trigger: 'axis',
-            axisPointer: {
-                type: 'shadow'
-            }
-        },
-        grid: {
-            left: '0%',
-            right: '4%',
-            bottom: '3%',
-            containLabel: true
-        },
-        xAxis: {
-            type: 'value',
-            boundaryGap: [0, 0.01]
-        },
-        yAxis: {
-            type: 'category',
-            data: ['当天', '当班']
-        },
-        series: [
-            {
-                name: '巡检次数',
-                type: 'bar',
-                data: dataCount
-            },
-            {
-                name: '巡检点数',
-                type: 'bar',
-                data: dataPoin
-            }
-        ]
-    };*/
-    var dataCount = [value4,value2]
-    var dataPoin = [value3,value1]
-    var option = {
-        grid: {
-            left: '3%',
-            right: '4%',
-            bottom: '0%',
-            top: '0%',
-            containLabel: true
-        },
-        xAxis: {
-            type: 'value'
-        },
-        yAxis: {
-            type: 'category',
-            data: ['点数', '次数']
-        },
-        series: [
-            {
-                name: 'Direct',
-                type: 'bar',
-                stack: 'total',
-                label: {
-                    show: true
-                },
-                emphasis: {
-                    focus: 'series'
-                },
-                data: dataCount
-            },
-            {
-                name: 'Mail Ad',
-                type: 'bar',
-                stack: 'total',
-                label: {
-                    show: true
-                },
-                emphasis: {
-                    focus: 'series'
-                },
-                data: dataPoin
-            },
-        ]
-    }
-    option && myChart.setOption(option);
-}
-
-//填充天气
-function fullWeather(num, cityCode, departmentName) {
-    $.ajax({
-        type: 'get',
-        url: "https://v0.yiketianqi.com/api?version=v62&appid=93825797&appsecret=wugk17qm&cityid=" + cityCode,
-        data: {},
-        async: true, // 异步
-        dataType: "json",
-        success: function (data) {
-            $(".weaDiv" + num).css("background", "linear-gradient(rgba(255,148,0,0.8), rgb(255, 255, 255))");//#ff9400--#fff
-            if (data.wea_day == "阴") {
-                $(".weaDiv" + num).css("background", "linear-gradient(rgba(175,182,193,0.8), rgb(255, 255, 255))");//#afb6c1--#fff
-            } else if (data.wea_day == "多云") {
-                $(".weaDiv" + num).css("background", "linear-gradient(rgba(63,120,210,0.8), rgb(255, 255, 255))");//#3f78d2--#fff
-            } else if (data.wea_day == "中雨") {
-                $(".weaDiv" + num).css("background", "linear-gradient(rgba(63,69,80,0.8), rgb(255, 255, 255))");//#3f4550--#fff
-            } else if (data.wea_day == "大雨") {
-                $(".weaDiv" + num).css("background", "linear-gradient(rgba(26,30,37,0.8), rgb(255, 255, 255))");//#1a1e25--#fff
-            } else if (data.wea_day == "阵雨") {
-                $(".weaDiv" + num).css("background", "linear-gradient(rgba(63,69,80,0.8), rgb(255, 255, 255))");//#3f4550--#fff
-            } else if (data.wea_day == "晴") {
-                $(".weaDiv" + num).css("background", "linear-gradient(rgba(255,148,0,0.8), rgb(255, 255, 255))");//#ff9400--#fff
-            } else if (data.wea_day == "小雨") {
-                $(".weaDiv" + num).css("background", "linear-gradient(rgba(118,122,130,0.8), rgb(255, 255, 255))");//#767a82--#fff
-            } else if (data.wea_day == "阴转多云") {
-                $(".weaDiv" + num).css("background", "linear-gradient(rgba(63,120,210,0.8), rgb(255, 255, 255))");//#3f78d2--#fff
-            } else {
-                $(".weaDiv" + num).css("background", "linear-gradient(rgba(255,148,0,0.8), rgb(255, 255, 255))");//#ff9400--#fff
-            }
-            // var arr = ['中雨','雷阵雨','大雨','多云','阴','小雨','晴','阵雨','暴雨','大到暴雨','小到中雨','中到大雨','大暴雨']
-            var div = "";
-            div += "<div class='allLeft'><p>" + departmentName + "</p><p>" + data.tem + "℃</p></div><div class='allRight'><p><span style='font-size:23px;'>" + data.wea_day + "</span></p><p>" + data.win + " " + data.win_speed + "<br>最高" + data.tem1 + "最低" + data.tem2 + "</p></div>";
-            $('.weaAll' + num).html(div);
-
-            var date = new Date();
-            var dataHours = data.hours;
-            var ul = "";
-            for (var i = 0; i < 6; i++) {
-                if (dataHours[i].hours == "现在") {
-                    dataHours[i].hours = date.getHours() + ":00";
-                }
-                ul += "<li><p>" + dataHours[i].hours + "</p><p><span class='iconfont icon-" + replaceWeather(dataHours[i]
-                        .wea) + "' style='font-size:30px;'></span></p><p>" + dataHours[i].tem +
-                    "℃</p></li>";
-            }
-            $('.weaList' + num).html(ul);
-        }
-    })
 }
 
 //替换天气图标
