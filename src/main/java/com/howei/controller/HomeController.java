@@ -1,5 +1,6 @@
 package com.howei.controller;
 
+import cn.hutool.http.HttpUtil;
 import com.alibaba.fastjson.JSONObject;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.howei.config.redis.MyRedisManager;
@@ -15,6 +16,7 @@ import org.apache.shiro.authc.UsernamePasswordToken;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.apache.shiro.subject.PrincipalCollection;
 import org.apache.shiro.subject.Subject;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 
 import com.alibaba.fastjson.JSON;
@@ -55,10 +57,14 @@ public class HomeController {
     @Autowired
     CompanyService companyService;
 
-
-    /*存入session里的用户名称*/
-    public static final String SESSION_USER = "sessionUser";
-    public ObjectMapper jsonTranster = new ObjectMapper();
+    @Value("${weatherAPI.url}")
+    private String url;
+    @Value("${weatherAPI.version}")
+    private String version;
+    @Value("${weatherAPI.appid}")
+    private String appid;
+    @Value("${weatherAPI.appsecret}")
+    private String appsecret;
 
 
     // 左菜单
@@ -403,11 +409,13 @@ public class HomeController {
     }
 
     /**
+     * 首页数据 图标展示
+     *
      * @return
      */
     @GetMapping("/getIndexData")
     @ResponseBody
-    public Result getIndexData( ) throws InterruptedException {
+    public Result getIndexData() throws InterruptedException {
         List<Map<String, Object>> resultMapList = new ArrayList<>();
 
         Subject subject = SecurityUtils.getSubject();
@@ -446,6 +454,16 @@ public class HomeController {
                         //天气的城市码和城市名称
                         Map<String, Object> cityCodeAndName = getCityCodeAndNameByDepartmentId(departmentId);
                         resultMap.putAll(cityCodeAndName);
+                        Map<String, Object> map = new HashMap<>();
+
+                        map.put("version", version);
+                        map.put("appid", appid);
+                        map.put("appsecret", appsecret);
+                        map.put("cityid", cityCodeAndName.get("cityCode"));
+                        //天气信息
+                        String weatherStr = HttpUtil.get(url, map);
+                        JSONObject weatherJson= JSON.parseObject(weatherStr);
+                        resultMap.put("weatherData", weatherJson);
                         //部门名称
                         Company company = companyService.getCompanyById(departmentId.toString());
                         resultMap.put("departmentId", departmentId);
