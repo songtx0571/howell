@@ -34,7 +34,7 @@
 }
 
 .notice ul li {
-    line-height: 30px;
+    line-height: 31px;
 }
 
 .notice li:first-child {
@@ -203,13 +203,14 @@ body::-webkit-scrollbar {
     float: left;
     padding-top: 10px;
     box-sizing: border-box;
+    width: 50%;
 }
 
 .pieList li .pieTitle {
     text-align: center;
 }
 .countDiv, .pointDiv{
-    width: 300px;
+    width: 80%;
     height: 30px;
     position: relative;
     background-color: rgb(145,204,117);

@@ -41,11 +41,9 @@ var os = function () {
     };
 }();
 if (os.isAndroid || os.isPhone) {//手机
-    $(".pieList").css({'width':'100%','margin-top': '15px','height': '300px'})
-    $(".left").css('width', '100%');
+    vertical();
 } else  {//平板 电脑
-    $(".pieList").css({'width':'570px','margin-top': '0px','height':'470px'})
-    $(".left").css('width', '370px');
+    horizontal();
 }
 window.addEventListener("onorientationchange" in window ? "orientationchange" : "resize", hengshuping, false);
 
@@ -192,7 +190,7 @@ function pinjie() {
                 var value1, value2, value3, value4;//value1当天次数 value2当天点数 value3当班次数 value4当班点数
                 if (dataA.data == "") {
                     value1 = 0;
-                    value3 = 0;
+                    value2 = 0;
                 } else {
                     value1 = dataA.data[0].value;
                     value2 = dataA.data[1].value;
@@ -212,11 +210,11 @@ function pinjie() {
                 if (value3 == 0) {
                     width2 = 0;
                 }
-                div += "<li><p class='pieTitle pieTitle1' style='height: 30px;'><span class='iconfont icon-triangle-right' style='margin - right:8 px;color: #0000FF;'></span><span>巡检统计</span></p>" +
-                    "<span style='float: left;margin-left: 20px;'>次数：</span>" +
+                div += "<li><p class='pieTitle' style='height: 30px;'><span class='iconfont icon-triangle-right' style='margin - right:8 px;color: #0000FF;'></span><span>巡检统计</span></p>" +
+                    "<span style='float: left;'>次数：</span>" +
                     "<div class='countDiv'><div class='shiftCountDiv' style='width: " + width1 + "%'>" + value3 + "</div><div class='dayCountDiv'>" + value1 + "</div></div>" +
                     "<div class='clear'></div><br>" +
-                    "<span style='float: left;margin-left: 20px;'>点数：</span>" +
+                    "<span style='float: left;'>点数：</span>" +
                     "<div class='pointDiv'><div class='shiftPointDiv' style='width: " + width2 + "%'>" + value4 + "</div><div class='dayPointDiv'>" + value2 + "</div></div></li>"
                 div += "</ul><div class=\"clear\"></div></div>";
                 var pinjie = $(".pinjie");
@@ -301,7 +299,8 @@ function pieChart(id, i, name, z) {
                 {
                     name: name,
                     type: 'pie',
-                    radius: ['40%', '60%'],
+                    radius: ['0%', '80%'],
+                    // roseType: 'area',
                     avoidLabelOverlap: false,
                     itemStyle: {
                         borderRadius: 0,
@@ -653,13 +652,53 @@ function jumpUrl(url) {
 //判断手机横竖屏状态：
 function hengshuping() {
     if (window.orientation == 180 || window.orientation == 0) {//竖屏状态
-        $(".pieList").css({'width':'100%','margin-top': '15px','height': '300px'})
-        $(".left").css('width', '100%');
-        $(".pieTitle1").css('text-align', 'left');
+        vertical();
     }
     if (window.orientation == 90 || window.orientation == -90) {//横屏状态
-        $(".pieList").css({'width':'570px','margin-top': '0px','height':'470px'})
-        $(".left").css('width', '370px');
-        $(".pieTitle1").css('text-align', 'center');
+        horizontal();
     }
+}
+//横屏样式
+function horizontal () {
+    $(".pieList").css({'width':'570px','margin-top': '0px'});
+    $(".left").css({'width': '370px','font-size':'14px'});
+    //字体大小
+    $(".warp").css({'font-size':'16px'});
+    $(".myTaskDiv p").css({'font-size':'20px','line-height':'30px'});
+    $(".notice ul").css({'font-size':'18px'});
+    $(".yunxing .yunxing_person li").css({'font-size':'14px','padding':'5px 0','box-sizing':'border-box','width':'87px','line-height':'20px'});
+    $(".jianxiu .jianxiu_person li").css({'font-size':'14px','padding':'5px 0','box-sizing':'border-box','width':'87px','line-height':'20px'});
+    $(".jianxiu").css({'height':'154px'})
+    $(".li_badge").css({'line-height':'18px','height':'18px'});
+    $(".yunxing .yunxing_title").css({'font-size':'14px'});
+    $(".jianxiu .jianxiu_title").css({'font-size':'14px'});
+    $(".weaDiv").css({'height':'200px'})
+    $(".weaAll").css({'height':'100px'})
+    $('.allLeft').css({'line-height':'35px'})
+    $(".weaList").css({'margin-top':'00px'})
+    $(".allLeft p:first-child").css({'font-size':'20px'})
+    $(".weaList li").css({'line-height':'30px'});
+    $(".weaList li .iconfont").css({'font-size':'30px'});
+}
+//竖屏样式
+function vertical () {
+    $(".pieList").css({'width':'100%','margin-top': '15px'});
+    $(".left").css({'width':'100%','font-size':'30px'});
+    //字体大小
+    $(".warp").css({'font-size':'20px'});
+    $(".myTaskDiv p").css({'font-size':'30px','line-height':'50px'});
+    $(".notice ul").css({'font-size':'30px'});
+    $(".yunxing .yunxing_person li").css({'font-size':'30px','padding':'5px 10px','box-sizing':'border-box','width':'20%'});
+    $(".jianxiu").css({'height':'210px'})
+    $(".jianxiu .jianxiu_person li").css({'font-size':'30px','padding':'5px 10px','box-sizing':'border-box','width':'20%'});
+    $(".li_badge").css({'line-height':'36px','height':'28px'});
+    $(".yunxing .yunxing_title").css({'font-size':'20px'});
+    $(".jianxiu .jianxiu_title").css({'font-size':'20px'});
+    $(".weaDiv").css({'height':'275px'})
+    $(".weaAll").css({'height':'120px'})
+    $('.allLeft').css({'line-height':'50px'})
+    $(".weaList").css({'margin-top':'20px'})
+    $(".allLeft p:first-child").css({'font-size':'30px'})
+    $(".weaList li").css({'line-height':'38px'});
+    $(".weaList li .iconfont").css({'font-size':'40px'});
 }

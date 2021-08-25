@@ -19,23 +19,19 @@
         </div>
         <ul class="top_list1">
             <li class="top_list1Two0 top_list1Li" onclick="mouseFun(0)">
-                <span class="iconfont icon-fenlei1 iconfont0" style="margin-right: 8px;"></span>工作引导
-                <div class="top_list1_chide0 top_list1_chide">
-                    <div>
-                        <div><strong><span>运行引导</span></strong></div><div><span>模板配置 </span></div>
-                    </div>
-                </div>
+                <span class="iconfont icon-fenlei1 iconfont0" style="margin-right: 8px;"></span><samp class="erjiTitle erjiTitle1">工作引导</samp>
+                <div class="top_list1_chide0 top_list1_chide"></div>
             </li>
             <li class="top_list1Two1 top_list1Li" onclick="mouseFun(1)">
-                <span class="iconfont icon-jiqiren iconfont1" style="margin-right: 8px;"></span>AI管理
+                <span class="iconfont icon-jiqiren iconfont1" style="margin-right: 8px;"></span><samp class="erjiTitle erjiTitle2">AI管理</samp>
                 <div class="top_list1_chide1 top_list1_chide"></div>
             </li>
             <li class="top_list1Two2 top_list1Li" onclick="mouseFun(2)">
-                <span class="iconfont icon-wendang iconfont2" style="margin-right: 8px;"></span>员工管理
+                <span class="iconfont icon-wendang iconfont2" style="margin-right: 8px;"></span><samp class="erjiTitle erjiTitle3">员工管理</samp>
                 <div class="top_list1_chide2 top_list1_chide"></div>
             </li>
             <li class="top_list1Two3 top_list1Li" onclick="mouseFun(3)">
-                <span class="iconfont icon-kaoshi1 iconfont3" style="margin-right: 8px;"></span>考试管理
+                <span class="iconfont icon-kaoshi1 iconfont3" style="margin-right: 8px;"></span><samp class="erjiTitle erjiTitle4">考试管理</samp>
                 <div class="top_list1_chide3 top_list1_chide"></div>
             </li>
         </ul>
