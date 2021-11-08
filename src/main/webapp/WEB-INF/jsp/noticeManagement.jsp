@@ -153,10 +153,10 @@
         <div class="addUser">
             <h1 style="text-align: center;margin-bottom: 30px">选择人员</h1>
             <div style="margin-top: 10px;">
-                <form class="layui-form" action="">
+                <label class="layui-form-label" style="float: left;margin-right: 15px;margin-top: 10px;">公司：</label>
+                <form class="layui-form" action="" style="float: left">
                     <div class="layui-form-item">
                         <div class="layui-inline">
-                            <label class="layui-form-label">公司：</label>
                             <div class="layui-input-inline"
                                  style="width: 300px;float: left;margin-top: 10px;margin-left: -30px;">
                                 <select name="modules" lay-verify="required" lay-filter="companyList" lay-search=""
@@ -170,10 +170,10 @@
             </div>
             <div style="clear: both"></div>
             <div style="margin-top: 10px;">
-                <form class="layui-form" action="">
+                <label class="layui-form-label" style="float: left;margin-right: 15px;margin-top: 10px;">部门：</label>
+                <form class="layui-form" action="" style="float: left">
                     <div class="layui-form-item">
                         <div class="layui-inline">
-                            <label class="layui-form-label">部门：</label>
                             <div class="layui-input-inline"
                                  style="width: 300px;float: left;margin-top: 10px;margin-left: -30px;">
                                 <select name="modules" lay-verify="required" lay-filter="addUserDepartment"
@@ -186,7 +186,7 @@
                 <input type="hidden" id="addUserDepartmentId">
             </div>
             <div style="clear: both"></div>
-            <div style="margin-top: 10px;">
+            <div style="margin-top: 10px;padding-left: 50px;box-sizing: border-box;">
                 <label style="text-align: right;">人员：</label>
                 <div class="layui-input-inline" style="width: 300px;">
                     <select name="tags" id="tags" lay-verify="required" xm-select="tags">

@@ -55,7 +55,7 @@ body::-webkit-scrollbar{
 .updateInfo{
     height: 240px;
 }
-.addType span,.updateType span,.addSonType span,.addInfo span, .addUser span, .addUser label,.updateInfo span{
+.addType span,.updateType span,.addSonType span,.addInfo span, .updateInfo span{
     font-size: 18px;
     display: inline-block;
     width: 95px;
@@ -68,24 +68,19 @@ body::-webkit-scrollbar{
 .updateInfo span,.addInfo span{
     margin-left: 0px;
 }
-.addUser span,.addUser label{
-    margin-left: 35px;
-}
-.addType input,.addType select,.updateType input,.updateType select,.addSonType input,.addSonType select,.addInfo input,.addInfo select, .addUser select:first-of-type,.updateInfo input,.updateInfo select {
+.addType input,.addType select,.updateType input,.updateType select,.addSonType input,.addSonType select,.addInfo input,.addInfo select, .updateInfo input,.updateInfo select {
     float: left;
     width: 230px;
     height: 40px;
     outline: none;
     font-size: 18px;
 }
+
 .addInfo input,.addInfo select{
     width: 300px;
 }
 .updateInfo input{
     width: 305px;
-}
-.addUser select:first-of-type{
-    width: 68%;
 }
 .addInfo select, .updateInfo select{
     height: 40px;

@@ -59,8 +59,6 @@ function showCompany() {
                 formSelects.config('tags', {
                     keyName: 'name',
                     keyVal: 'id',
-                    keySel: 'selected',
-                    direction: 'auto',
                     success: function(id, url, searchVal, result){      //使用远程方式的success回调
                         var data = result.data;
                         var names = "";
