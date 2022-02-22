@@ -63,8 +63,7 @@
         <if test="date!=null">and mr.create_time like #{date}</if>
         <if test="departmentId!=null">and mr.department_id=#{departmentId}</if>
         <if test="employeeId!=null">and mr.employee_id like concat("%",#{employeeId},"%")</if>
-        <if test="isToFinish!=true">and mr.status=2</if>
-        <if test="isToFinish=true">and mr.status!=2</if>
+        <if test="isToFinish==true">and mr.status!=2</if>
         order by mr.end_time desc,mr.create_time desc
 
 

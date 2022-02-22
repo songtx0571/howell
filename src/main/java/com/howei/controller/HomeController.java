@@ -479,6 +479,8 @@ public class HomeController {
                     });
                 }
 
+            } catch (Exception e) {
+                e.printStackTrace();
             } finally {
                 threadPool.shutdown();
             }
@@ -509,7 +511,7 @@ public class HomeController {
         List<MaintainRecord> maintainRecordListThisMonth = indexDataService.getMaintainRecordByMap(paramMap);
         //当天维护数据
         List<MaintainRecord> maintainRecordListThisDay = maintainRecordListThisMonth.stream().filter(item ->
-                item.getCreateTime().after(thisDayBegin) && item.getCreateTime().before(nextDayBegin)
+                item.getEndTime() != null && item.getEndTime().compareTo(sdf.format(thisDayBegin)) > 0 && item.getEndTime().compareTo(sdf.format(nextDayBegin)) < 0
         ).collect(Collectors.toList());
         //解析当天检修人员名单 维护部分,将结果保存在jxEmoloyeeNameMapMap中
         this.parseJXRecordList(maintainRecordListThisDay, jxEmoloyeeNameMapMap);
@@ -872,7 +874,7 @@ public class HomeController {
     }
 
 
-    @GetMapping("/getPersonalTasks")
+    @GetMapping("/getPersonalTasks1")
     @ResponseBody
     public Result getPersonalTask() {
         Subject subject = SecurityUtils.getSubject();
