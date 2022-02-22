@@ -169,10 +169,7 @@ function pinjie() {
                     "<i class=\"jianxiu_line\"></i>" +
                     "<ul class=\"jianxiu_person\">";
                 for (var i = 0; i < data.departmentJXData.length; i++) {
-                    div += "<li><span>" + data.departmentJXData[i].name
-                        + "</span><span class='layui-badge li_badge'>" + data.departmentJXData[i].taskNum0
-                        + "</span>&nbsp;<span class='layui-badge li_badge' style='background: forestgreen'>" + data.departmentJXData[i].taskNum1
-                        + "</span></li>"
+                    div += "<li><span>" + data.departmentJXData[i].name + "</span><span class='layui-badge li_badge'>" + data.departmentJXData[i].taskNum0 + "</span>&nbsp;<span class='layui-badge li_badge' style='background: forestgreen'>" + data.departmentJXData[i].taskNum1 + "</span></li>"
                 }
                 div += "</ul></div></div>";
                 div += "<ul class=\"pieList\">"
