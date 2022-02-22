@@ -9,7 +9,7 @@
         <result column="parent" property="parent"></result>
         <result column="companyId" property="companyId"></result>
     </resultMap>
-    <delete id="deleteById" parameterType="java.lang.String">
+                                                                                                                                                                                                                                                                               <delete id="deleteById" parameterType="java.lang.String">
        delete i,ui from inform i LEFT JOIN user_inform ui ON i.id=ui.informId where  i.id=#{informId}
     </delete>
 

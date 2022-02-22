@@ -1,10 +1,10 @@
 package com.howei.util;
 
 public enum Type {
-     SUCCESS,//成功
-     success,
-     ERROR,//后台错误
-     CANCEL,//页面错误
+    SUCCESS,//成功
+    success,
+    ERROR,//后台错误
+    CANCEL,//页面错误
     INVALID,//登录信息失效
     HAVE,//存在同名
     havaRecord,//存在記錄

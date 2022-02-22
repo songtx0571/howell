@@ -462,7 +462,7 @@ public class HomeController {
                         map.put("cityid", cityCodeAndName.get("cityCode"));
                         //天气信息
                         String weatherStr = HttpUtil.get(url, map);
-                        JSONObject weatherJson= JSON.parseObject(weatherStr);
+                        JSONObject weatherJson = JSON.parseObject(weatherStr);
                         resultMap.put("weatherData", weatherJson);
                         //部门名称
                         Company company = companyService.getCompanyById(departmentId.toString());
@@ -768,9 +768,13 @@ public class HomeController {
             resultMap.put("name", "已完成");
             map.put("color", "green");
             resultMap.put("itemStyle", map);
-        } else {
+        } else if (type == 6) {
             resultMap.put("name", "延期中");
             map.put("color", "#001580");
+            resultMap.put("itemStyle", map);
+        } else {
+            resultMap.put("name", "确认中");
+            map.put("color", "burlywood");
             resultMap.put("itemStyle", map);
         }
         return resultMap;
@@ -787,17 +791,20 @@ public class HomeController {
     public void parseJXRecordList(List list, Map<String, Object> jxEmoloyeeNameMapMap) {
         for (Object record : list) {
             String employeeIdStr = null;
+            Integer type = 0;
             //如果是维护类的示例  否则判断是缺陷类的实例
             if (record instanceof MaintainRecord) {
+                type = 1;
                 employeeIdStr = ((MaintainRecord) record).getEmployeeId();
             } else if (record instanceof Defect) {
                 employeeIdStr = ((Defect) record).getEmpIds();
+                type = 0;
             }
             if (employeeIdStr == null || "".equals(employeeIdStr.trim())) {
                 continue;
             }
             //解析数据
-            parseJXRecord(employeeIdStr, jxEmoloyeeNameMapMap);
+            parseJXRecord(type, employeeIdStr, jxEmoloyeeNameMapMap);
         }
     }
 
@@ -808,27 +815,28 @@ public class HomeController {
      * @param jxEmoloyeeNameMapMap
      * @return
      */
-    public void parseJXRecord(String employeeIdStr, Map<String, Object> jxEmoloyeeNameMapMap) {
+    public void parseJXRecord(Integer type, String employeeIdStr, Map<String, Object> jxEmoloyeeNameMapMap) {
         Map<String, Object> emoloyeeNameMap = null;
         if (employeeIdStr != null && !"".equals(employeeIdStr.trim())) {
             String[] employeeIds = employeeIdStr.split(",");
             if (employeeIds.length > 0) {
                 for (String employeeId : employeeIds) {
-                    //jxEmoloyeeNameMapMap中是否含有该用户编号的key  存在则在该员工的任务数量加1,不存在则添加该员工
+                    //jxEmployeeNameMapMap中是否含有该用户编号的key  存在则在该员工的任务数量加1,不存在则添加该员工
                     if (!jxEmoloyeeNameMapMap.containsKey(employeeId)) {
-
                         //查询用户名并初始化任务数量为一
                         emoloyeeNameMap = new HashMap<>();
                         Users usersByEmployeeId = userService.getUserByEmployeeId(employeeId);
                         if (usersByEmployeeId != null) {
                             emoloyeeNameMap.put("name", usersByEmployeeId.getUserName());
-                            emoloyeeNameMap.put("taskNum", 1);
+                            emoloyeeNameMap.put("taskNum0", 0);
+                            emoloyeeNameMap.put("taskNum1", 0);
+                            emoloyeeNameMap.put("taskNum" + type, 1);
                             jxEmoloyeeNameMapMap.put(employeeId, emoloyeeNameMap);
                         }
                     } else {
                         //根据employeeId查询数据,并使任务数据加一
                         emoloyeeNameMap = (Map<String, Object>) jxEmoloyeeNameMapMap.get(employeeId);
-                        emoloyeeNameMap.put("taskNum", (Integer) emoloyeeNameMap.get("taskNum") + 1);
+                        emoloyeeNameMap.put("taskNum" + type, (Integer) emoloyeeNameMap.get("taskNum" + type) + 1);
                         jxEmoloyeeNameMapMap.put(employeeId, emoloyeeNameMap);
                     }
                 }

@@ -32,19 +32,19 @@ public class LoginRealm extends AuthorizingRealm {
     @Override
     protected AuthorizationInfo doGetAuthorizationInfo(PrincipalCollection principalCollection) {
         //获取登录用户名
-        Users users=(Users) principalCollection.getPrimaryPrincipal();
-        String userNumber= users.getUserNumber();
+        Users users = (Users) principalCollection.getPrimaryPrincipal();
+        String userNumber = users.getUserNumber();
         //查询用户名称
-        Users user= userService.getUserRolesByName(userNumber);
+        Users user = userService.getUserRolesByName(userNumber);
         //添加角色和权限
         SimpleAuthorizationInfo simpleAuthorizationInfo = new SimpleAuthorizationInfo();
-        for (Role role:user.getRoles()) {
+        for (Role role : user.getRoles()) {
             //添加角色
             simpleAuthorizationInfo.addRole(role.getRoleName());
-            Integer roleId=role.getId();
-            List<Authority> list=roleService.getRoleAuthoritys(roleId+"");
+            Integer roleId = role.getId();
+            List<Authority> list = roleService.getRoleAuthoritys(roleId + "");
             role.setAuthoritys(list);
-            for (Authority p:role.getAuthoritys()) {
+            for (Authority p : role.getAuthoritys()) {
                 //添加权限
                 simpleAuthorizationInfo.addStringPermission(p.getName());
             }
@@ -55,24 +55,24 @@ public class LoginRealm extends AuthorizingRealm {
     //认证
     @Override
     protected AuthenticationInfo doGetAuthenticationInfo(AuthenticationToken authenticationToken) throws AuthenticationException {
-        UsernamePasswordToken token=(UsernamePasswordToken)authenticationToken;
-        String userNumber=token.getUsername();
-        String password=String.copyValueOf(token.getPassword());
-        if(userNumber!=null){
-            Users user=userService.loginUserNumber(userNumber,null);
-            if(user==null){
+        UsernamePasswordToken token = (UsernamePasswordToken) authenticationToken;
+        String userNumber = token.getUsername();
+        String password = String.copyValueOf(token.getPassword());
+        if (userNumber != null) {
+            Users user = userService.loginUserNumber(userNumber, null);
+            if (user == null) {
                 throw new AuthenticationException("no_user");
-            }else{
-                Users user1= userService.loginUserNumber(userNumber,password);
-                if(user1 == null){
+            } else {
+                Users user1 = userService.loginUserNumber(userNumber, password);
+                if (user1 == null) {
                     throw new AuthenticationException("no_permission");
-                }else{
-                    if(user1.getState()==0){
+                } else {
+                    if (user1.getState() == 0) {
                         throw new AuthenticationException("no_status");
                     }
                 }
             }
-            return new SimpleAuthenticationInfo(user,user.getPassword(),getName());
+            return new SimpleAuthenticationInfo(user, user.getPassword(), getName());
 
         }
         return null;
@@ -80,6 +80,7 @@ public class LoginRealm extends AuthorizingRealm {
 
     /**
      * 重写方法,清除当前用户的的 授权缓存
+     *
      * @param principals
      */
     @Override
@@ -89,6 +90,7 @@ public class LoginRealm extends AuthorizingRealm {
 
     /**
      * 重写方法，清除当前用户的认证缓存
+     *
      * @param principals
      */
     @Override

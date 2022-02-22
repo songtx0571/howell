@@ -18,7 +18,7 @@ public class ScheduledTask {
     @Autowired
     private OperationRecordService orService;
 
-    @Scheduled(cron = "1 * * * * ?") //每10秒执行一次
+    @Scheduled(cron = "1 * * * * ?") //每1分钟秒执行一次
     public void scheduledTaskByCorn() {
         Date date=new Date();
         SimpleDateFormat sdf=new SimpleDateFormat("yyyy-MM-dd HH:mm");
