@@ -521,9 +521,6 @@ public class HomeController {
         int countFinishedMaintainRecord = maintainRecordListThisDayGroupByStatus.get("2") != null ? maintainRecordListThisDayGroupByStatus.get("2").size() : 0;
         //完成数量 统计列表中状态不是2的记录
         int countUnfinishedMaintainRecord = maintainRecordListThisDay.size() - (maintainRecordListThisDayGroupByStatus.get("2") != null ? maintainRecordListThisDayGroupByStatus.get("2").size() : 0);
-        //当天检修任务完成率
-        mapListMap = this.parseFinishRate(countFinishedMaintainRecord, countUnfinishedMaintainRecord, "当天维护任务完成率");
-        mapListMapList.add(mapListMap);
         //当月缺陷数
         List<Defect> defectListThisMonth = indexDataService.getDefectByMap(paramMap);
         //当月缺陷数 按类型分
@@ -548,10 +545,10 @@ public class HomeController {
         mapListMapList.add(mapListMap);
 
         int countFinishedDefect = defectListThisDayGroupByType.get(4) != null ? defectListThisDayGroupByType.get(4).size() : 0;
-        int  countUnfinishedDefect = defectListThisDay.size() - (defectListThisDayGroupByType.get(4) != null ? defectListThisDayGroupByType.get(4).size() : 0);
+        int countUnfinishedDefect = defectListThisDay.size() - (defectListThisDayGroupByType.get(4) != null ? defectListThisDayGroupByType.get(4).size() : 0);
 
         //当天缺陷任务完成率
-        mapListMap = this.parseFinishRate(countFinishedDefect, countUnfinishedDefect, "当天缺陷任务完成率");
+        mapListMap = this.parseFinishRate(countFinishedMaintainRecord, countUnfinishedMaintainRecord, countFinishedDefect, countUnfinishedDefect, "当天检修任务完成率");
         //添加到返回集合中
         mapListMapList.add(mapListMap);
 
@@ -679,31 +676,42 @@ public class HomeController {
 
     /**
      * 当前检修任务完成率
-     *
-     * @param countFinished   已完成数量
-     * @param countUnfinished 未完成数量
-     * @param name            图表名称
-     * @return
      */
-    private Map<String, Object> parseFinishRate(int countFinished, int countUnfinished, String name) {
+    private Map<String, Object> parseFinishRate(int countFinishedM, int countUnfinishedM, int countFinishedD, int countUnfinishedD, String name) {
+        Map<String, Object> resultMap = new HashMap<>();
+        List<Map<String, Object>> mapListList = new ArrayList<>();
+        //添加缺陷
         Map<String, Object> mapListMap = new HashMap<>();
         List<Map<String, Object>> mapList = new ArrayList<>();
-        Map<String, Object> map;
-        if (countFinished > 0) {
-            map = new HashMap<>();
-            map.put("name", "已完成");
-            map.put("value", countFinished);
-            mapList.add(map);
-        }
-        if (countUnfinished > 0) {
-            map = new HashMap<>();
-            map.put("name", "未完成");
-            map.put("value", countUnfinished);
-            mapList.add(map);
-        }
-        mapListMap.put("name", name);
+        Map<String, Object> map = new HashMap<>();
+        map.put("name", "已完成");
+        map.put("value", countFinishedM);
+        mapList.add(map);
+        map = new HashMap<>();
+        map.put("name", "未完成");
+        map.put("value", countUnfinishedM);
+        mapList.add(map);
+        mapListMap.put("name", "维护");
         mapListMap.put("data", mapList);
-        return mapListMap;
+        mapListList.add(mapListMap);
+        //添加缺陷
+        mapListMap = new HashMap<>();
+        mapList = new ArrayList<>();
+        map = new HashMap<>();
+        map.put("name", "已完成");
+        map.put("value", countFinishedD);
+        mapList.add(map);
+        map = new HashMap<>();
+        map.put("name", "未完成");
+        map.put("value", countUnfinishedD);
+        mapList.add(map);
+        mapListMap.put("name", "缺陷");
+        mapListMap.put("data", mapList);
+        mapListList.add(mapListMap);
+
+        resultMap.put("data", mapListList);
+        resultMap.put("name", name);
+        return resultMap;
     }
 
 
