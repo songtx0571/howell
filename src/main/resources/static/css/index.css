@@ -34,7 +34,7 @@
 }
 
 .notice ul li {
-    line-height: 31px;
+    line-height: 50px;
 }
 
 .notice li:first-child {
@@ -172,7 +172,7 @@ body::-webkit-scrollbar {
 .yunxing .yunxing_person li,
 .jianxiu .jianxiu_person li {
     float: left;
-    width: 87px;
+    width: 33%;
     text-align: center;
     line-height: 30px;
     position: relative;

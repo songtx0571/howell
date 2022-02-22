@@ -171,7 +171,7 @@ function pinjie() {
                 for (var i = 0; i < data.departmentJXData.length; i++) {
                     div += "<li><span>" + data.departmentJXData[i].name
                         + "</span><span class='layui-badge li_badge'>" + data.departmentJXData[i].taskNum0
-                        + "</span><span class='layui-badge li_badge'>" + data.departmentJXData[i].taskNum1
+                        + "</span>&nbsp;<span class='layui-badge li_badge' style='background: forestgreen'>" + data.departmentJXData[i].taskNum1
                         + "</span></li>"
                 }
                 div += "</ul></div></div>";
@@ -181,20 +181,37 @@ function pinjie() {
                     div += "<li><p class='pieTitle'><span class=\"iconfont icon-triangle-right\" style=\"margin-right: 8px;color: #0000FF;\"></span><span>" + data.staticsData[i].name + "</span></p>" +
                         "<div id='mainPie" + z + "" + i + "' style=\"width: 280px;height:280px;margin: 5px auto 0;\"></div></li>"
                 }
-                var result = 0;//结果
-                if (data.staticsData[2].data.length == 1) {
-                    zonghe = Number(data.staticsData[2].data[0].value);
-                    weiwancheng = data.staticsData[2].data[0].value;
-                    result = ((1 - weiwancheng / zonghe) * 100).toFixed(0) + "%";
-                } else if (data.staticsData[2].data.length == 2) {
-                    zonghe = Number(data.staticsData[2].data[0].value) + Number(data.staticsData[2].data[1].value);
-                    weiwancheng = data.staticsData[2].data[1].value;
-                    result = ((1 - weiwancheng / zonghe) * 100).toFixed(0) + "%";
+                var dataJA = data.staticsData[2].data[0]; // 维护
+                var dataJB = data.staticsData[2].data[1]; // 缺陷
+                var valueJ1, valueJ2, valueJ3, valueJ4;// value1当天已完成维护 value2当天未完成维护 value3当天已完成缺陷 value4当天未完成缺陷
+                if (dataJA.data == "") {
+                    valueJ1 = 0;
+                    valueJ2 = 0;
                 } else {
-                    result = 100 + "%";
+                    valueJ1 = dataJA.data[0].value;
+                    valueJ2 = dataJA.data[1].value;
                 }
-                div += "<li><p class='pieTitle'><span class=\"iconfont icon-triangle-right\" style=\"margin-right: 8px;color: #0000FF;\"></span><span>" + data.staticsData[2].name + "</span></p>" +
-                    "<span style='display: block;text-align: center;line-height: 100px;font-size: 32px;'>" + result + "</span></li>"
+                if (dataJB.data == "") {
+                    valueJ3 = 0;
+                    valueJ4 = 0;
+                } else {
+                    valueJ3 = dataJB.data[0].value;
+                    valueJ4 = dataJB.data[1].value;
+                }
+                var widthJ1 = valueJ1 / valueJ2 * 100;
+                var widthJ2 = valueJ3 / valueJ4 * 100;
+                if (valueJ1 == 0) {
+                    widthJ1 = 0;
+                }
+                if (valueJ3 == 0) {
+                    widthJ2 = 0;
+                }
+                div += "<li><p class='pieTitle' style='height: 30px;'><span class='iconfont icon-triangle-right' style='margin - right:8 px;color: #0000FF;'></span><span>任务完成率</span></p>" +
+                    "<span style='float: left;'>维护：</span>" +
+                    "<div class='countDiv'><div class='shiftCountDiv' style='width: " + widthJ1 + "%;background: #219821;'>" + valueJ1 + "</div><div class='dayCountDiv' style='background: #1090ea;'>" + valueJ2 + "</div></div>" +
+                    "<div class='clear'></div><br>" +
+                    "<span style='float: left;'>缺陷：</span>" +
+                    "<div class='pointDiv'><div class='shiftPointDiv' style='width: " + widthJ2 + "%;background: #219821;'>" + valueJ3 + "</div><div class='dayPointDiv' style='background: #1090ea;'>" + valueJ4 + "</div></div></li>"
                 var dataA = data.staticsData[3];
                 var dataB = data.staticsData[data.staticsData.length - 1];
                 var value1, value2, value3, value4;//value1当天次数 value2当天点数 value3当班次数 value4当班点数
