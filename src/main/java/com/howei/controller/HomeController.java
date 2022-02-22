@@ -505,11 +505,6 @@ public class HomeController {
         Date nextDayBegin = DateFormat.getThisDayTimeBegin(date, 0, 17);
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
-        //任务完成率  已完成数量
-        int countFinished = 0;
-        //任务完成率 未完成数量
-        int countUnfinished = 0;
-
         //当月维护数据
         List<MaintainRecord> maintainRecordListThisMonth = indexDataService.getMaintainRecordByMap(paramMap);
         //当天维护数据
@@ -523,10 +518,12 @@ public class HomeController {
         Map<String, List<MaintainRecord>> maintainRecordListThisDayGroupByStatus = maintainRecordListThisDay.stream().collect(Collectors.groupingBy(MaintainRecord::getStatus));
 
         //已完成数量 统计列表中状态是2的记录
-        countFinished += maintainRecordListThisDayGroupByStatus.get("2") != null ? maintainRecordListThisDayGroupByStatus.get("2").size() : 0;
+        int countFinishedMaintainRecord = maintainRecordListThisDayGroupByStatus.get("2") != null ? maintainRecordListThisDayGroupByStatus.get("2").size() : 0;
         //完成数量 统计列表中状态不是2的记录
-        countUnfinished += maintainRecordListThisDay.size() - (maintainRecordListThisDayGroupByStatus.get("2") != null ? maintainRecordListThisDayGroupByStatus.get("2").size() : 0);
-
+        int countUnfinishedMaintainRecord = maintainRecordListThisDay.size() - (maintainRecordListThisDayGroupByStatus.get("2") != null ? maintainRecordListThisDayGroupByStatus.get("2").size() : 0);
+        //当天检修任务完成率
+        mapListMap = this.parseFinishRate(countFinishedMaintainRecord, countUnfinishedMaintainRecord, "当天维护任务完成率");
+        mapListMapList.add(mapListMap);
         //当月缺陷数
         List<Defect> defectListThisMonth = indexDataService.getDefectByMap(paramMap);
         //当月缺陷数 按类型分
@@ -550,11 +547,11 @@ public class HomeController {
         //添加到返回集合中
         mapListMapList.add(mapListMap);
 
-        countFinished += defectListThisDayGroupByType.get(4) != null ? defectListThisDayGroupByType.get(4).size() : 0;
-        countUnfinished += defectListThisDay.size() - (defectListThisDayGroupByType.get(4) != null ? defectListThisDayGroupByType.get(4).size() : 0);
+        int countFinishedDefect = defectListThisDayGroupByType.get(4) != null ? defectListThisDayGroupByType.get(4).size() : 0;
+        int  countUnfinishedDefect = defectListThisDay.size() - (defectListThisDayGroupByType.get(4) != null ? defectListThisDayGroupByType.get(4).size() : 0);
 
-        //当天检修任务完成率
-        mapListMap = this.parseFinishRate(countFinished, countUnfinished, "当天检修任务完成率");
+        //当天缺陷任务完成率
+        mapListMap = this.parseFinishRate(countFinishedDefect, countUnfinishedDefect, "当天缺陷任务完成率");
         //添加到返回集合中
         mapListMapList.add(mapListMap);
 
