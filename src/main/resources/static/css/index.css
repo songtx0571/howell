@@ -218,6 +218,7 @@ body::-webkit-scrollbar {
     float: left;
     color: #fff;
     font-size: 20px;
+    position: relative
 }
 .shiftCountDiv,.shiftPointDiv{
     height: 100%;

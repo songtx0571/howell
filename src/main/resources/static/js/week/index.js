@@ -197,18 +197,22 @@ function pinjie() {
                 }
                 var widthJ1 = valueJ1 / valueJ2 * 100;
                 var widthJ2 = valueJ3 / valueJ4 * 100;
-                if (valueJ1 == 0) {
-                    widthJ1 = 0;
+                if (valueJ2 == 0) {
+                    widthJ1 = 100;
                 }
-                if (valueJ3 == 0) {
-                    widthJ2 = 0;
+                if (valueJ4 == 0) {
+                    widthJ2 = 100;
                 }
                 div += "<li><p class='pieTitle' style='height: 30px;'><span class='iconfont icon-triangle-right' style='margin - right:8 px;color: #0000FF;'></span><span>任务完成率</span></p>" +
                     "<span style='float: left;'>维护：</span>" +
-                    "<div class='countDiv'><div class='shiftCountDiv' style='width: " + widthJ1 + "%;background: #219821;'>" + valueJ1 + "</div><div class='dayCountDiv' style='background: #1090ea;'>" + valueJ2 + "</div></div>" +
+                    "<div class='countDiv'><div class='shiftCountDiv' style='width: " + widthJ1 + "%;background: #219821;'></div><div class='dayCountDiv' style='background: #FF5722;'></div>" +
+                    "<span style='position: absolute;top: 0px;left: 10px;'>" + valueJ1 + "</span><span style='position: absolute;top: 0px;right: 10px;'>" + valueJ2 + "</span></div>" +
                     "<div class='clear'></div><br>" +
                     "<span style='float: left;'>缺陷：</span>" +
-                    "<div class='pointDiv'><div class='shiftPointDiv' style='width: " + widthJ2 + "%;background: #219821;'>" + valueJ3 + "</div><div class='dayPointDiv' style='background: #1090ea;'>" + valueJ4 + "</div></div></li>"
+                    "<div class='pointDiv'>" +
+                    "<div class='shiftPointDiv' style='width: " + widthJ2 + "%;background: #219821;'></div>" +
+                    "<div class='dayPointDiv' style='background: #FF5722;'></div>" +
+                    "<span style='position: absolute;top: 0px;left: 10px;'>" + valueJ3 + "</span><span style='position: absolute;top: 0px;right: 10px;'>" + valueJ4 + "</span></div></li>"
                 var dataA = data.staticsData[3];
                 var dataB = data.staticsData[data.staticsData.length - 1];
                 var value1, value2, value3, value4;//value1当天次数 value2当天点数 value3当班次数 value4当班点数
@@ -236,10 +240,16 @@ function pinjie() {
                 }
                 div += "<li><p class='pieTitle' style='height: 30px;'><span class='iconfont icon-triangle-right' style='margin - right:8 px;color: #0000FF;'></span><span>巡检统计</span></p>" +
                     "<span style='float: left;'>次数：</span>" +
-                    "<div class='countDiv'><div class='shiftCountDiv' style='width: " + width1 + "%'>" + value3 + "</div><div class='dayCountDiv'>" + value1 + "</div></div>" +
+                    "<div class='countDiv'>" +
+                    "<div class='shiftCountDiv' style='width: " + width1 + "%'></div>" +
+                    "<div class='dayCountDiv'></div>" +
+                    "<span style='position: absolute;top: 0px;left: 10px;'>" + value3 + "</span><span style='position: absolute;top: 0px;right: 10px;'>" + value1 + "</span></div>" +
                     "<div class='clear'></div><br>" +
                     "<span style='float: left;'>点数：</span>" +
-                    "<div class='pointDiv'><div class='shiftPointDiv' style='width: " + width2 + "%'>" + value4 + "</div><div class='dayPointDiv'>" + value2 + "</div></div></li>"
+                    "<div class='pointDiv'>" +
+                    "<div class='shiftPointDiv' style='width: " + width2 + "%'></div>" +
+                    "<div class='dayPointDiv'></div>" +
+                    "<span style='position: absolute;top: 0px;left: 10px;'>" + value4 + "</span><span style='position: absolute;top: 0px;right: 10px;'>" + value2 + "</span></div></li>"
                 div += "</ul><div class=\"clear\"></div></div>";
                 var pinjie = $(".pinjie");
                 pinjie.append(div);
