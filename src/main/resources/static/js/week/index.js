@@ -180,20 +180,20 @@ function pinjie() {
                 }
                 var dataJA = data.staticsData[2].data[0]; // 维护
                 var dataJB = data.staticsData[2].data[1]; // 缺陷
-                var valueJ1, valueJ2, valueJ3, valueJ4;// value1当天已完成维护 value2当天未完成维护 value3当天已完成缺陷 value4当天未完成缺陷
+                var valueJ1, valueJ2, valueJ3, valueJ4;// value1当天已完成维护 value2当天总数维护 value3当天已完成缺陷 value4当天总数缺陷
                 if (dataJA.data == "") {
                     valueJ1 = 0;
                     valueJ2 = 0;
                 } else {
                     valueJ1 = dataJA.data[0].value;
-                    valueJ2 = dataJA.data[1].value;
+                    valueJ2 = dataJA.data[0].value+dataJA.data[1].value;
                 }
                 if (dataJB.data == "") {
                     valueJ3 = 0;
                     valueJ4 = 0;
                 } else {
                     valueJ3 = dataJB.data[0].value;
-                    valueJ4 = dataJB.data[1].value;
+                    valueJ4 = dataJB.data[0].value+dataJB.data[1].value;
                 }
                 var widthJ1 = valueJ1 / valueJ2 * 100;
                 var widthJ2 = valueJ3 / valueJ4 * 100;
