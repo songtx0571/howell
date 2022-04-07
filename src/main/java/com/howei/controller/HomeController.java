@@ -864,8 +864,11 @@ public class HomeController {
             map.put("cityCode", "101210301");
             map.put("cityName", "嘉兴市");
         } else if (departmentId == 19) {
-            map.put("cityCode", "101210901");
+            map.put("cityCode", "101210902");
             map.put("cityName", "浦江县");
+        } else if (departmentId == 78) {
+            map.put("cityCode", "101210904");
+            map.put("cityName", "义乌");
         } else {
             map.put("cityCode", "101210101");
             map.put("cityName", "杭州市");
