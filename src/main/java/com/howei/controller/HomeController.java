@@ -430,10 +430,10 @@ public class HomeController {
 
         List<Integer> departmentIdList = new ArrayList<>();
         if (subject.isPermitted("查询所有部门首页数据")) {
-            departmentIdList.addAll(Arrays.asList(new Integer[]{17, 18, 19, 20}));
+            departmentIdList.addAll(Arrays.asList(new Integer[]{17, 18, 19, 20, 78}));
         } else {
             int departmentId = users.getDepartmentId();
-            boolean contains = Arrays.asList(new Integer[]{17, 18, 19, 20}).contains(departmentId);
+            boolean contains = Arrays.asList(new Integer[]{17, 18, 19, 20, 78}).contains(departmentId);
             if (contains) {
                 departmentIdList.add(departmentId);
             }
@@ -874,7 +874,7 @@ public class HomeController {
     }
 
 
-    @GetMapping("/getPersonalTasks1")
+    @GetMapping("/getPersonalTasks")
     @ResponseBody
     public Result getPersonalTask() {
         Subject subject = SecurityUtils.getSubject();
