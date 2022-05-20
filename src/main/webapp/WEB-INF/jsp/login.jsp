@@ -1,7 +1,7 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <html>
 <meta charset="utf-8">
-<title></title>
+<title>杭州浩维环境科技有限公司</title>
 <meta name="viewport" content="width=1920">
 <script src="js/jquery.min.js" type="text/javascript" charset="utf-8"></script>
 <link rel="stylesheet" type="text/css" href="css/login.css"/>
@@ -315,16 +315,6 @@
                 <div class="right_btn">
                     <input type="submit" value="登录" class="btnOk">
                 </div>
-                <%--<div class="right_check">
-                    <p class="right_checkP" onclick="remeberPwd()">
-                        <i class="right_checkBox"></i>
-                        <embed onclick="remeberPwd()" src="img/yes.svg" width="300" height="100"
-                               type="image/svg+xml"
-                               pluginspage="http://www.adobe.com/svg/viewer/install/" class="right_checkBoxOk"/>
-                    </p>
-                    <span>记住密码，下次自动登录</span>
-                </div>
-                <div class="clear"></div>--%>
             </div>
         </form>
         <iframe id="rfFrame" name="rfFrame" src="about:blank" style="display:none;"></iframe>
@@ -370,9 +360,6 @@
             全面提升了环境治理工程的自动化、智能化水平，可使污染物控制系统各运行参数长期保持在最佳数值，最大限度地降低物耗及设备故障率，助力业主在“环境友好”的发展道路上实现综合效益的行业领先。
         </p>
     </div>
-    <script>
-
-    </script>
 </div>
 <script>
     var index = 0;
@@ -421,8 +408,8 @@
             软键盘弹出
             50是设置的阈值，用来排除其他影响窗体大小变化的因素，比如有的浏览器的工具栏的显示和隐藏
             */
-            $('.warp').css('height', winHeight + 'px');
-            $(".foot").css("z-index", "-1");
+           $('.warp').css('height', winHeight + 'px');
+             /*$(".foot").css("z-index", "-1");*/
         } else {
             /*
             软键盘关闭
