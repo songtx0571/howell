@@ -5,6 +5,8 @@
 <meta name="viewport" content="width=1920">
 <script src="js/jquery.min.js" type="text/javascript" charset="utf-8"></script>
 <link rel="stylesheet" type="text/css" href="css/login.css"/>
+<link rel="icon" href="img/logo.png" type="image/x-icon" />
+<link rel="stylesheet" href="js/font1/iconfont.css">
 <%--竖版本使用的样式:portrait
 <style media="all and (orientation:portrait)" type="text/css">
     .warp {
